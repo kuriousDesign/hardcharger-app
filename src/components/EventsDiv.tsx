@@ -20,10 +20,10 @@ export default async function DriversCard(){
                     <Link 
                         key={event._id} 
                         href={`events/${event._id}}`}
-                        className="p-2 hover:bg-gray-50 rounded shadow-sm bg-gray-100 w-fit px-4 flex items-center"
+                        className="p-2 hover:bg-gray-50 rounded shadow-sm bg-gray-100 w-full px-4 flex items-center"
                     >
-                        <div className='flex flex-row gap-2 justify-start'>
-                            <p className="font-bold">{event.name}</p>
+                        <div className='flex flex-col gap-2 justify-start'>
+                            <p className="font-bold text-2xl">{event.name}</p>
                             <p className="font-bold text-gray-400">{event.location}</p>
                             <p className="font-bold text-gray-400">{event.date}</p>
                         </div>
