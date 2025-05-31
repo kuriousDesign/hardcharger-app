@@ -14,3 +14,22 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Failed to process JSON' }, { status: 400 })
     }
 }
+
+export const GET = async () => {
+//  try {
+//     await dbConnect()
+
+//     if (!mongoose.connection.db) {
+//       throw new Error('Database connection not established')
+//     }
+	
+//     const data = await Driver.find()
+//     //console.log('GET /api --> drivers: ', data)
+
+//     return NextResponse.json(data)
+//   } catch (error) {
+//     console.error('API GET error:', error)
+//     return NextResponse.json({ error: 'Failed to fetch drivers' }, { status: 500 })
+//   }
+    return NextResponse.json({ message: 'GET request received' });
+}
