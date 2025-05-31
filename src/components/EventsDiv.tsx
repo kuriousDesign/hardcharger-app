@@ -1,4 +1,4 @@
-'use server';
+export const dynamic = 'force-dynamic';
 
 import { getEvents } from "@/actions/action";
 import { EventType as Event } from "@/models/Event";

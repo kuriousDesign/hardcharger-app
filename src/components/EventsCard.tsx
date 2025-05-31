@@ -1,4 +1,4 @@
-'use server';
+export const dynamic = 'force-dynamic';
 
 import EventsDiv from "./EventsDiv";
 import Link from "next/link";
