@@ -19,7 +19,7 @@ export default async function DriversCard(){
 
     return (
             <div className="grid grid-cols-1 gap-2 space-x-2 w-fit">
-                {drivers?.map((driver:Driver) => (
+                {drivers && drivers?.map((driver:Driver) => (
                     <Link 
                         key={driver._id} 
                         href={`drivers/${driver._id}`}
