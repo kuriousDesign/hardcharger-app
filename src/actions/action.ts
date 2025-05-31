@@ -1,0 +1,53 @@
+'use server'
+
+import dbConnect from '@/lib/dbConnect';
+import { Driver, DriverType } from '@/models/Driver'
+import Event from '@/models/Event';
+
+
+// const addPost = async post => {
+// 	const title = post.get('title')
+// 	const description = post.get('description')
+
+// 	const newPost = new Post({ title, description })
+// 	return newPost.save()
+// }
+
+export const getDrivers = async () => {
+	await dbConnect();
+	const data = await Driver.find();
+	//console.log("getDrivers(): ",drivers);
+	return data;
+}
+
+export const getEvents = async () => {
+	await dbConnect();
+	const data = await Event.find();
+	//console.log("getDrivers(): ",drivers);
+	return data;
+}
+
+export const postDriver = async (driver: Partial<DriverType> & { _id?: string }) => {
+  await dbConnect();
+
+  const driverData = {
+    first_name: driver.first_name?.trim() || '',
+    last_name: driver.last_name?.trim() || '',
+    suffix: driver.suffix?.trim() || '',
+    car_number: driver.car_number?.trim() || '',
+  };
+
+  try {
+    if (driver._id) {
+      await Driver.findByIdAndUpdate(driver._id, driverData, { new: true });
+      return { message: 'Driver updated successfully' };
+    } else {
+      const newDriver = new Driver(driverData);
+      await newDriver.save();
+      return { message: 'Driver created successfully' };
+    }
+  } catch (error) {
+    console.error('Driver save error:', error);
+    throw new Error('Failed to save driver');
+  }
+};
