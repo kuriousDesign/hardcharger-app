@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import Driver from '@/models/Driver'
+import { Driver } from '@/models/Driver'
 import dbConnect from '@/lib/dbConnect'
 import mongoose from 'mongoose'
 

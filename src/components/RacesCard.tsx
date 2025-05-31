@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { fetchRacesByEvent} from "@/actions/actions";
+import { fetchRacesByEvent} from "@/actions/backend_actions";
 import { Race } from "@/actions/models";
 import router from "next/router";
 

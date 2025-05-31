@@ -1,5 +1,4 @@
-import mongoose from 'mongoose'
-
+import mongoose, { InferSchemaType, model } from 'mongoose';
 
 const eventSchema = new mongoose.Schema(
   {
@@ -11,5 +10,5 @@ const eventSchema = new mongoose.Schema(
     versionKey: false, // 👈 disables __v
    }
 );
-
-export default mongoose.models.Event || mongoose.model('Event', eventSchema)
+export type EventType = InferSchemaType<typeof eventSchema> & { _id?: string };
+export default mongoose.models.Event || model('Event', eventSchema)

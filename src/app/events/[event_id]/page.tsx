@@ -1,16 +1,9 @@
-//import Link from 'next/link';
-//import { getEvents } from '@/actions/action';
-//import dbConnect from '@/lib/db';
-
-
-type Props = {
-  params: {
-    event_id: string;
-  };
-};
-
-export default async function EventPage({ params }: Props) {
-  const { event_id } = params;
+export default async function EventPage({
+  params,
+}: {
+  params: Promise<{ event_id: string; }>
+}) {
+  const { event_id } = await params
 
 	//const events = await getEvents();
 

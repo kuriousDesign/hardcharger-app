@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { fetchGamesByEvent } from "@/actions/actions";
+import { fetchGamesByEvent } from "@/actions/backend_actions";
 import { Game } from "@/actions/models";
 import router from "next/router";
 

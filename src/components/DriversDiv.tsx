@@ -1,7 +1,7 @@
 'use server';
 
 import { getDrivers } from "@/actions/action";
-import { Driver } from "@/actions/models";
+import { DriverType as Driver } from "@/models/Driver";
 import Link from "next/link";
 
 
@@ -22,7 +22,7 @@ export default async function DriversCard(){
                 {drivers?.map((driver:Driver) => (
                     <Link 
                         key={driver._id} 
-                        href={`driver/${driver._id}}`}
+                        href={`drivers/${driver._id}}`}
                         className="p-2 hover:bg-gray-50 rounded shadow-sm bg-gray-100 w-fit px-4 flex items-center"
                     >
                         <div className='flex flex-row gap-2 justify-start'>
