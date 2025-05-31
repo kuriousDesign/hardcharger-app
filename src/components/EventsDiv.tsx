@@ -19,7 +19,7 @@ export default async function DriversCard(){
                 {events?.map((event:Event) => (
                     <Link 
                         key={event._id} 
-                        href={`events/${event._id}}`}
+                        href={`events/${event._id}`}
                         className="p-2 hover:bg-gray-50 rounded shadow-sm bg-gray-100 w-full px-4 flex items-center"
                     >
                         <div className='flex flex-col gap-2 justify-start'>

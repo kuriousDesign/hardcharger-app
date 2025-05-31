@@ -13,6 +13,12 @@ import Event from '@/models/Event';
 // 	return newPost.save()
 // }
 
+export const connectToDatabase = async () => {
+  await dbConnect();    
+  //console.log("Database connected");
+  // You can add any additional setup here if needed
+}
+
 export const getDrivers = async () => {
 	await dbConnect();
 	const data = await Driver.find();
