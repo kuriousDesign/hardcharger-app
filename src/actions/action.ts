@@ -3,6 +3,7 @@
 import dbConnect from '@/lib/dbConnect';
 import { Driver, DriverType } from '@/models/Driver'
 import Event from '@/models/Event';
+import { Payment, PaymentType } from '@/models/Payment';
 
 
 // const addPost = async post => {
@@ -57,3 +58,28 @@ export const postDriver = async (driver: Partial<DriverType> & { _id?: string })
     throw new Error('Failed to save driver');
   }
 };
+
+export const postPayment = async (payment: Partial<PaymentType> & { _id?: string }) => {
+  await dbConnect();
+
+  const paymentData = {
+    amount: payment.amount,
+    type: payment.type?.trim() || '',
+    name: payment.name?.trim() || '',
+    transaction_id: payment.transaction_id?.trim() || '',
+  };
+
+  try {
+    if (payment._id) {
+      await Payment.findByIdAndUpdate(payment._id, paymentData, { new: true });
+      return { message: 'Payment updated successfully' };
+    } else {
+      const newPayment = new Payment(paymentData);
+      await newPayment.save();
+      return { message: 'Payment created successfully' };
+    }
+  } catch (error) {
+    console.error('Payment save error:', error);
+    throw new Error('Failed to save payment');
+  }
+}

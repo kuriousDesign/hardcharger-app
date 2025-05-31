@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server'
-//import { Driver } from '@/models/Driver'
-//import dbConnect from '@/lib/dbConnect'
-//import mongoose from 'mongoose'
+import { Payment, PaymentType } from '@/models/Payment'
+import dbConnect from '@/lib/dbConnect'
+import mongoose from 'mongoose'
+import { postPayment } from '@/actions/action'
 
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json()
-        console.log('Received JSON:', body)
-        return NextResponse.json({ message: 'JSON received successfully' })
+        const data = await request.json()
+        console.log('Received JSON:', data)
+        await postPayment(data as PaymentType);
+        return NextResponse.json({ message: 'payment stored successfully' })
     } catch (error) {
         console.error('Error processing JSON:', error)
         return NextResponse.json({ error: 'Failed to process JSON' }, { status: 400 })
@@ -16,20 +18,19 @@ export async function POST(request: Request) {
 }
 
 export const GET = async () => {
-//  try {
-//     await dbConnect()
+    try {
+        await dbConnect()
 
-//     if (!mongoose.connection.db) {
-//       throw new Error('Database connection not established')
-//     }
-	
-//     const data = await Driver.find()
-//     //console.log('GET /api --> drivers: ', data)
+        if (!mongoose.connection.db) {
+            throw new Error('Database connection not established')
+        }
+        
+        const data = await Payment.find()
+        //console.log('GET /api --> drivers: ', data)
 
-//     return NextResponse.json(data)
-//   } catch (error) {
-//     console.error('API GET error:', error)
-//     return NextResponse.json({ error: 'Failed to fetch drivers' }, { status: 500 })
-//   }
-    return NextResponse.json({ message: 'GET request received' });
+        return NextResponse.json(data)
+    } catch (error) {
+        console.error('API GET error:', error)
+        return NextResponse.json({ error: 'Failed to fetch payments' }, { status: 500 })
+    }
 }
