@@ -1,5 +1,5 @@
-//'use server';
-export const dynamic = 'force-dynamic';
+'use server';
+//export const dynamic = 'force-dynamic';
 
 
 import { getDrivers } from "@/actions/action";

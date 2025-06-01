@@ -1,6 +1,6 @@
 import mongoose, { InferSchemaType, model } from 'mongoose';
 
-const paymentScheme = new mongoose.Schema(
+const paymentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     transaction_id: { type: String, required: true },
@@ -12,6 +12,6 @@ const paymentScheme = new mongoose.Schema(
   }
 );
 
-export type PaymentType = InferSchemaType<typeof paymentScheme> & { _id?: string };
+export type PaymentType = InferSchemaType<typeof paymentSchema> & { _id?: string };
 
-export const Payment = mongoose.models.Payment || model('Payment', paymentScheme);
+export const Payment = mongoose.models.Payment || model('Payment', paymentSchema);
