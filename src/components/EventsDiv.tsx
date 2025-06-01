@@ -3,7 +3,7 @@ import { EventType as Event } from "@/models/Event";
 import Link from "next/link";
 
 
-export default async function DriversCard(){
+export default async function EventsDiv(){
 
     //const router = useRouter();
     const events = await getEvents();
