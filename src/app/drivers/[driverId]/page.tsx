@@ -1,11 +1,11 @@
 import Link from "next/link";
 
-export default async function Driver({
-  params,
-}: {
-  params: Promise<{ driverId: string; }>
-}) {
-  const { driverId } = await params
+export default async function DriverPage({
+    params,
+  }: {
+    params: Promise<{ driverId: string; }>
+  }) {
+  const { driverId } = await params;
 
 	//const events = await getEvents();
 

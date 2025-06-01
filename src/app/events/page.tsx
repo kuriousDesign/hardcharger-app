@@ -1,6 +1,5 @@
 export const dynamic = 'force-dynamic';
 
-
 import EventsCard from '@/components/EventsCard';
 import Link from 'next/link';
 
