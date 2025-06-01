@@ -1,8 +1,6 @@
-
-//import { fetchGamesByEvent } from "@/actions/backend_actions";
 import { GameType as Game } from "@/models/Game";
-import router from "next/router";
 import { getGamesByEventId } from "@/actions/action";
+import Link from "next/link";
 
 export default async function GamesCard({ eventId }: { eventId: string }){
     const games = await getGamesByEventId(eventId);
@@ -24,12 +22,12 @@ export default async function GamesCard({ eventId }: { eventId: string }){
             {games.length === 0 && (
                 <p className="text-gray-500">No games available for this event.</p>
             )}
-            <button 
-                onClick={() => router.push('/create_game')} 
-                className="bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-800 transition-colors duration-300 shadow-md"
+            <Link 
+                href={`/events/${eventId}/games/create_game`} 
+                className="flex justify-center bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-800 transition-colors duration-300 shadow-md"
             >
                 Create Game
-            </button> 
+            </Link> 
         </div>
     );
 };

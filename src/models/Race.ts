@@ -18,4 +18,5 @@ const raceSchema = new mongoose.Schema(
    }
 );
 export type RaceType = InferSchemaType<typeof raceSchema> & { _id?: string };
+export type RaceFormType = Omit<RaceType, 'event_id'> & { event_id: string }; // Used on the client form
 export const Race = mongoose.models.Race || model('Race', raceSchema);

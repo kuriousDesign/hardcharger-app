@@ -1,6 +1,6 @@
-import CreateRaceForm from './CreateRaceForm';
+import CreateGameForm from './CreateGameForm';
 
-export default async function CreateRacePage({
+export default async function CreateGamePage({
   params,
 }: {
   params: Promise<{ eventId: string; }>;
@@ -14,7 +14,7 @@ export default async function CreateRacePage({
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Add Race</h1>
-      <CreateRaceForm eventId={eventId} />
+      <CreateGameForm eventId={eventId} />
     </div>
   );
 }

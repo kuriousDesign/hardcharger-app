@@ -1,5 +1,5 @@
 import { getRacesByEventId } from "@/actions/action";
-import { RaceType as Race } from "@/models/Race";
+import { RaceFormType as Race } from "@/models/Race";
 import Link from "next/link";
 
 
@@ -25,8 +25,8 @@ export default async function RacesCard({ eventId }: { eventId: string }) {
 
 
     return (
-        <div className="p-4 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Races</h2>
+        <div className="p-4 bg-white rounded-lg shadow-md flex flex-col gap-4">
+            <h2 className="text-xl font-bold mb-2">Races</h2>
             <div className="flex flex-wrap gap-4 pb-4">
                 {data?.map((race:Race) => (
                     <Link
@@ -42,7 +42,7 @@ export default async function RacesCard({ eventId }: { eventId: string }) {
             </div>
             <Link 
                 href={`/events/${eventId}/races/create_race`} 
-                className="bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-800 transition-colors duration-300 shadow-md"
+                className="flex justify-center bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-800 transition-colors duration-300 shadow-md"
             >
                 Create Race
             </Link> 

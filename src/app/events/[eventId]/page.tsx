@@ -1,4 +1,5 @@
 import { getEvent } from "@/actions/action";
+import GamesCard from "@/components/GamesCard";
 import RacesCard from "@/components/RacesCard";
 import Link from "next/link";
 
@@ -28,6 +29,7 @@ export default async function EventPage({
 					<p className="font-bold text-gray-400">{event.date}</p>
 				</div>
 			</div>
+			<GamesCard eventId={eventId} />
 			<RacesCard eventId={eventId} />
 			<Link
 				href={`/events`}

@@ -3,11 +3,13 @@
 import dbConnect from '@/lib/dbConnect';
 import { Driver, DriverType } from '@/models/Driver'
 import { Event, EventType } from '@/models/Event';
-import { Game, GameType } from '@/models/Game';
+import { Game, GameFormType, GameType } from '@/models/Game';
 import { Payment, PaymentType } from '@/models/Payment';
-import { Race, RaceType } from '@/models/Race';
+import { Race, RaceFormType, RaceType } from '@/models/Race';
 import { Racer, RacerType } from '@/models/Racer';
 import { Types } from 'mongoose';
+
+import { toFormObject } from '@/utils/mongooseHelpers';
 
 export const connectToDatabase = async () => {
   await dbConnect();    
@@ -92,6 +94,31 @@ export const getGamesByEventId = async (eventId: string) => {
   return games as GameType[];
 }
 
+export const postGame = async (game: Partial<GameType | GameFormType> & { _id?: string }) => {
+  await dbConnect();
+  
+  const gameData = {
+    name: game.name?.trim() || '',
+    entry_fee: game.entry_fee || 0,
+    num_picks: game.num_picks || 0,
+    event_id: typeof(game.event_id) === 'string' ? new Types.ObjectId(game.event_id) : game.event_id,
+  };
+
+  try {
+    if (game._id) {
+      await Game.findByIdAndUpdate(game._id, gameData, { new: true });
+      return { message: 'Game updated successfully' };
+    } else {
+      const newGame = new Game(gameData);
+      await newGame.save();
+      return { message: 'Game created successfully' };
+    }
+  } catch (error) {
+    console.error('Game save error:', error);
+    throw new Error('Failed to save game');
+  }
+}
+
 export const getPayments = async () => {
   await dbConnect();
   const data = await Payment.find();
@@ -123,15 +150,6 @@ export const postPayment = async (payment: Partial<PaymentType> & { _id?: string
     throw new Error('Failed to save payment');
   }
 }
-
-export const getRacesByEventId = async (eventId: string) => {
-  await dbConnect();
-  console.log("getRacesByEvent: eventId:", eventId)
-  const races = await Race.find({ event_id: new Types.ObjectId(eventId) });
-  console.log("getRacesByEvent: races found:", races)
-  return races as RaceType[];
-}
-
 export const getRace = async (raceId: string) => {
   await dbConnect();
   const race = await Race.findById(new Types.ObjectId(raceId));
@@ -144,8 +162,29 @@ export const getRace = async (raceId: string) => {
   return race as RaceType;
 }
 
-export const postRace = async (race: Partial<RaceType> & { _id?: string }) => {
+// export const getRacesByEventId = async (eventId: string) => {
+//   await dbConnect();
+//   //console.log("getRacesByEvent: eventId:", eventId)
+//   const races = await Race.find({ event_id: new Types.ObjectId(eventId) });
+//   //console.log("getRacesByEvent: races found:", races)
+//   return races as RaceFormType[];
+// }
+
+
+export const getRacesByEventId = async (eventId: string): Promise<RaceFormType[]> => {
   await dbConnect();
+  const races = await Race.find({ event_id: new Types.ObjectId(eventId) });
+
+  return toFormObject<RaceFormType[]>(races);
+};
+
+export const postRace = async (race: Partial<RaceType | RaceFormType> & { _id?: string }) => {
+  await dbConnect();
+
+  // check if event_id is a valid ObjectId, if its a string then convert it
+  if (typeof(race.event_id) === 'string') {
+    race.event_id = new Types.ObjectId(race.event_id as string);
+  } 
 
   const raceData = {
     letter: race.letter?.trim() || '',
@@ -161,8 +200,8 @@ export const postRace = async (race: Partial<RaceType> & { _id?: string }) => {
 
   try {
     if (race._id) {
-      await Payment.findByIdAndUpdate(race._id, raceData, { new: true });
-      return { message: 'race updated successfully' };
+      await Race.findByIdAndUpdate(race._id, raceData, { new: true });
+      return { message: 'Race updated successfully' };
     } else {
       const newRace = new Race(raceData);
       await newRace.save();
@@ -170,7 +209,7 @@ export const postRace = async (race: Partial<RaceType> & { _id?: string }) => {
     }
   } catch (error) {
     console.error('Race save error:', error);
-    throw new Error('Failed to save payment');
+    throw new Error('Failed to save race');
   }
 }
 

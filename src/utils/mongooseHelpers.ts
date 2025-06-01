@@ -1,0 +1,33 @@
+import mongoose, { Document, Types } from 'mongoose';
+
+/**
+ * Recursively converts a Mongoose document or plain object into a form-safe object.
+ * - Converts ObjectId to string
+ * - Handles arrays and nested structures
+ */
+export function toFormObject<T>(input: unknown): T {
+  if (input instanceof Types.ObjectId) {
+    return input.toString() as unknown as T;
+  }
+
+  if (Array.isArray(input)) {
+    return input.map((item) => toFormObject(item)) as unknown as T;
+  }
+
+  if (input instanceof mongoose.Model || (input as Document)?.toObject) {
+    input = (input as Document).toObject();
+  }
+
+  if (input && typeof input === 'object') {
+    const result: Record<string, unknown> = {};
+    for (const key in input) {
+      if (Object.prototype.hasOwnProperty.call(input, key)) {
+        const value = (input as Record<string, unknown>)[key];
+        result[key] = toFormObject(value);
+      }
+    }
+    return result as T;
+  }
+
+  return input as T;
+}
