@@ -1,6 +1,3 @@
-//export const dynamic = 'force-dynamic';
-
-
 import { useEffect, useState } from "react";
 import { fetchGamesByEvent } from "@/actions/backend_actions";
 import { Game } from "@/actions/models";

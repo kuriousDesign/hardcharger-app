@@ -1,7 +1,3 @@
-//'use server';
-export const dynamic = 'force-dynamic';
-
-
 import { getDrivers } from "@/actions/action";
 import { DriverType as Driver } from "@/models/Driver";
 import Link from "next/link";
