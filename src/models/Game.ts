@@ -20,5 +20,5 @@ const gameSchema = new mongoose.Schema(
    }
 );
 export type GameType = InferSchemaType<typeof gameSchema> & { _id?: string };
-export type GameFormType = Omit<GameType, 'event_id'> & { event_id: string }; // Used on the client form
+export type GameFormType = Omit<GameType, 'event_id' | 'races'> & { event_id: string, races: string[] }; // Used on the client form
 export const Game = mongoose.models.Game || model('Game', gameSchema);

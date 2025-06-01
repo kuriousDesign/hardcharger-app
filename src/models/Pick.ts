@@ -24,4 +24,5 @@ const pickSchema = new mongoose.Schema(
 
 export type FinisherType = InferSchemaType<typeof finisherSchema>;
 export type PickType = InferSchemaType<typeof pickSchema> & { _id?: string };
+export type PickFormType = Omit<PickType, 'game_id' | 'user_id'> & { game_id: string, user_id: string }; // Used on the client form
 export const Pick = mongoose.models.Pick || model('Pick', pickSchema);
