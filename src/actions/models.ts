@@ -2,16 +2,7 @@
 
 
 //collection
-export interface Game {
-    _id: string;
-    name: string;
-    event_id: string;
-    entry_fee: number;
-    num_entries: number;
-    num_hard_chargers: number;
-    num_top_finishers: number;
-    races: number[]; //race ids
-}
+
 
 //collection
 export interface Pick {

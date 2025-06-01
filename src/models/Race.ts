@@ -12,7 +12,7 @@ const raceSchema = new mongoose.Schema(
     first_transfer_position: { type: Number, required: true }, 
     intermission_lap: { type: Number, required: true }, 
   },
-  { collection: 'events',
+  { collection: 'races',
     versionKey: false, // 👈 disables __v
    }
 );
