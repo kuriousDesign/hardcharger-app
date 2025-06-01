@@ -1,6 +1,5 @@
 'use server'
 
-import { cache } from 'react';
 import dbConnect from '@/lib/dbConnect';
 import { Driver, DriverType } from '@/models/Driver'
 import Event from '@/models/Event';
@@ -21,11 +20,11 @@ export const connectToDatabase = async () => {
   // You can add any additional setup here if needed
 }
 
-export const getDrivers = cache(async () => {
+export const getDrivers = async () => {
   await dbConnect();
   const data = await Driver.find();
   return data;
-});
+}
 
 export const getEvents = async () => {
 	await dbConnect();
