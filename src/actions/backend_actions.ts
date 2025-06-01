@@ -1,6 +1,7 @@
 "use server"
 
-import { Game, Pick as Entry } from "@/actions/models" 
+import { GameType as Game } from "@/models/Game";
+import { PickType as Entry } from "@/models/Pick" 
 import { DriverType as Driver } from "@/models/Driver";
 import { EventType as RaceEvent } from "@/models/Event";
 import { RacerType as Racer } from "@/models/Racer";
