@@ -3,6 +3,7 @@
 import dbConnect from '@/lib/dbConnect';
 import { Driver, DriverType } from '@/models/Driver'
 import { Event, EventType } from '@/models/Event';
+import { Game, GameType } from '@/models/Game';
 import { Payment, PaymentType } from '@/models/Payment';
 import { Race, RaceType } from '@/models/Race';
 import { Racer, RacerType } from '@/models/Racer';
@@ -71,6 +72,12 @@ export const postEvent = async (event: Partial<EventType> & { _id?: string }) =>
     console.error('Event save error:', error);
     throw new Error('Failed to save event');
   }
+}
+
+export const getGamesByEventId = async (eventId: string) => {
+  await dbConnect();
+  const games = await Game.find({ event_id: new Types.ObjectId(eventId) });
+  return games as GameType[];
 }
 
 export const getPayments = async () => {
