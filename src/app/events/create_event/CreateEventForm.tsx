@@ -1,34 +1,32 @@
 'use client';
 
 import { useState } from 'react';
-import { DriverType } from '@/models/Driver';
-import { postDriver } from '@/actions/action';
+import { EventType } from '@/models/Event';
+import { postEvent } from '@/actions/action';
 import { useRouter } from 'next/navigation';
 
-export default function CreateDriverForm() {
+export default function CreateEventForm() {
   const router = useRouter();
-  const [form, setForm] = useState<DriverType>({
+  const [form, setForm] = useState<EventType>({
     _id: '',
-    first_name: '',
-    last_name: '',
-    suffix: '',
-    car_number: '',
-  } as DriverType);
+    name: '',
+    date: '',
+    location: '',
+  } as EventType);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await postDriver(form);
-      console.log("CreateDriverForm submitted:", form);
-      router.push('/drivers'); // redirect after success
+      await postEvent(form);
+      console.log("CreateEventForm submitted:", form);
+      router.push('/events'); // redirect after success
     } catch (error) {
-      console.error('Error creating driver:', error);
+      console.error('Error creating event:', error);
     }
   };
 
@@ -36,36 +34,27 @@ export default function CreateDriverForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
       <input
         type="text"
-        name="first_name"
-        value={form.first_name}
+        name="name"
+        value={form.name}
         onChange={handleChange}
-        placeholder="First Name"
+        placeholder="Event Name"
+        className="border p-2 rounded"
+        required
+      />
+      <input
+        type="date"
+        name="date"
+        value={form.date}
+        onChange={handleChange}
         className="border p-2 rounded"
         required
       />
       <input
         type="text"
-        name="last_name"
-        value={form.last_name}
+        name="location"
+        value={form.location}
         onChange={handleChange}
-        placeholder="Last Name"
-        className="border p-2 rounded"
-        required
-      />
-      <input
-        type="text"
-        name="suffix"
-        value={form.suffix || ''}
-        onChange={handleChange}
-        placeholder="Suffix (optional), e.g. Jr. or Sr."
-        className="border p-2 rounded"
-      />
-      <input
-        type="text"
-        name="car_number"
-        value={form.car_number}
-        onChange={handleChange}
-        placeholder="Car Number, e.g. 21K"
+        placeholder="Location"
         className="border p-2 rounded"
         required
       />
@@ -73,7 +62,7 @@ export default function CreateDriverForm() {
         type="submit"
         className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
       >
-        Create Driver
+        Create Event
       </button>
     </form>
   );

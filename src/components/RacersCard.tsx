@@ -1,11 +1,12 @@
-export const dynamic = 'force-dynamic';
-
-
-
 import { useEffect, useState } from "react";
-import { fetchRace, fetchRacersWithDriversByRaceId} from "@/actions/backend_actions";
-import { Driver, Race, Racer } from "@/actions/models";
+
+import { RaceType as Race } from "@/models/Race";
+import { RacerType as Racer } from "@/models/Racer";
+import {DriverType as Driver} from "@/models/Driver";
+
+
 import router from "next/router";
+import { getRace, getRacersWithDriversByRaceId } from "@/actions/action";
 
 
 export const RacersCard = ({ eventId, raceId }: { eventId: string, raceId: string })  => {
@@ -18,8 +19,8 @@ export const RacersCard = ({ eventId, raceId }: { eventId: string, raceId: strin
         const fetchData = async () => {
             try {
                 // Replace with your actual API endpoint
-                const raceResult = await fetchRace(raceId as string) as Race;
-                const result = await fetchRacersWithDriversByRaceId(raceId as string);
+                const raceResult = await getRace(raceId as string) as Race;
+                const result = await getRacersWithDriversByRaceId(raceId as string);
                 //console.log(result.drivers);
                 
                 setDrivers(result.drivers);

@@ -2,35 +2,20 @@
 
 import dbConnect from '@/lib/dbConnect';
 import { Driver, DriverType } from '@/models/Driver'
-import Event from '@/models/Event';
+import { Event, EventType } from '@/models/Event';
 import { Payment, PaymentType } from '@/models/Payment';
-
-
-// const addPost = async post => {
-// 	const title = post.get('title')
-// 	const description = post.get('description')
-
-// 	const newPost = new Post({ title, description })
-// 	return newPost.save()
-// }
+import { Race, RaceType } from '@/models/Race';
+import { Racer, RacerType } from '@/models/Racer';
+import { Types } from 'mongoose';
 
 export const connectToDatabase = async () => {
   await dbConnect();    
-  //console.log("Database connected");
-  // You can add any additional setup here if needed
 }
 
 export const getDrivers = async () => {
   await dbConnect();
   const data = await Driver.find();
-  return data;
-}
-
-export const getEvents = async () => {
-	await dbConnect();
-	const data = await Event.find();
-	//console.log("getDrivers(): ",drivers);
-	return data;
+  return data as DriverType[];
 }
 
 export const postDriver = async (driver: Partial<DriverType> & { _id?: string }) => {
@@ -58,6 +43,42 @@ export const postDriver = async (driver: Partial<DriverType> & { _id?: string })
   }
 };
 
+export const getEvents = async () => {
+	await dbConnect();
+	const data = await Event.find();
+	return data;
+}
+
+export const postEvent = async (event: Partial<EventType> & { _id?: string }) => {
+  await dbConnect();
+
+  const eventData = {
+    name: event.name?.trim() || '',
+    date: event.date || new Date(),
+    location: event.location?.trim() || '',
+  };
+
+  try {
+    if (event._id) {
+      await Event.findByIdAndUpdate(event._id, eventData, { new: true });
+      return { message: 'Event updated successfully' };
+    } else {
+      const newEvent = new Event(eventData);
+      await newEvent.save();
+      return { message: 'Event created successfully' };
+    }
+  } catch (error) {
+    console.error('Event save error:', error);
+    throw new Error('Failed to save event');
+  }
+}
+
+export const getPayments = async () => {
+  await dbConnect();
+  const data = await Payment.find();
+  return data;
+}
+
 export const postPayment = async (payment: Partial<PaymentType> & { _id?: string }) => {
   await dbConnect();
 
@@ -81,4 +102,36 @@ export const postPayment = async (payment: Partial<PaymentType> & { _id?: string
     console.error('Payment save error:', error);
     throw new Error('Failed to save payment');
   }
+}
+
+export const getRacesByEventId = async (eventId: string) => {
+  await dbConnect();
+  const races = await Event.find({ event_id: new Types.ObjectId(eventId) });
+  return races as RaceType[];
+}
+
+export const getRace = async (raceId: string) => {
+  await dbConnect();
+  const race = await Race.findById(new Types.ObjectId(raceId));
+  if(race === null) {
+    // trigger a 404 error
+    console.error(`Race with ID ${raceId} not found`);
+    throw new Error(`Race with ID ${raceId} not found`);
+    return null;
+  }
+  return race as RaceType;
+}
+
+export const getRacersByRaceId = async (raceId: string) => {
+  await dbConnect();
+  const racers = await Racer.find({ race_id: new Types.ObjectId(raceId) });
+  return racers as RacerType[];
+}
+
+export const getRacersWithDriversByRaceId = async (raceId: string) => {
+  await dbConnect();
+  const racers = await Racer.find({ race_id: new Types.ObjectId(raceId) });
+  const driverIds = racers.map(racer => racer.driver_id);
+  const drivers = await Driver.find({ _id: { $in: driverIds } });
+  return { racers: racers, drivers: drivers } as {racers: RacerType[], drivers: DriverType[]};
 }

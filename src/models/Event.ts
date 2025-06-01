@@ -11,4 +11,4 @@ const eventSchema = new mongoose.Schema(
    }
 );
 export type EventType = InferSchemaType<typeof eventSchema> & { _id?: string };
-export default mongoose.models.Event || model('Event', eventSchema)
+export const Event = mongoose.models.Event || model('Event', eventSchema)

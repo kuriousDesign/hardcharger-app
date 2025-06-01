@@ -13,5 +13,4 @@ const driverSchema = new mongoose.Schema(
 );
 
 export type DriverType = InferSchemaType<typeof driverSchema> & { _id?: string };
-
 export const Driver = mongoose.models.Driver || model('Driver', driverSchema);

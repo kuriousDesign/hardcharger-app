@@ -1,11 +1,5 @@
 // Basic example of data interfaces - modify these based on your actual API response
 
-export interface RaceEvent {
-    _id: string;
-    name: string;
-    date: string;
-    location: string;
-}
 
 //collection
 export interface Game {
@@ -19,20 +13,14 @@ export interface Game {
     races: number[]; //race ids
 }
 
-export interface Entry {
-    event: RaceEvent;
-    game: Game;
-}
-
 //collection
-export interface Entry {
+export interface Pick {
     _id: string;
     game_id: string;
-    player_name: string;
-    entry_nickname: string;
-    phone_number: number;
-    paid_status: boolean;
-    payment_type: string;
+    user_id: string;
+    pick_nickname: string;
+    //phone_number: number;
+    paid_status: string; // "pending", "paid", "unpaid", "partial"
     top_finishers: TopFinisher[];
     hard_chargers: HardCharger[];
 }
@@ -47,37 +35,10 @@ export interface HardCharger {
     gain_guess: number;
 }
 
-export interface Driver {
-    _id: string;
-    last_name: string;
-    first_name: string;
-    suffix: string;
-    car_number: string;
-}
-
 // export interface RaceResult{
 //     main_letter: string;
 //     starting_position: number;
 //     current_position: number;
 // }
 
-export interface Racer {
-    _id: string
-    race_id: string;
-    driver_id: string;
-    starting_position: number;
-    current_position: number;
-}
 
-export interface Race {
-    _id: string;
-    event_id: string;
-    status: string; // "lineup", "lineup_with_transfers", "in_progress", "finished"
-    type: string;
-    letter: string;
-    num_cars: number;
-    laps: number;
-    num_transfers: number;
-    first_transfer_position: number;
-    intermission_lap: number;
-}

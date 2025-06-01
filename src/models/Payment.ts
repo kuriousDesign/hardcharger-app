@@ -13,5 +13,4 @@ const paymentSchema = new mongoose.Schema(
 );
 
 export type PaymentType = InferSchemaType<typeof paymentSchema> & { _id?: string };
-
 export const Payment = mongoose.models.Payment || model('Payment', paymentSchema);

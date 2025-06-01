@@ -1,6 +1,10 @@
 "use server"
 
-import { Game, Entry, Driver, Race, RaceEvent, Racer} from "@/actions/models" 
+import { Game, Pick as Entry } from "@/actions/models" 
+import { DriverType as Driver } from "@/models/Driver";
+import { EventType as RaceEvent } from "@/models/Event";
+import { RacerType as Racer } from "@/models/Racer";
+import { RaceType as Race } from "@/models/Race";
 const backendApiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://hard-charger-backend.onrender.com/api";
 
 export async function fetchEvent(eventId: string) {

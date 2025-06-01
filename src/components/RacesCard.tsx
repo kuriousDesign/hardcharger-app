@@ -1,9 +1,6 @@
-export const dynamic = 'force-dynamic';
-
-
 import { useEffect, useState } from "react";
 import { fetchRacesByEvent} from "@/actions/backend_actions";
-import { Race } from "@/actions/models";
+import { RaceType as Race } from "@/models/Race";
 import router from "next/router";
 
 
