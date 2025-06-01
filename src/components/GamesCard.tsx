@@ -17,7 +17,7 @@ export default async function GamesCard({ eventId }: { eventId: string }){
                     <li key={game._id} className="p-2 hover:bg-gray-50 rounded">
                         <span className="font-medium">{game.name}</span>
                         <span className="font-medium">Entry Fee: {game.entry_fee}</span>
-                        <span className="font-medium">Entries: {game.num_entries}</span>
+                        <span className="font-medium">Entries: {game.num_picks}</span>
                     </li>
                 ))}
             </ul>

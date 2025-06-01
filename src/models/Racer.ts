@@ -2,8 +2,8 @@ import mongoose, { InferSchemaType, model } from 'mongoose';
 
 const racerSchema = new mongoose.Schema(
   {
-    race_id: { type: String, required: true },
-    driver_id: { type: String, required: true },
+    race_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
+    driver_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
     starting_position: { type: Number, required: true },
     current_position: { type: Number, required: true },
   },

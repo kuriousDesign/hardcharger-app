@@ -44,6 +44,18 @@ export const postDriver = async (driver: Partial<DriverType> & { _id?: string })
   }
 };
 
+export const getEvent = async (eventId:string) => {
+  await dbConnect();
+  const data = await Event.findById(new Types.ObjectId(eventId));
+  if (data === null) {
+    // trigger a 404 error
+    console.error(`Event with ID ${eventId} not found`);
+    throw new Error(`Event with ID ${eventId} not found`);
+    return null;
+  }
+  return data as EventType;
+}
+
 export const getEvents = async () => {
 	await dbConnect();
 	const data = await Event.find();
@@ -113,7 +125,9 @@ export const postPayment = async (payment: Partial<PaymentType> & { _id?: string
 
 export const getRacesByEventId = async (eventId: string) => {
   await dbConnect();
-  const races = await Event.find({ event_id: new Types.ObjectId(eventId) });
+  console.log("getRacesByEvent: eventId:", eventId)
+  const races = await Race.find({ event_id: new Types.ObjectId(eventId) });
+  console.log("getRacesByEvent: races found:", races)
   return races as RaceType[];
 }
 
@@ -139,6 +153,8 @@ export const getRacersWithDriversByRaceId = async (raceId: string) => {
   await dbConnect();
   const racers = await Racer.find({ race_id: new Types.ObjectId(raceId) });
   const driverIds = racers.map(racer => racer.driver_id);
-  const drivers = await Driver.find({ _id: { $in: driverIds } });
+  //console.log("getRacersWithDriversByRaceId: raceId:", raceId, "driverIds:", driverIds);
+  const drivers = await Driver.find({ _id: { $in: driverIds } }) as DriverType[];
+  //console.log("getRacersWithDriversByRaceId: drivers found:", drivers);
   return { racers: racers, drivers: drivers } as {racers: RacerType[], drivers: DriverType[]};
 }

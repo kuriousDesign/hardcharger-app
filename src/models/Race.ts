@@ -2,7 +2,7 @@ import mongoose, { InferSchemaType, model } from 'mongoose';
 
 const raceSchema = new mongoose.Schema(
   {
-    event_id: { type: String, required: true },
+    event_id: { type: mongoose.Schema.Types.ObjectId, required: true },
     status: { type: String, required: true },
     type: { type: String, required: true }, //main, heat
     letter: { type: String, required: true }, // A, B, C, etc.
@@ -12,7 +12,8 @@ const raceSchema = new mongoose.Schema(
     first_transfer_position: { type: Number, required: true }, 
     intermission_lap: { type: Number, required: true }, 
   },
-  { collection: 'races',
+  { 
+    collection: 'races',
     versionKey: false, // 👈 disables __v
    }
 );

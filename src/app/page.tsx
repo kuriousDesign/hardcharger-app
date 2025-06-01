@@ -15,7 +15,7 @@ export default async function Home() {
 			>
 				Events
 			</Link>
-			<VenmoLink pickId="12345" />
+			<VenmoLink pickId="12345" amount={0.01} />
 			<Link
 				href="/drivers"
 				className="mt-44 flex justify-center px-8 py-2 bg-white text-black hover:bg-black hover:text-white transition rounded-full shadow-md w-fit"

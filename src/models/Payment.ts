@@ -3,8 +3,9 @@ import mongoose, { InferSchemaType, model } from 'mongoose';
 const paymentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    transaction_id: { type: String, required: true },
+    pick_id: { type: mongoose.Schema.Types.ObjectId, required: true },
     type: { type: String, required: true },
+    transaction_id: { type: String, required: true }, //vendor specific
     amount: { type: Number, required: true },
   },
   { collection: 'payments',

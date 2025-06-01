@@ -3,9 +3,11 @@ import mongoose, { InferSchemaType, model } from 'mongoose';
 const gameSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    event_id: { type: String, required: true },
+    event_id: { type: mongoose.Schema.Types.ObjectId, required: true },
     entry_fee: { type: String, required: true }, //main, heat
-    num_entries: { type: String, required: true }, // A, B, C, etc.
+    house_cut: { type: Number, required: true }, //percentage of entry fee that goes to the house
+    purse_amount: { type: Number, required: true }, // total amount of money in the purse (picks * entry_fee)
+    num_picks: { type: String, required: true }, // A, B, C, etc.
     num_hard_chargers: { type: Number, required: true },
     num_hard_chargers_predictions: { type: Number, required: true }, //number of hard chargers predictions
     num_top_finishers: { type: Number, required: true },
