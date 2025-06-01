@@ -105,6 +105,7 @@ export const postPayment = async (payment: Partial<PaymentType> & { _id?: string
     amount: payment.amount,
     type: payment.type?.trim() || '',
     name: payment.name?.trim() || '',
+    pick_id: payment.pick_id ? new Types.ObjectId(payment.pick_id) : null,
     transaction_id: payment.transaction_id?.trim() || '',
   };
 
@@ -141,6 +142,36 @@ export const getRace = async (raceId: string) => {
     return null;
   }
   return race as RaceType;
+}
+
+export const postRace = async (race: Partial<RaceType> & { _id?: string }) => {
+  await dbConnect();
+
+  const raceData = {
+    letter: race.letter?.trim() || '',
+    type: race.type?.trim() || '',
+    event_id: race.event_id,
+    status: race.status?.trim() || 'lineup', // default status
+    num_cars: race.num_cars || 0,
+    laps: race.laps || 0,
+    num_transfers: race.num_transfers || 0,
+    first_transfer_position: race.first_transfer_position || 0,
+    intermission_lap: race.intermission_lap || 0,
+  };
+
+  try {
+    if (race._id) {
+      await Payment.findByIdAndUpdate(race._id, raceData, { new: true });
+      return { message: 'race updated successfully' };
+    } else {
+      const newRace = new Race(raceData);
+      await newRace.save();
+      return { message: 'Race created successfully' };
+    }
+  } catch (error) {
+    console.error('Race save error:', error);
+    throw new Error('Failed to save payment');
+  }
 }
 
 export const getRacersByRaceId = async (raceId: string) => {

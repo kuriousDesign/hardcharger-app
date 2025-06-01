@@ -26,8 +26,8 @@ export default function CreateDriverForm() {
     try {
       await postDriver(form);
       console.log("CreateDriverForm submitted:", form);
-      router.push('/drivers'); // redirect after success
-    } catch (error) {
+      router.push('../');
+        } catch (error) {
       console.error('Error creating driver:', error);
     }
   };
