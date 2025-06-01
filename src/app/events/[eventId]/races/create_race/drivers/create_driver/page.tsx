@@ -1,4 +1,3 @@
-// src/app/drivers/create_driver/page.tsx
 import CreateDriverForm from './CreateDriverForm';
 
 export default function CreateDriverPage() {

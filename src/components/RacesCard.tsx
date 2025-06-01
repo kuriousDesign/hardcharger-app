@@ -41,7 +41,7 @@ export default async function RacesCard({ eventId }: { eventId: string }) {
                 ))}
             </div>
             <Link 
-                href={`/events/${eventId}/create_race`} 
+                href={`/events/${eventId}/races/create_race`} 
                 className="bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-800 transition-colors duration-300 shadow-md"
             >
                 Create Race
