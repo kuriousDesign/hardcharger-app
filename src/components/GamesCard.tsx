@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
-import { fetchGamesByEvent } from "@/actions/backend_actions";
-import { Game } from "@/actions/models";
+
+//import { fetchGamesByEvent } from "@/actions/backend_actions";
+import { GameType as Game } from "@/models/Game";
 import router from "next/router";
+import { getGamesByEventId } from "@/actions/action";
 
-export const GamesCard = ({ eventId }: { eventId: string }) => {
-    const [games, setGames] = useState<Game[]>([]);
+export default async function GamesCard({ eventId }: { eventId: string }){
+    const games = await getGamesByEventId(eventId);
 
-    useEffect(() => {
-        const loadGames = async () => {
-            const result = await fetchGamesByEvent(eventId);
-            //console.log("Loaded games:", result);
-            setGames(result);
-        };
-        loadGames();
-    }, [eventId]);
+    if (!games) return <div>Games not found</div>;
 
     return (
         <div className="p-4 bg-white rounded-lg shadow-md flex flex-col gap-4">
             <h2 className="text-xl font-bold">Games</h2>
             <ul className="space-y-2">
-                {games.map((game) => (
+                {games && games?.map((game: Game) => (
                     <li key={game._id} className="p-2 hover:bg-gray-50 rounded">
                         <span className="font-medium">{game.name}</span>
                         <span className="font-medium">Entry Fee: {game.entry_fee}</span>
