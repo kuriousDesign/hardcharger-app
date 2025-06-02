@@ -146,14 +146,13 @@ export const postPayment = async (payment: Partial<PaymentFormType> & { _id?: st
       type: payment.type?.trim() || '',
       name: payment.name?.trim() || '',
       transaction_id: payment.transaction_id?.trim() || '',
+      pick_id: new Types.ObjectId(payment.pick_id),
     };
   }
 
   try {
     if (payment._id && payment._id !== '') {
       if(Types.ObjectId.isValid(payment._id)) {
-        // update an existing payment
-        paymentData.pick_id = new Types.ObjectId(payment.pick_id);
         await Payment.findByIdAndUpdate(payment._id, paymentData, { new: true });
         console.log('Payment updated successfully');
       return { message: 'Payment updated successfully' };
@@ -162,7 +161,7 @@ export const postPayment = async (payment: Partial<PaymentFormType> & { _id?: st
         return { success: false, error: 'Invalid payment ID' };
       }
     } else {
-      // create a new payment
+      console.log('creating a new payment');
       const newPayment = new Payment(paymentData);
       await newPayment.save();
       console.log('Payment created successfully');
