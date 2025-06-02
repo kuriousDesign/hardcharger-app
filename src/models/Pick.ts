@@ -5,17 +5,24 @@ const finisherSchema = new mongoose.Schema({
     prediction: { type: Number, required: true }
 });
 
+export interface Outcome {
+  status: string; // e.g., 'pending', 'won', 'lost', 'partial'
+  message?: string; // Optional message for additional context
+  payout?: number; // Optional payout amount if applicable
+}
+
 const pickSchema = new mongoose.Schema(
   {
     nickname: { type: String, required: true },
     user_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
     game_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
-    paid_status: { type: String, required: true }, //main, heat
+    paid_status: { type: String, required: true }, //pending(default), paid, partial_paid, unpaid
     top_finishers: { type: [finisherSchema], required: true }, // array of topFinsher objects
     hard_chargers: { type: [finisherSchema], required: true }, 
     races: { type: [Number], required: true }, //array of race ids to include in the game
     first_transfer_position: { type: Number, required: true }, 
-    intermission_lap: { type: Number, required: true }, 
+    intermission_lap: { type: Number, required: true },
+    outcome: { type: Object, required: true }, // Outcome object with status, message, and optional payout
   },
   { collection: 'picks',
     versionKey: false, // 👈 disables __v

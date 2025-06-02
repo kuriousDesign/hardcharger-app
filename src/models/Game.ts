@@ -13,7 +13,8 @@ const gameSchema = new mongoose.Schema(
     num_hard_chargers_predictions: { type: Number, required: true }, //number of hard chargers predictions
     num_top_finishers: { type: Number, required: true },
     num_top_finishers_predictions: { type: Number, required: true }, //number of hard chargers predictions
-    password: { type: String, required: true }, // password to access the game
+    is_private: { type: Boolean, required: false }, // if true, only invited users can join
+    password: { type: String, required: false }, // password to access the game
   },
   { collection: 'games',
     versionKey: false, // 👈 disables __v

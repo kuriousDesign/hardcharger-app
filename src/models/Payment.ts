@@ -7,6 +7,7 @@ const paymentSchema = new mongoose.Schema(
     type: { type: String, required: true },
     transaction_id: { type: String, required: true }, //vendor specific
     amount: { type: Number, required: true },
+    log: { type: [String], required: false }, // vendor specific
   },
   { collection: 'payments',
     versionKey: false, // 👈 disables __v

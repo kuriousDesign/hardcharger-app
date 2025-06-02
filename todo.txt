@@ -1,0 +1,25 @@
+# Development Tasks TODO List
+[x] Zapier Venmo postPayment automation
+[x] Venmo button to produce deep link --> facilitate proper venmo payment for user (who to pay, how much and the note with pick_id)
+[x] Event Form
+[x] Game Form
+[x] Driver Form
+[x] Racer Form
+[ ] Pick Form --> multi-step process with payment at end
+[ ] Payment Validation Form (admin)
+
+[ ] improve schema and model creation: ref: https://amcereijo.medium.com/mongoose-objectid-the-small-detail-i-didnt-know-09130a64b6b0
+[ ] integrate grok for creating/suggesting fun pick nicknames
+[ ] develop protected routes/components/functions - logged in/out, admin protected, user-specifc protected, dynamic based on game status (for viewing other users picks)
+[ ] investigate alternatives to Zapier --> Google Workspace automations for example
+[ ] admin screen for modifying payments
+[ ] create classic draw name from hat game
+[ ] incorporate tie breaker type into game
+[ ] password-protected games (like a join game)
+[ ] dashboard showing games and your active picks (based on game) and former picks
+
+Notes:
+- Use [ ] for pending tasks
+- Use [x] for completed tasks
+- Add dates when relevant (YYYY-MM-DD)
+- Add assignee if working in team (@username)
