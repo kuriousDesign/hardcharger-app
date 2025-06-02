@@ -6,15 +6,21 @@ import { postPayment } from '@/actions/action'
 
 
 export async function POST(request: Request) {
-    try {
-        const data = await request.json()
-        console.log('Received JSON:', data)
-        postPayment(data as PaymentType); //removed the await call because Zapier is not waiting for the response if longer than 1 second
-        return NextResponse.json({ message: 'payment received successfully' })
-    } catch (error) {
-        console.error('Error processing JSON:', error)
-        return NextResponse.json({ error: 'Failed to process JSON' }, { status: 400 })
-    }
+  try {
+    const data = await request.json()
+    console.log('Received JSON:', data)
+
+    // Call postPayment, but don't await and don't let it throw
+    postPayment(data as PaymentType).catch(err => {
+      console.error('⚠️ postPayment failed:', err)
+    })
+
+    // Always respond successfully to the client
+    return NextResponse.json({ message: 'payment received successfully' })
+  } catch (error) {
+    console.error('Error processing JSON:', error)
+    return NextResponse.json({ error: 'Failed to process JSON' }, { status: 400 })
+  }
 }
 
 export const GET = async () => {
