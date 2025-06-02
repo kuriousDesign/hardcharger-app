@@ -14,5 +14,5 @@ const paymentSchema = new mongoose.Schema(
 );
 
 export type PaymentType = InferSchemaType<typeof paymentSchema> & { _id?: string };
-export type PaymentFormType = Omit<PaymentType, 'pick_id'> & { pick_id: string }; // Used on the client form
+export type PaymentFormType = Omit<PaymentType, 'pick_id'> & { pick_id?: string }; // Used on the client form
 export const Payment = mongoose.models.Payment || model('Payment', paymentSchema);

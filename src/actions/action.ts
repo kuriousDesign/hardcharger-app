@@ -4,7 +4,7 @@ import dbConnect from '@/lib/dbConnect';
 import { Driver, DriverType } from '@/models/Driver'
 import { Event, EventType } from '@/models/Event';
 import { Game, GameFormType, GameType } from '@/models/Game';
-import { Payment, PaymentType } from '@/models/Payment';
+import { Payment, PaymentFormType, PaymentType } from '@/models/Payment';
 import { Race, RaceFormType, RaceType } from '@/models/Race';
 import { Racer, RacerType } from '@/models/Racer';
 import { Types } from 'mongoose';
@@ -125,31 +125,55 @@ export const getPayments = async () => {
   return data;
 }
 
-export const postPayment = async (payment: Partial<PaymentType> & { _id?: string }) => {
+export const postPayment = async (payment: Partial<PaymentFormType> & { _id?: string }) => {
   await dbConnect();
+  let paymentData: Partial<PaymentType> = {};
 
-  const paymentData = {
-    amount: payment.amount,
-    type: payment.type?.trim() || '',
-    name: payment.name?.trim() || '',
-    pick_id: payment.pick_id ? new Types.ObjectId(payment.pick_id) : null,
-    transaction_id: payment.transaction_id?.trim() || '',
-  };
+  if (typeof payment.amount !== 'number') {
+    console.error('Invalid payment amount:', payment.amount);
+    return { success: false, error: 'Invalid payment amount' };
+  }
+  else if (!payment.pick_id || payment.pick_id === '') {
+    console.error('Empty pick_id:', payment.pick_id);
+    return { success: false, error: 'Empty pick_id' };
+  } else if (!Types.ObjectId.isValid(payment.pick_id)) {
+    console.error('Invalid pick_id:', payment.pick_id);
+    return { success: false, error: 'Invalid pick_id' };
+  } else {
+
+    paymentData = {
+      amount: typeof payment.amount === 'number' ? payment.amount : 0,
+      type: payment.type?.trim() || '',
+      name: payment.name?.trim() || '',
+      transaction_id: payment.transaction_id?.trim() || '',
+    };
+  }
 
   try {
-    if (payment._id) {
-      await Payment.findByIdAndUpdate(payment._id, paymentData, { new: true });
+    if (payment._id && payment._id !== '') {
+      if(Types.ObjectId.isValid(payment._id)) {
+        // update an existing payment
+        paymentData.pick_id = new Types.ObjectId(payment.pick_id);
+        await Payment.findByIdAndUpdate(payment._id, paymentData, { new: true });
+        console.log('Payment updated successfully');
       return { message: 'Payment updated successfully' };
+      } else {
+        console.error('paymentId is not a valid mongodb objectId:', payment._id);
+        return { success: false, error: 'Invalid payment ID' };
+      }
     } else {
+      // create a new payment
       const newPayment = new Payment(paymentData);
       await newPayment.save();
+      console.log('Payment created successfully');
       return { message: 'Payment created successfully' };
     }
-  } catch (error) {
-    console.error('Payment save error:', error);
-    throw new Error('Failed to save payment');
+  } catch (error: unknown) {
+    console.error('Payment save error:', (error as Error).message);
+    throw new Error(`Failed to save payment: ${(error as Error).message}`);
   }
-}
+};
+
 export const getRace = async (raceId: string) => {
   await dbConnect();
   const race = await Race.findById(new Types.ObjectId(raceId));

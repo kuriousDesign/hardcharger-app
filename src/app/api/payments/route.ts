@@ -7,19 +7,22 @@ import { postPayment } from '@/actions/action'
 
 export async function POST(request: Request) {
   try {
-    const data = await request.json()
-    console.log('Received JSON:', data)
+    const data = await request.json();
+    console.log('Received JSON:', data);
 
     // Call postPayment, but don't await and don't let it throw
     postPayment(data as PaymentType).catch(err => {
-      console.error('⚠️ postPayment failed:', err)
+      console.error('⚠️ postPayment failed:', err);
     })
 
     // Always respond successfully to the client
-    return NextResponse.json({ message: 'payment received successfully' })
+    return NextResponse.json({ message: 'payment received, attempting to store it next' })
   } catch (error) {
-    console.error('Error processing JSON:', error)
-    return NextResponse.json({ error: 'Failed to process JSON' }, { status: 400 })
+    console.error('Error processing JSON:', error);
+    return NextResponse.json(
+        { error: 'Failed to process JSON', details: (error as Error).message },
+        { status: 400 }
+    );
   }
 }
 
@@ -28,15 +31,15 @@ export const GET = async () => {
         await dbConnect()
 
         if (!mongoose.connection.db) {
-            throw new Error('Database connection not established')
+            throw new Error('Database connection not established');
         }
         
-        const data = await Payment.find()
+        const data = await Payment.find();
         //console.log('GET /api --> drivers: ', data)
 
-        return NextResponse.json(data)
+        return NextResponse.json(data);
     } catch (error) {
-        console.error('API GET error:', error)
-        return NextResponse.json({ error: 'Failed to fetch payments' }, { status: 500 })
+        console.error('API GET error:', error);
+        return NextResponse.json({ error: 'Failed to fetch payments' }, { status: 500 });
     }
 }
