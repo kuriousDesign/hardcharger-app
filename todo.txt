@@ -8,6 +8,7 @@
 [ ] Pick Form --> multi-step process with payment at end
 [ ] Payment Validation Form (admin)
 
+[ ] Model data type is dynamic based on argument passed in when it was called
 [ ] improve schema and model creation: ref: https://amcereijo.medium.com/mongoose-objectid-the-small-detail-i-didnt-know-09130a64b6b0
 [ ] integrate grok for creating/suggesting fun pick nicknames
 [ ] develop protected routes/components/functions - logged in/out, admin protected, user-specifc protected, dynamic based on game status (for viewing other users picks)

@@ -2,8 +2,15 @@ import { connectToDatabase } from '@/actions/action';
 import VenmoLink from '@/components/VenmoLink';
 import Link from 'next/link';
 
+import { auth } from '@clerk/nextjs/server';
+
+
 export default async function Home() {
 	await connectToDatabase();
+	const { userId } = await auth();
+	if (!userId) {
+    	return <div>Access denied</div>;
+  	}
 
 	return (
 		<div className="p-6 space-y-4 flex flex-col items-center justify-center">

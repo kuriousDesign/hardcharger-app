@@ -15,12 +15,12 @@ export default function CreateGameForm({eventId}: { eventId: string }) {
     name: '',
     entry_fee: 0,
     house_cut: 0,
-    purse_amount: 0,
-    num_picks: 0,
-    num_hard_chargers: 0,
-    num_hard_chargers_predictions: 0, //number of hard chargers predictions
-    num_top_finishers: 0,
-    num_top_finishers_predictions: 0, //number of hard chargers predictions
+    purse_amount: -1,
+    num_picks: -1,
+    num_hard_chargers: -1,
+    num_hard_chargers_predictions: -1, //number of hard chargers predictions
+    num_top_finishers: -1,
+    num_top_finishers_predictions: -1, //number of hard chargers predictions
     password: '', // password to access the game
 
   } as GameFormType);
@@ -102,7 +102,7 @@ export default function CreateGameForm({eventId}: { eventId: string }) {
         type="submit"
         className="bg-blue-500 text-white p-4 rounded-full hover:bg-blue-600 w-fit"
       >
-        Create Race
+        Create Game
       </button>
     </form>
   );
