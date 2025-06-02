@@ -11,12 +11,23 @@ export async function POST(request: Request) {
     console.log('Received JSON:', data);
 
     // Call postPayment, but don't await and don't let it throw
-    postPayment(data as PaymentFormType).catch(err => {
-      console.error('⚠️ postPayment failed:', err);
+    let errMsg = '';
+    let postSuccess = true;
+    await postPayment(data as PaymentFormType).catch(err => {
+        console.error('⚠️ postPayment failed:', err);
+        postSuccess = false;
+        errMsg = (err as Error).message || 'Unknown error';
     })
 
     // Always respond successfully to the client
-    return NextResponse.json({ message: 'payment received, attempting to store it next' })
+    if (!postSuccess) {
+      console.error('⚠️ postPayment did not succeed:', errMsg);
+      return NextResponse.json(
+          { error: 'Failed to process payment', details: errMsg },
+          { status: 500 }
+      );
+    }
+    return NextResponse.json({ message: 'payment received and stored' })
   } catch (error) {
     console.error('Error processing JSON:', error);
     return NextResponse.json(
