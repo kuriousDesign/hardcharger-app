@@ -5,14 +5,8 @@ export default async function AdminDashboardCard(){
 
     const isAdmin = await checkRole('admin')
     if (!isAdmin) {
+        return null;
         return <p>This is the protected admin dashboard card that is restricted to users with the `admin` role.</p>
-    }
-
-    // get user role 
-    //const user = await currentUser();
-    //const isAdmin = user?.publicMetadata?.role === 'admin';
-    if (!isAdmin) {
-        return <div>Must be admin to view this component</div>
     }
 
     return (

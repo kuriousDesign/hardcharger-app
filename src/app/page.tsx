@@ -3,34 +3,20 @@ import VenmoLink from '@/components/VenmoLink';
 import Link from 'next/link';
 import { SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs'
 
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
 
 export default async function Home() {
 	await connectToDatabase();
   	// Get the userId from auth() -- if null, the user is not signed in
 	const { userId } = await auth();
-	let user = null;
-	let tagline = 'make some picks';
-
-	// Protect the route by checking if the user is signed in
+	// If the user is signed in, redirect to the dashboard
 	if (userId) {
-		// get the current user
-		user = await currentUser();
-		tagline = `make some picks, ${user?.firstName?.toLowerCase()}!`;
-		//rerout to dashboard if user is signed in
-		/*
-		return {
-			redirect: {
-				destination: '/dashboard',
-				permanent: false,
-			},	
-		};
-		*/
-	} else {
-		// If the user is not signed in, you can set a different tagline
-		tagline = 'sign in to make some picks!';
+		redirect('/dashboard');
 	}
+
+	const tagline = 'make some picks';
 
 	function getRandom24CharacterString() {
 		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -46,8 +32,6 @@ export default async function Home() {
 		<div className="p-6 space-y-4 flex flex-col items-center justify-center">
 			<h1 className="text-3xl font-bold text-center">Hard Charger App</h1>
 			<h2 className="text-2xl font-bold text-center">{tagline}</h2>
-
-			
 
 			<SignedOut>
 				<SignInButton>
