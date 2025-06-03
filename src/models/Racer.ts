@@ -1,6 +1,7 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose from 'mongoose';
+import { createModel } from '@/lib/createModel';
 
-const racerSchema = new mongoose.Schema(
+const schema = new mongoose.Schema(
   {
     race_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
     driver_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
@@ -12,6 +13,8 @@ const racerSchema = new mongoose.Schema(
   }
 );
 
-export type RacerType = InferSchemaType<typeof racerSchema> & { _id?: string };
-export type RacerFormType = Omit<RacerType, 'race_id' | 'driver_id'> & { race_id: string, driver_id: string }; // Used on the client form
-export const Racer = mongoose.models.Racer || model('Racer', racerSchema);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { model: model, types } = createModel('Racer', schema);
+export const RacerModel = model;
+export type RacerDoc = typeof types.server;
+export type RacerClientType = typeof types.client;

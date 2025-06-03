@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
-import { Payment, PaymentFormType } from '@/models/Payment'
+import { PaymentModel as Payment, PaymentClientType } from '@/models/Payment'
 import dbConnect from '@/lib/dbConnect'
 import mongoose from 'mongoose'
-import { postPayment } from '@/actions/action'
+import { postPayment } from '@/actions/postActions'
 
 
 export async function POST(request: Request) {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     // Call postPayment, but don't await and don't let it throw
     let errMsg = '';
     let postSuccess = true;
-    await postPayment(data as PaymentFormType).catch(err => {
+    await postPayment(data as PaymentClientType).catch(err => {
         console.error('⚠️ postPayment failed:', err);
         postSuccess = false;
         errMsg = (err as Error).message || 'Unknown error';

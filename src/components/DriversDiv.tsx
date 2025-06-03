@@ -1,5 +1,5 @@
-import { getDrivers } from "@/actions/action";
-import { DriverType as Driver } from "@/models/Driver";
+import { getDrivers } from "@/actions/getActions";
+import { DriverDoc as Driver } from "@/models/Driver";
 import Link from "next/link";
 
 

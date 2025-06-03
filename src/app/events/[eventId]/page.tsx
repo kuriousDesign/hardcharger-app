@@ -1,4 +1,4 @@
-import { getEvent } from "@/actions/action";
+import { getEvent } from "@/actions/getActions";
 import GamesCard from "@/components/GamesCard";
 import RacesCard from "@/components/RacesCard";
 import Link from "next/link";

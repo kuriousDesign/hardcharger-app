@@ -1,4 +1,5 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose, { InferSchemaType } from 'mongoose';
+import { createModel } from '@/lib/createModel';
 
 const finisherSchema = new mongoose.Schema({
     racer_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
@@ -11,7 +12,7 @@ export interface Outcome {
   payout?: number; // Optional payout amount if applicable
 }
 
-const pickSchema = new mongoose.Schema(
+const schema = new mongoose.Schema(
   {
     nickname: { type: String, required: true },
     user_id:  { type: mongoose.Schema.Types.ObjectId, required: true },
@@ -30,6 +31,13 @@ const pickSchema = new mongoose.Schema(
 );
 
 export type FinisherType = InferSchemaType<typeof finisherSchema>;
-export type PickType = InferSchemaType<typeof pickSchema> & { _id?: string };
-export type PickFormType = Omit<PickType, 'game_id' | 'user_id'> & { game_id: string, user_id: string }; // Used on the client form
-export const Pick = mongoose.models.Pick || model('Pick', pickSchema);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { model: model, types } = createModel('Pick', schema);
+export const PickModel = model;
+export type PickDoc = typeof types.server;
+export type PickClientType = typeof types.client;
+
+// export type PickType = InferSchemaType<typeof pickSchema> & { _id?: string };
+// export type PickFormType = Omit<PickType, 'game_id' | 'user_id'> & { game_id: string, user_id: string }; // Used on the client form
+// export const Pick = mongoose.models.Pick || model('Pick', pickSchema);

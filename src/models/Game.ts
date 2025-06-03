@@ -1,25 +1,28 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose from 'mongoose';
+import { createModel } from '@/lib/createModel';
 
-const gameSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    event_id: { type: mongoose.Schema.Types.ObjectId, required: true },
-    races: { type: [mongoose.Schema.Types.ObjectId], required: true }, //array of race ids to include in the game
-    entry_fee: { type: Number, required: true }, //main, heat
-    house_cut: { type: Number, required: true }, //percentage of entry fee that goes to the house
-    purse_amount: { type: Number, required: true }, // total amount of money in the purse (picks * entry_fee)
-    num_picks: { type: Number, required: true }, // A, B, C, etc.
-    num_hard_chargers: { type: Number, required: true },
-    num_hard_chargers_predictions: { type: Number, required: true }, //number of hard chargers predictions
-    num_top_finishers: { type: Number, required: true },
-    num_top_finishers_predictions: { type: Number, required: true }, //number of hard chargers predictions
-    is_private: { type: Boolean, required: false }, // if true, only invited users can join
-    password: { type: String, required: false }, // password to access the game
-  },
-  { collection: 'games',
-    versionKey: false, // 👈 disables __v
-   }
-);
-export type GameType = InferSchemaType<typeof gameSchema> & { _id?: string };
-export type GameFormType = Omit<GameType, 'event_id' | 'races'> & { event_id: string, races: string[] }; // Used on the client form
-export const Game = mongoose.models.Game || model('Game', gameSchema);
+
+const gameSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  event_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  races: [{ type: mongoose.Schema.Types.ObjectId, required: true }],
+  entry_fee: { type: Number, required: true },
+  house_cut: { type: Number, required: true },
+  purse_amount: { type: Number, required: true },
+  num_picks: { type: Number, required: true },
+  num_hard_chargers: { type: Number, required: true },
+  num_hard_chargers_predictions: { type: Number, required: true },
+  num_top_finishers: { type: Number, required: true },
+  num_top_finishers_predictions: { type: Number, required: true },
+  is_private: { type: Boolean, required: false },
+  password: { type: String, required: false },
+}, {
+  collection: 'games',
+  versionKey: false
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { model: Game, types } = createModel('Game', gameSchema);
+export const GameModel = Game;
+export type GameDoc = typeof types.server;
+export type GameClientType = typeof types.client;

@@ -1,19 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { DriverType } from '@/models/Driver';
-import { postDriver } from '@/actions/action';
+import { DriverDoc } from '@/models/Driver';
+import { postDriver } from '@/actions/postActions';
 import { useRouter } from 'next/navigation';
 
 export default function CreateDriverForm() {
   const router = useRouter();
-  const [form, setForm] = useState<DriverType>({
+  const [form, setForm] = useState<DriverDoc>({
     _id: '',
     first_name: '',
     last_name: '',
     suffix: '',
     car_number: '',
-  } as DriverType);
+  } as DriverDoc);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

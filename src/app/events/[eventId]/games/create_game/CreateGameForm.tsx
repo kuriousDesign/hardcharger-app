@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GameFormType } from '@/models/Game';
-import { getRacesByEventId, postGame } from '@/actions/action';
+import { GameClientType } from '@/models/Game';
+import { getRacesByEventId } from '@/actions/getActions';
+import { postGame } from '@/actions/postActions';
 import { useRouter } from 'next/navigation';
-import { RaceFormType } from '@/models/Race';
+import { RaceClientType } from '@/models/Race';
 
 export default function CreateGameForm({eventId}: { eventId: string }) {
   const router = useRouter();
-  const [form, setForm] = useState<GameFormType>({
+  const [form, setForm] = useState<GameClientType>({
     _id: '',
     event_id: eventId,
     races: [],
@@ -23,9 +24,9 @@ export default function CreateGameForm({eventId}: { eventId: string }) {
     num_top_finishers_predictions: -1, //number of hard chargers predictions
     password: '', // password to access the game
 
-  } as GameFormType);
+  } as GameClientType);
 
-    const [races, setRaces] = useState<RaceFormType[]>([]);
+    const [races, setRaces] = useState<RaceClientType[]>([]);
     const [selectedRaceIds, setSelectedRaceIds] = useState<string[]>([]);
 
     useEffect(() => {

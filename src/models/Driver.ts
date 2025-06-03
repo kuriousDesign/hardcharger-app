@@ -1,4 +1,5 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose from 'mongoose';
+import { createModel } from '@/lib/createModel';
 
 const driverSchema = new mongoose.Schema(
   {
@@ -7,10 +8,14 @@ const driverSchema = new mongoose.Schema(
     suffix: { type: String, required: false, trim: true, default: '' },
     car_number: { type: String, required: true },
   },
-  { collection: 'drivers',
-    versionKey: false, // 👈 disables __v
+  {
+    collection: 'drivers',
+    versionKey: false,
   }
 );
 
-export type DriverType = InferSchemaType<typeof driverSchema> & { _id?: string };
-export const Driver = mongoose.models.Driver || model('Driver', driverSchema);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { model: Driver, types } = createModel('Driver', driverSchema);
+export const DriverModel = Driver;
+export type DriverDoc = typeof types.server;
+export type DriverClientType = typeof types.client;

@@ -1,4 +1,4 @@
-import { connectToDatabase } from '@/actions/action';
+import { connectToDatabase } from '@/actions/getActions';
 import VenmoLink from '@/components/VenmoLink';
 import Link from 'next/link';
 import { SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs'

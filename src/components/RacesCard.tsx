@@ -1,5 +1,5 @@
-import { getRacesByEventId } from "@/actions/action";
-import { RaceFormType as Race } from "@/models/Race";
+import { getRacesByEventId } from "@/actions/getActions";
+import { RaceClientType as Race } from "@/models/Race";
 import Link from "next/link";
 
 

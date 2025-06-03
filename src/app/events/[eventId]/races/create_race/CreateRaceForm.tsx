@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { RaceFormType } from '@/models/Race';
-import { postRace } from '@/actions/action';
+import { RaceClientType } from '@/models/Race';
+import { postRace } from '@/actions/postActions';
 import { useRouter } from 'next/navigation';
 
 export default function CreateRaceForm({eventId}: { eventId: string }) {
   const router = useRouter();
-  const [form, setForm] = useState<RaceFormType>({
+  const [form, setForm] = useState<RaceClientType>({
     _id: '',
     letter: '',
     type: '',
@@ -18,7 +18,7 @@ export default function CreateRaceForm({eventId}: { eventId: string }) {
     num_transfers: 0,
     first_transfer_position: 0,
     intermission_lap: 0,
-  } as RaceFormType);
+  } as RaceClientType);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

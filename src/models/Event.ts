@@ -1,4 +1,6 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose from 'mongoose';
+import { createModel } from '@/lib/createModel';
+
 
 const eventSchema = new mongoose.Schema(
   {
@@ -10,5 +12,9 @@ const eventSchema = new mongoose.Schema(
     versionKey: false, // 👈 disables __v
    }
 );
-export type EventType = InferSchemaType<typeof eventSchema> & { _id?: string };
-export const Event = mongoose.models.Event || model('Event', eventSchema)
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { model: Event, types } = createModel('Event', eventSchema);
+export const EventModel = Event;
+export type EventDoc = typeof types.server;
+export type EventClientType = typeof types.client;

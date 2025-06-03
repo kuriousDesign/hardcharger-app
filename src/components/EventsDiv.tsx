@@ -1,5 +1,5 @@
-import { getEvents } from "@/actions/action";
-import { EventType as Event } from "@/models/Event";
+import { getEvents } from "@/actions/getActions";
+import { EventClientType } from "@/models/Event";
 import Link from "next/link";
 
 
@@ -14,7 +14,7 @@ export default async function EventsDiv(){
 
     return (
             <div className="grid grid-cols-1 gap-2 space-x-2 w-fit">
-                {events?.map((event:Event) => (
+                {events?.map((event:EventClientType) => (
                     <Link 
                         key={event._id} 
                         href={`events/${event._id}`}

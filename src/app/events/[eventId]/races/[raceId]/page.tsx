@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import { getEvent, getRace, getRacersByRaceId } from '@/actions/action';
+import { getEvent, getRace, getRacersByRaceId } from '@/actions/getActions';
 import RacersCard from '@/components/RacersCard';
 import Link from 'next/link';
 

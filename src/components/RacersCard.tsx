@@ -1,7 +1,6 @@
-import { RaceType as Race } from "@/models/Race";
-import { RacerType as Racer } from "@/models/Racer";
-//import {DriverType as Driver} from "@/models/Driver";
-import { getRace, getRacersWithDriversByRaceId } from "@/actions/action";
+import { RaceClientType as Race } from "@/models/Race";
+import { RacerClientType as Racer } from "@/models/Racer";
+import { getRace, getRacersWithDriversByRaceId } from "@/actions/getActions";
 import Link from "next/link";
 
 

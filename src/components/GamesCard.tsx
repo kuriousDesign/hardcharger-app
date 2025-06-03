@@ -1,5 +1,5 @@
-import { GameType as Game } from "@/models/Game";
-import { getGamesByEventId } from "@/actions/action";
+import { GameClientType as Game } from "@/models/Game";
+import { getGamesByEventId } from "@/actions/postActions";
 import Link from "next/link";
 
 export default async function GamesCard({ eventId }: { eventId: string }){

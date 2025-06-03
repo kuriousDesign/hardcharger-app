@@ -1,6 +1,7 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose from 'mongoose';
+import { createModel } from '@/lib/createModel';
 
-const paymentSchema = new mongoose.Schema(
+const schema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     pick_id: { type: mongoose.Schema.Types.ObjectId, required: true },
@@ -14,6 +15,8 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-export type PaymentType = InferSchemaType<typeof paymentSchema> & { _id?: string };
-export type PaymentFormType = Omit<PaymentType, 'pick_id'> & { pick_id?: string }; // Used on the client form
-export const Payment = mongoose.models.Payment || model('Payment', paymentSchema);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { model: model, types } = createModel('Payment', schema);
+export const PaymentModel = model;
+export type PaymentDoc = typeof types.server;
+export type PaymentClientType = typeof types.client;

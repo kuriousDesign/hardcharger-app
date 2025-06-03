@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { EventType } from '@/models/Event';
-import { postEvent } from '@/actions/action';
+import { EventClientType } from '@/models/Event';
+import { postEvent } from '@/actions/postActions';
 import { useRouter } from 'next/navigation';
 
 export default function CreateEventForm() {
   const router = useRouter();
-  const [form, setForm] = useState<EventType>({
+  const [form, setForm] = useState<EventClientType>({
     _id: '',
     name: '',
     date: '',
     location: '',
-  } as EventType);
+  } as EventClientType);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

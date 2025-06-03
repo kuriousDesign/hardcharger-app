@@ -1,4 +1,4 @@
-import { connectToDatabase } from '@/actions/action';
+import { connectToDatabase } from '@/actions/getActions';
 
 import AdminDashboardCard from './AdminDashboardCard';
 
