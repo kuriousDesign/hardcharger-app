@@ -53,6 +53,7 @@ export const createClientSafeGetAllHandler = <ServerType, ClientType>(
   };
 };
 
+//this function has bad logic
 export function toDocumentObject<T>(input: Partial<T>): Partial<T> {
   // Example conversion, extend for your schema
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

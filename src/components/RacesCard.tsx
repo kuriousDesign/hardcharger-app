@@ -37,6 +37,7 @@ export default async function RacesCard({ eventId }: { eventId: string }) {
                         <p className="font-bold">{race.letter} {race.type}</p>
                         <p className="font-medium">Laps: {race.laps}</p>
                         <p className="font-medium">Cars: {race.num_cars}</p>
+                        <p className="font-medium">Status: {race.status}</p>
                     </Link>
                 ))}
             </div>

@@ -8,8 +8,6 @@ import { PaymentModel, PaymentDoc, PaymentClientType } from '@/models/Payment';
 import { RaceModel, RaceDoc, RaceClientType } from '@/models/Race';
 
 import { Types } from 'mongoose';
-
-import { toClientObject } from '@/utils/mongooseHelpers';
 import { adminRoleProtectedOptions, createDeleteHandler, createClientSafePostHandler } from '@/utils/actionHelpers';
 
 
@@ -71,38 +69,6 @@ export const postEvent = async (event: Partial<EventClientType> & { _id?: string
   } catch (error) {
     console.error('Event save error:', error);
     throw new Error('Failed to save event');
-  }
-}
-
-export const getGamesByEventId = async (eventId: string) => {
-  await dbConnect();
-  const gamesDocs = await GameModel.find({ event_id: new Types.ObjectId(eventId) });
-  const games = gamesDocs.map(game => toClientObject<GameClientType>(game));
-  return games;
-}
-
-export const postGame = async (game: Partial<GameDoc | GameClientType> & { _id?: string }) => {
-  await dbConnect();
-  
-  const gameData = {
-    name: game.name?.trim() || '',
-    entry_fee: game.entry_fee || 0,
-    num_picks: game.num_picks || 0,
-    event_id: typeof(game.event_id) === 'string' ? new Types.ObjectId(game.event_id) : game.event_id,
-  };
-
-  try {
-    if (game._id) {
-      await GameModel.findByIdAndUpdate(game._id, gameData, { new: true });
-      return { message: 'Game updated successfully' };
-    } else {
-      const newGame = new GameModel(gameData);
-      await newGame.save();
-      return { message: 'Game created successfully' };
-    }
-  } catch (error) {
-    console.error('Game save error:', error);
-    throw new Error('Failed to save game');
   }
 }
 
@@ -191,3 +157,30 @@ export const postRace = async (race: Partial<RaceDoc | RaceClientType> & { _id?:
   }
 }
 
+//follow similar patter as postRace
+
+export const postGame = async (game: Partial<GameDoc | GameClientType> & { _id?: string }) => {
+  await dbConnect();
+
+  // Convert string IDs to ObjectId
+  if (typeof game.event_id === 'string') {
+    game.event_id = new Types.ObjectId(game.event_id);
+  }
+
+  if (Array.isArray(game.races)) {
+    game.races = game.races.map(id => new Types.ObjectId(id));
+  }
+
+  const { _id, ...rest } = game;
+
+  if (_id && _id !== '') {
+    // Update existing game
+    await GameModel.findByIdAndUpdate(_id, rest, { new: true });
+    return { message: 'Game updated successfully' };
+  } else {
+    // Strip _id when creating a new document
+    const newGame = new GameModel(rest);
+    await newGame.save();
+    return { message: 'Game created successfully' };
+  }
+};

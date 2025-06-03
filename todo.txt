@@ -1,24 +1,35 @@
-# Development Tasks TODO List
-[x] Zapier Venmo postPayment automation
-[x] Venmo button to produce deep link --> facilitate proper venmo payment for user (who to pay, how much and the note with pick_id)
-[x] Event Form
-[x] Game Form
-[x] Driver Form
-[x] Racer Form
-[ ] Dashboard
-[ ] Pick Form --> multi-step process with payment at end
+TODO:
+[ ] Pick Form - multi-step process with payment at end
 [ ] Payment Validation Form (admin)
-
-[ ] Model data type is dynamic based on argument passed in when it was called
-[ ] improve schema and model creation: ref: https://amcereijo.medium.com/mongoose-objectid-the-small-detail-i-didnt-know-09130a64b6b0
-[ ] integrate grok for creating/suggesting fun pick nicknames
-[ ] develop protected routes/components/functions - logged in/out, admin protected, user-specifc protected, dynamic based on game status (for viewing other users picks)
 [ ] investigate alternatives to Zapier --> Google Workspace automations for example
 [ ] admin screen for modifying payments
 [ ] create classic draw name from hat game
 [ ] incorporate tie breaker type into game
-[ ] password-protected games (like a join game)
+[ ] user gaining access to private games (like a join game for ncaa tourney)
 [ ] dashboard showing games and your active picks (based on game) and former picks
+[ ] nav bar at top
+[ ] See how many users can register before clerk will bitch about me not paying --> then bang head on desk very hard
+[ ] Clerk production/deployment steps (very involved and requires custom domain)
+
+IDEAS FOR ANIMATION:
+- screen brightness sweeps from bottom to top (like when i plug in pixel 6a into charger)
+- press and hold to submit pick, charging animation like soda machine at boston amazon
+
+NOT DOING:
+[ ] integrate grok for creating/suggesting fun pick nicknames --> not free so not doing
+
+COMPLETED:
+[x] Debug CreateGameForm submission
+[x] Event Form
+[x] Game Form
+[x] Driver Form
+[x] Racer Form
+[x] improve schema and model creation: ref: https://amcereijo.medium.com/mongoose-objectid-the-small-detail-i-didnt-know-09130a64b6b0
+[x] develop protected routes/components/functions - logged in/out, admin protected, user-specifc protected, dynamic based on game status (for viewing other users picks)
+[x] Zapier Venmo postPayment automation
+[x] Venmo button to produce deep link --> facilitate proper venmo payment for user (who to pay, how much and the note with pick_id)
+[x] Clerk integration
+[x] MongoDb Cloud integration
 
 Notes:
 - Use [ ] for pending tasks

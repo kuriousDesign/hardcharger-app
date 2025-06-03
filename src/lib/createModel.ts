@@ -6,8 +6,10 @@ import { ToClient } from '@/types/helpers';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createModel<T extends Schema<any>>(
   name: string,
-  schema: T
+  schema: T,
 ) {
+
+  // add _id field and objectIdFields 
   type DocType = InferSchemaType<T> & { _id?: string };
   type ClientType = ToClient<DocType>;
 

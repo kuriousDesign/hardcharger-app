@@ -50,6 +50,13 @@ export const getGameWithEvent = async (gameId: string) => {
   return data;
 };
 
+export const getGamesByEventId = async (eventId: string): Promise<GameClientType[]> => {
+  await dbConnect();
+  const docs = await GameModel.find({ event_id: new Types.ObjectId(eventId) });
+  return docs.map((doc) => toClientObject<GameClientType>(doc));
+  //return games;
+}
+
 export const getRacesByEventId = async (eventId: string): Promise<RaceClientType[]> => {
   await dbConnect();
   const raceDocs = await RaceModel.find({ event_id: new Types.ObjectId(eventId) });
