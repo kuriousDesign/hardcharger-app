@@ -16,7 +16,6 @@ import { createClientSafeGetAllHandler, createClientSafeGetHandler } from '@/uti
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
 
-
 export const connectToDatabase = async () => {await dbConnect();}
 
 export const getDriver = createClientSafeGetHandler<DriverDoc,DriverClientType>(DriverModel);
@@ -97,4 +96,38 @@ export const getRacersByRaceId = async (raceId: string) => {
   const racerDocs = await RacerModel.find({ race_id: new Types.ObjectId(raceId) });
   const racers = racerDocs.map(doc => toClientObject<RacerClientType>(doc));
   return racers as RacerClientType[];
+}
+
+export const getPicksByPlayerId = async (playerId: string) => {
+  const filter = { player_id: new Types.ObjectId(playerId) };
+  return getPicks(filter);
+}
+
+
+export const getPicksWithGamesByPlayerId = async (playerId: string) => {
+  const picks = await getPicksByPlayerId(playerId);
+
+  
+  // Extract unique game IDs from picks
+  const gameIds = Array.from(new Set(picks.map(pick => pick.game_id.toString())));
+  // Fetch matching games
+  const games = [] as GameClientType[];
+  for (const gameId of gameIds) {
+    const game = await getGame(gameId);
+    if (game) {
+      games.push(game);
+    }
+  }
+
+  return {
+    picks: picks,
+    games: games,
+  };
+}
+export const getPicksByPlayerIdAndGameStatus = async (playerId: string, gameStatus: string) => {
+  const filter = {
+    player_id: new Types.ObjectId(playerId),
+    game_status: gameStatus
+  };
+  return getPicks(filter);
 }

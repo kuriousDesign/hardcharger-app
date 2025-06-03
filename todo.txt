@@ -1,4 +1,7 @@
 TODO:
+[t] server actions get getPicksWithGamesByPlayerId and getPicksByPlayerIdAndGameStatus
+[ ] server component PlayerPicks (use getPicksByPlayerIdAndGameStatus of multiple game_status to build an array) or use the button filter approach shadcn 'tabs'
+[ ] dashboard showing games and your active picks (based on game) and former picks
 [ ] Pick Form - multi-step process with payment at end
 [ ] Payment Validation Form (admin)
 [ ] investigate alternatives to Zapier --> Google Workspace automations for example
@@ -6,7 +9,7 @@ TODO:
 [ ] create classic draw name from hat game
 [ ] incorporate tie breaker type into game
 [ ] user gaining access to private games (like a join game for ncaa tourney)
-[ ] dashboard showing games and your active picks (based on game) and former picks
+
 [ ] nav bar at top
 [ ] See how many users can register before clerk will bitch about me not paying --> then bang head on desk very hard
 [ ] Clerk production/deployment steps (very involved and requires custom domain)

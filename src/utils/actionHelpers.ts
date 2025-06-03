@@ -1,9 +1,10 @@
-import { Types, Model } from 'mongoose';
+import { Types, Model, FilterQuery } from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import { toClientObject } from '@/utils/mongooseHelpers';
 
 import { Roles } from '@/types/globals';
 import { checkRole } from './roles';
+
 
 type HandlerOptions = {
   isRoleProtected?: boolean;
@@ -15,23 +16,43 @@ export const adminRoleProtectedOptions = {
   role: 'admin' as Roles,
 };
 
+function checkRoleProtected(options?: HandlerOptions) {
+  return async () => {
+    if (options?.isRoleProtected && options.role) {
+      const allowed = await checkRole(options.role);
+      if (!allowed) {
+        throw new Error('Unauthorized access');
+      }
+    }
+    return true;
+  };
+}
+
 // GET one document (client-safe)
 export const createClientSafeGetHandler = <ServerType, ClientType>(
   model: Model<ServerType>,
   options?: HandlerOptions
 ) => {
   return async (id: string): Promise<ClientType> => {
+    await checkRoleProtected(options)();
     await dbConnect();
-
-    if (options?.isRoleProtected && options.role) {
-      const allowed = await checkRole(options.role);
-      if (!allowed) throw new Error('Unauthorized access');
-    }
-
     const doc = await model.findById(new Types.ObjectId(id));
     if (!doc) throw new Error(`Document with ID ${id} not found`);
 
     return toClientObject<ClientType>(doc);
+  };
+};
+
+export const createDocumentGetHandler = <ServerType>(
+  model: Model<ServerType>,
+  options?: HandlerOptions
+) => {
+  return async (id: string): Promise<ServerType> => {
+    await checkRoleProtected(options)();
+    await dbConnect();
+    const doc = await model.findById(new Types.ObjectId(id));
+    if (!doc) throw new Error(`Document with ID ${id} not found`);
+    return doc;
   };
 };
 
@@ -40,18 +61,41 @@ export const createClientSafeGetAllHandler = <ServerType, ClientType>(
   model: Model<ServerType>,
   options?: HandlerOptions
 ) => {
-  return async (): Promise<ClientType[]> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return async (filter?:FilterQuery<any>): Promise<ClientType[]> => {
+    await checkRoleProtected(options)();
     await dbConnect();
-
-    if (options?.isRoleProtected && options.role) {
-      const allowed = await checkRole(options.role);
-      if (!allowed) throw new Error('Unauthorized access');
+    let docs;
+    if(filter) {
+      docs = await model.find(filter);
+    }
+    else {
+      docs = await model.find();
     }
 
-    const docs = await model.find();
     return docs.map((doc) => toClientObject<ClientType>(doc));
   };
 };
+
+// GET all documents (server-side)
+export const createDocumentGetAllHandler = <ServerType>(
+  model: Model<ServerType>,
+  options?: HandlerOptions
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return async (filter:FilterQuery<any>): Promise<ServerType[]> => {
+    await checkRoleProtected(options)();
+    await dbConnect();
+    let docs;
+    if(filter) {
+      docs = await model.find(filter);
+    }
+    else {
+      docs = await model.find();
+    }
+    return docs;
+  };
+}
 
 //this function has bad logic
 export function toDocumentObject<T>(input: Partial<T>): Partial<T> {
@@ -76,13 +120,8 @@ export const createClientSafePostHandler = <T extends { _id?: string }>(
   options?: HandlerOptions
 ) => {
   return async (clientData: Partial<T>) => {
+    await checkRoleProtected(options)();
     await dbConnect();
-
-    if (options?.isRoleProtected && options.role) {
-      const allowed = await checkRole(options.role);
-      if (!allowed) throw new Error('Unauthorized access');
-    }
-
     const { _id, ...rest } = clientData;
     const serverData = toDocumentObject<T>(rest as Partial<T>);  // <-- cast here
 
@@ -104,13 +143,8 @@ export const createDeleteHandler = <T extends { _id?: string }>(
   options?: HandlerOptions
 ) => {
   return async (id: string) => {
+    await checkRoleProtected(options)();
     await dbConnect();
-
-    if (options?.isRoleProtected && options.role) {
-      const allowed = await checkRole(options.role);
-      if (!allowed) throw new Error('Unauthorized access');
-    }
-
     const deleted = await model.findByIdAndDelete(new Types.ObjectId(id));
     if (!deleted) throw new Error(`Document with ID ${id} not found`);
 
