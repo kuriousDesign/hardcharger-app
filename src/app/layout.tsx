@@ -34,7 +34,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
+          <header className="flex justify-end items-center p-4 gap-4 h-16 bg-opacity-10 backdrop-blur-md">
             <SignedOut>
               <SignInButton>
                 <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
@@ -47,7 +47,7 @@ export default function RootLayout({
                 </button>
               </SignUpButton>
             </SignedOut>
-            <SignedIn>
+            <SignedIn >
               <UserButton />
             </SignedIn>
           </header>

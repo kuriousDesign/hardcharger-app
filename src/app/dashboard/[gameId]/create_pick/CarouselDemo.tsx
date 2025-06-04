@@ -12,12 +12,12 @@ import {
 export function CarouselDemo() {
 
     const step1 = () => (
-        <div className="p-1">
+        <div className=" ">
             this is step 1
         </div>
     );
     const step2 = () => (
-        <div className="p-1">
+        <div className="">
             this is step 2
         </div>
     );
@@ -28,28 +28,30 @@ export function CarouselDemo() {
         // Add more steps as needed
     ];
 
+const buttonSize = "w-[10vh] h-[10vh]";
+
 
   return (
-    <Carousel className="w-full h-full">
-      <CarouselContent>
-        {steps.map((step, index) => (
-          <CarouselItem key={index}>
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  {step()}
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <div className="absolute top-1/2 left-2 flex items-center justify-center">
-  <CarouselPrevious className="relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90" />
-</div>
-<div className="absolute top-1/2 right-2 flex items-center justify-center">
-  <CarouselNext className="relative right-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90" />
-</div>
+    <Carousel className="w-full h-[70vh] ">
+        <CarouselContent className=' '>
+            {steps.map((step, index) => (
+                <CarouselItem key={index} >
+                <div className=" h-[60vh] pb-4">
+                    <Card className='h-full'>
+                    <CardContent className="flex items-center justify-center">
+                        {step()}
+                    </CardContent>
+                    </Card>
+                </div>
+                </CarouselItem>
+            ))}
+        </CarouselContent>
+        <div className="absolute top-full left-1/2 -translate-x-[12vh] -translate-y-1/2 flex items-center justify-center">
+            <CarouselPrevious className={`${buttonSize} relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} />
+        </div>
+        <div className="absolute top-full right-1/2 translate-x-[12vh] -translate-y-1/2 flex items-center justify-center w-fit">
+            <CarouselNext className={`${buttonSize} relative right-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} size='lg' />
+        </div>
     </Carousel>
   )
 }
