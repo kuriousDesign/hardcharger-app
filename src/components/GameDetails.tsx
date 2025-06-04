@@ -40,20 +40,20 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
         <Accordion
             type="single"
             collapsible
-            className="w-full"
+            className="w-full h-full overflow-hidden"
             defaultValue="item-1"
         >
             <AccordionItem value="item-1">
                 <AccordionTrigger className='text-xl'>Game Overview</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
                     <p>
-                        {`Choose ${game.num_top_finishers.toString()} top drivers who you think will finish in the top ${game.num_top_finishers.toString()} positions in the A main`}
+                        {`Choose ${game.num_top_finishers.toString()} top drivers who you think will finish in the top ${game.num_top_finishers.toString()} positions in the A main, order counts!`}
                     </p>
                     <p>
-                        {`Then Choose ${game.num_hard_chargers} hard chargers - drivers you think will pass the most cars the entire night`}
+                        {`Then Choose ${game.num_hard_chargers} hard chargers - drivers you think will pass the most cars the entire night and predict exactly how many cars they will pass.`}
                     </p>
                     <p>
-                        {`The scores from top finishers and hard chargers are added up to give you your final total`}
+                        {`The scores from top finishers and hard chargers are added up to give you your final total. Penalty points are given if your predictions are inaccurate.`}
                     </p>
                     <p>
                         {tieBreakerString}
@@ -64,30 +64,50 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
                 </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-                <AccordionTrigger className='text-lg'>Scoring</AccordionTrigger>
+                <AccordionTrigger className='text-xl'>Scoring</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
                     <p>
                         Low Score Wins! The scoring is based on a combination of the finishing positions of your top drivers
                         and the hard charger passing performance.
                     </p>
-                    <p className='font-bold text-gray-400'>
-                        Top Finishers Scoring
-                    </p>
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+                <AccordionTrigger className='text-xl'>Top Finishers Scoring</AccordionTrigger>
+                <AccordionContent className="flex flex-col gap-4 text-balance">
+
                     <p>
                         Add up the finishing positions of your selection.
                         The top three drivers&apos; finishing positions are summed up, and the hard charger score is calculated based on the number of cars passed.
                     </p>
-                    <p className='font-bold text-gray-400'>
-                        Top Finishers Scoring
+                    <p className='text-red-400'>
+                        Prediction Penalty Points
                     </p>
-                    <p className='font-bold text-gray-400'>
-                        Top Finishers Scoring
+                    <p>
+                        {`You will predict the finishing positions of ${game.num_top_finishers_predictions} drivers. If they do not finish in that position, ${game.top_finisher_prediction_penalty} point will be added for each position you were off by. A max number of ${game.top_finisher_prediction_penalty_max} prediction penalty points will be added for each driver.`}
                     </p>
                 </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="item-3">
-                <AccordionTrigger className='text-lg'>Payment and Payout</AccordionTrigger>
+            <AccordionItem value="item-4">
+                <AccordionTrigger className='text-xl'>Hard Charger Scoring</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>
+                        Subtract a point for every car passed, or add a point for every car that passes them. Passing poitns accumulate for each race the driver races in.
+                    </p>
+                    <p className="font-light text-gray-400">
+                        Example: if a fast driver starts in 4th in the B main and finishes 1st, they will get -3 points for the B main, and if they start in 21st in the A main and finish in 20th, they will get -1 points for the A main, for a total of -4 points.
+                    </p>
+                    <p className='text-red-400'>
+                        Prediction Penalty Points
+                    </p>
+                    <p>
+                        {`You will predict how many cars ${game.num_hard_chargers_predictions} drivers will pass over the course of the night. If you are wrong, ${game.hard_charger_prediction_penalty} point will be added for every car you were off by. A max number of ${game.hard_charger_prediction_penalty_max} prediction penalty points will be added for each driver.`}
+                    </p>
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-5">
+                <AccordionTrigger className='text-xl'>Payment and Payout</AccordionTrigger>
+                <AccordionContent className="flex flex-col gap-4 text-balance bg-gradient-to-b from-gray-50/50 to-white ">
                     <p className="font-bold text-lg">
                         {`$${game.entry_fee.toString()} entry fee per pick.`}
                     </p>
