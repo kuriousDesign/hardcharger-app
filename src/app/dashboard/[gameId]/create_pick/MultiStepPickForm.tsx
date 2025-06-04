@@ -2,7 +2,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Carousel, CarouselItem } from '@/components/ui/carousel';
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 import StepBasic from './StepBasic';
 //import StepTopFinishers from './StepTopFinishers';
 import StepHardChargers from './StepHardChargers';
@@ -54,32 +61,55 @@ export default function MultiStepPickForm({ gameId }: { gameId: string }) {
     }
   };
 
+  const stepSubmitPick = () => {
+    return (
+      <div className="text-center">
+        <h2 className="text-xl font-bold mb-4">Review & Submit</h2>
+        <pre className="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto">
+          {JSON.stringify(pickForm, null, 2)}
+        </pre>
+        <button
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={handleSubmit}
+        >
+          Submit Pick
+        </button>
+      </div>
+    );
+  }
+
+  const steps = [
+    () => <StepBasic pickForm={pickForm} setPickForm={setPickForm} />,
+    () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
+    stepSubmitPick,
+    // Add more steps as needed
+    // () => <StepTopFinishers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
+    // () => <StepTieBreaker pickForm={pickForm} setPickForm={setPickForm} />,
+  ];
+
+  const buttonSize = "w-[10vh] h-[10vh]";
+
   return (
-    <div className="max-w-xl mx-auto">
-      <Carousel>
-        <CarouselItem>
-          <StepBasic pickForm={pickForm} setPickForm={setPickForm} />
-        </CarouselItem>
-
-        <CarouselItem>
-          <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />
-        </CarouselItem>
-
-        <CarouselItem>
-          <div className="text-center">
-            <h2 className="text-xl font-bold mb-4">Review & Submit</h2>
-            <pre className="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto">
-              {JSON.stringify(pickForm, null, 2)}
-            </pre>
-            <button
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              onClick={handleSubmit}
-            >
-              Submit Pick
-            </button>
-          </div>
-        </CarouselItem>
-      </Carousel>
-    </div>
+    <Carousel className="w-full h-[70vh] ">
+      <CarouselContent className=' '>
+        {steps.map((step, index) => (
+          <CarouselItem key={index} >
+            <div className=" h-[60vh] pb-4">
+              <Card className='h-full'>
+                <CardContent className="flex items-center justify-center">
+                  {step()}
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <div className="absolute top-full left-1/2 -translate-x-[12vh] -translate-y-1/2 flex items-center justify-center">
+        <CarouselPrevious className={`${buttonSize} relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} />
+      </div>
+      <div className="absolute top-full right-1/2 translate-x-[12vh] -translate-y-1/2 flex items-center justify-center w-fit">
+        <CarouselNext className={`${buttonSize} relative right-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} size='lg' />
+      </div>
+    </Carousel>
   );
 }
