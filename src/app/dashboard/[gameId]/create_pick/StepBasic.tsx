@@ -15,6 +15,7 @@ export default function StepBasic({ pickForm, setPickForm }: {
     const loadSuggestion = async () => {
       const suggestion = await getRandomNicknameSuggestion();
       setNicknameSuggestion(suggestion);
+      setPickForm(prev => ({ ...prev, nickname: suggestion }));
     };
     loadSuggestion();
   }, []);
