@@ -9,6 +9,7 @@ import { RaceModel, RaceDoc, RaceClientType } from '@/models/Race';
 
 import { Types } from 'mongoose';
 import { adminRoleProtectedOptions, createDeleteHandler, createClientSafePostHandler } from '@/utils/actionHelpers';
+import { PickClientType, PickDoc, PickModel } from '@/models/Pick';
 
 
 // export const getDrivers = async () => {
@@ -184,3 +185,28 @@ export const postGame = async (game: Partial<GameDoc | GameClientType> & { _id?:
     return { message: 'Game created successfully' };
   }
 };
+
+export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?: string }) => {
+  await dbConnect();
+
+  // Convert string IDs to ObjectId
+  if (typeof pick.game_id === 'string') {
+    pick.game_id = new Types.ObjectId(pick.game_id);
+  }
+  if (typeof pick.player_id === 'string') {
+    pick.player_id = new Types.ObjectId(pick.player_id);
+  }
+
+  const { _id, ...rest } = pick;
+
+  if (_id && _id !== '') {
+    // Update existing pick
+    await PickModel.findByIdAndUpdate(_id, rest, { new: true });
+    return { message: 'Pick updated successfully' };
+  } else {
+    // Strip _id when creating a new document
+    const newPick = new PickModel(rest);
+    await newPick.save();
+    return { message: 'Pick created successfully' };
+  }
+}

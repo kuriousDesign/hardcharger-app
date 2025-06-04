@@ -16,6 +16,7 @@ export default function CreateGameForm({eventId}: { eventId: string }) {
     event_id: eventId,
     races: [],
     name: '',
+    status: 'created', // or 'upcoming' based on your requirements
     entry_fee: 10,
     house_cut: 0,
     purse_amount: 0, //not used in the form

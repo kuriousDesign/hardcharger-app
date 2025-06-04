@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 import { createModel } from '@/lib/createModel';
+import { DriverClientType } from './Driver';
+
+
 
 const schema = new mongoose.Schema(
   {
@@ -18,3 +21,8 @@ const { model: model, types } = createModel('Racer', schema);
 export const RacerModel = model;
 export type RacerDoc = typeof types.server;
 export type RacerClientType = typeof types.client;
+
+export interface RacerDriverClientType {
+  racer: RacerClientType;
+  driver: DriverClientType;
+}

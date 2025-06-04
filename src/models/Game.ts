@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
 import { createModel } from '@/lib/createModel';
+import { EventClientType } from './Event';
 
 
 const gameSchema = new mongoose.Schema({
   name: { type: String, required: true },
   event_id: { type: mongoose.Schema.Types.ObjectId, required: true },
   races: [{ type: mongoose.Schema.Types.ObjectId, required: true }],
+  status: { type: String, required: true, default: 'pending' }, // e.g., 'pending', 'active', 'completed', 'cancelled'
   entry_fee: { type: Number, required: true },
   house_cut: { type: Number, required: true },
   purse_amount: { type: Number, required: true },
@@ -31,20 +33,25 @@ export const GameModel = Game;
 export type GameDoc = typeof types.server;
 export type GameClientType = typeof types.client;
 
-export function gameClientToDocumentObject(input: Partial<GameClientType> & {_id: string}): Partial<GameDoc> {
-  // Example conversion, extend for your schema
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const output: any = { ...input };
-  if(input._id){
-    if(typeof input._id === 'string') {
-      output._id = new mongoose.Types.ObjectId(input._id);
-    }
-  }
-  if (input.event_id && typeof input.event_id === 'string') {
-    delete output.event_id; // remove event_id if it exists as a string
-    // add event_id as ObjectId
-    output.event_id = new mongoose.Types.ObjectId(input.event_id);
-    console.log('Converted event_id to ObjectId:', output.event_id);
-  }
-  return output as Partial<GameDoc>;
+// export function gameClientToDocumentObject(input: Partial<GameClientType> & {_id: string}): Partial<GameDoc> {
+//   // Example conversion, extend for your schema
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   const output: any = { ...input };
+//   if(input._id){
+//     if(typeof input._id === 'string') {
+//       output._id = new mongoose.Types.ObjectId(input._id);
+//     }
+//   }
+//   if (input.event_id && typeof input.event_id === 'string') {
+//     delete output.event_id; // remove event_id if it exists as a string
+//     // add event_id as ObjectId
+//     output.event_id = new mongoose.Types.ObjectId(input.event_id);
+//     console.log('Converted event_id to ObjectId:', output.event_id);
+//   }
+//   return output as Partial<GameDoc>;
+// }
+
+export interface GameEventClientType {
+  game: GameClientType;
+  event: EventClientType;
 }
