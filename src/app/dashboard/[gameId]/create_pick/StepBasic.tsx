@@ -13,7 +13,7 @@ export default function StepBasic({ pickForm, setPickForm }: {
 
     const loadSuggestion = async () => {
       const suggestion = await getRandomNicknameSuggestion();
-      //setNicknameSuggestion(suggestion);
+      console.log('suggestion', suggestion);
       setPickForm(prev => ({ ...prev, nickname: suggestion }));
     };
 
@@ -37,7 +37,7 @@ export default function StepBasic({ pickForm, setPickForm }: {
             value={pickForm.nickname}
             onChange={(e) => setPickForm(prev => ({ ...prev, nickname: e.target.value }))}
             className="border p-2 w-full rounded"
-            placeholder={'funny nickname for your pick'}
+            placeholder='funny nickname for your pick'
           />
           <button
             onClick={loadSuggestion}
