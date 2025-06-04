@@ -122,13 +122,10 @@ export const getRacersWithDriversByRaceId = async (raceId: string): Promise<Race
   return racerDrivers as RacerDriverClientType[];
 };
 
-
-
 export const getPicksByPlayerId = async (playerId: string) => {
   const filter = { player_id: new Types.ObjectId(playerId) };
   return getPicks(filter);
 }
-
 
 export const getPicksWithGamesByPlayerId = async (playerId: string) => {
   const filter = { player_id: new Types.ObjectId(playerId) };
@@ -212,6 +209,17 @@ export const getPlayersByUserId = async (userId: string): Promise<PlayerClientTy
   return player as PlayerClientType;
 };
 
+export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
+  const user = await currentUser();
+  if (!user) {
+    throw new Error(`No user found with user_id`);
+  }
+  const player = await getPlayersByUserId(user.id);
+  if (!player) {
+    throw new Error(`No player found for user_id: ${user.id}`);
+  }
+  return player as PlayerClientType;
+};
 export const getUserFullName = async (): Promise<string> => {
   const user = await currentUser();
   if (!user) {
