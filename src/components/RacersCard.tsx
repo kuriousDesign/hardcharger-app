@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { RaceClientType } from "@/models/Race";
 import { RacerClientType } from "@/models/Racer";
 import { getRace, getRacersWithDriversByRaceId } from "@/actions/getActions";
@@ -90,7 +92,7 @@ export default async function RacersCard({ eventId, raceId }: { eventId: string,
             <h2 className="text-xl font-bold mb-4">{racersTitle}</h2>
             <RacersDiv />
             <Link 
-                href={`events/${eventId}/races/${raceId}/racers/create_racer`}
+                href={`/events/${eventId}/races/${raceId}/racers/create_racer`}
                 className="flex justify-center bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-700 transition-colors duration-300 shadow-md"
             >
                 Add Racer

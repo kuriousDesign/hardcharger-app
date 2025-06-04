@@ -1,11 +1,24 @@
-import { connectToDatabase } from '@/actions/getActions';
+export const dynamic = 'force-dynamic';
+
+import { getPlayersByUserId } from '@/actions/getActions';
 import ActiveGamesCard from './ActiveGamesCard';
 
 import AdminDashboardCard from './AdminDashboardCard';
-
+import { auth } from '@clerk/nextjs/server'
 
 export default async function Dashboard() {
-    await connectToDatabase();
+    const { userId } = await auth();
+    if (!userId) {
+        return <div className="p-6">You must be logged in to view this page.</div>;
+    }
+    // const user = await currentUser();
+    console.log('Dashboard userId', userId);
+    const player = await getPlayersByUserId(userId);
+
+    if (!player) {
+        return <div className="p-6">loading</div>;
+    }
+
 
     return (
         <div className="p-6 space-y-4 flex flex-col items-center justify-center">

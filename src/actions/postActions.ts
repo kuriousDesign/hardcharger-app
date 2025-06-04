@@ -5,7 +5,9 @@ import { DriverModel, DriverClientType, DriverDoc } from '@/models/Driver'
 import { EventModel, EventClientType } from '@/models/Event';
 import { GameModel, GameClientType, GameDoc } from '@/models/Game';
 import { PaymentModel, PaymentDoc, PaymentClientType } from '@/models/Payment';
+import { PlayerModel, PlayerDoc, PlayerClientType } from '@/models/Player';
 import { RaceModel, RaceDoc, RaceClientType } from '@/models/Race';
+import { RacerModel, RacerClientType, RacerDoc } from '@/models/Racer';
 
 import { Types } from 'mongoose';
 import { adminRoleProtectedOptions, createDeleteHandler, createClientSafePostHandler } from '@/utils/actionHelpers';
@@ -209,4 +211,62 @@ export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?:
     await newPick.save();
     return { message: 'Pick created successfully' };
   }
+}
+
+export const postRacer = async (racer: Partial<RacerDoc | RacerClientType> & { _id?: string }) => {
+  await dbConnect();
+
+  // Convert string IDs to ObjectId
+  if (typeof racer.driver_id === 'string') {
+    racer.driver_id = new Types.ObjectId(racer.driver_id);
+  }
+  const { _id, ...rest } = racer;
+  if (_id && _id !== '') {
+    // Update existing racer
+    await RacerModel.findByIdAndUpdate(_id, rest, { new: true });
+    return { message: 'Racer updated successfully' };
+  } else {  
+    // Strip _id when creating a new document
+    const newRacer = new RacerModel(rest);
+    await newRacer.save();
+    return { message: 'Racer created successfully' };
+  }
+};
+
+export const postPlayer = async (player: Partial<PlayerDoc | PlayerClientType> & { _id?: string }) => {
+  await dbConnect();
+
+  const { _id, ...rest } = player;
+  if (_id && _id !== '') {
+    // Update existing player
+    await PlayerModel.findByIdAndUpdate(_id, rest, { new: true });
+    return { message: 'Player updated successfully' };
+  } else {
+    // Strip _id when creating a new document
+    const newPlayer = new PlayerModel(rest);
+    await newPlayer.save();
+    return { message: 'Player created successfully' };
+  }
+}
+
+export const postNewPlayerByUserId = async (userId: string) => {
+  await dbConnect();
+
+  // Check if player already exists
+  const existingPlayer = await PlayerModel.findOne({ user_id: userId });
+  if (existingPlayer) {
+    return { message: 'Player already exists', player: existingPlayer };
+  }
+
+  // Create new player
+
+  const newPlayer = new PlayerModel({ 
+    user_id: userId,
+    phone_number: 0, // Default number, can be updated later
+    private_games: [] // Initialize with an empty array
+
+  });
+  await newPlayer.save();
+  
+  return { message: 'New player created successfully', player: newPlayer };
 }

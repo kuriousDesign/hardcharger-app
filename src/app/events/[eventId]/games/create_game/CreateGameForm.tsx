@@ -73,6 +73,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     console.log("CreateGameForm submitted:", gameFormWithRaces);
     await postGame(gameFormWithRaces);
+    console.log('Game created successfully');
     router.push('../');
   } catch (error) {
     console.error('Error creating game:', error);

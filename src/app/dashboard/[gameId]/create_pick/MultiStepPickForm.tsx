@@ -20,18 +20,19 @@ import { useRouter } from 'next/navigation';
 import { getRacersWithDriversForPickCreation } from '@/actions/getActions';
 import { RacerDriverClientType } from '@/models/Racer';
 
-export default function MultiStepPickForm({ gameId }: { gameId: string }) {
+
+export default function MultiStepPickForm({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
   const [pickForm, setPickForm] = useState<PickClientType>({
     _id: '',
-    name: '',
+    name: defaultName || '',
     nickname: '',
     top_finishers: [],
     hard_chargers: [],
     tie_breaker: {},
     outcome: { status: 'pending' },
     is_paid: false,
-    player_id: '',
-    game_id: '',
+    player_id: playerId,
+    game_id: gameId,
   });
 
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function MultiStepPickForm({ gameId }: { gameId: string }) {
       try {
         const data = await getRacersWithDriversForPickCreation(gameId);
         setRacerDrivers(data);
+
       } catch (error) {
         console.error('Error fetching racerDrivers:', error);
       }
@@ -52,10 +54,11 @@ export default function MultiStepPickForm({ gameId }: { gameId: string }) {
     fetchRacers();
   }, [gameId]);
 
+
   const handleSubmit = async () => {
     try {
       await postPick(pickForm);
-      router.push('/confirmation');
+      router.push(`/dashboard/${gameId}`);
     } catch (err) {
       console.error('Error submitting pick:', err);
     }
@@ -89,13 +92,15 @@ export default function MultiStepPickForm({ gameId }: { gameId: string }) {
 
   const buttonSize = "w-[10vh] h-[10vh]";
 
+  //const carouselHeight = 'h-[90vh]';
+
   return (
-    <Carousel className="w-full h-[70vh] ">
+    <Carousel className="w-full h-[90vh] bg-pink-600">
       <CarouselContent className=' '>
         {steps.map((step, index) => (
           <CarouselItem key={index} >
-            <div className=" h-[60vh] pb-4">
-              <Card className='h-full'>
+            <div className=" h-[80vh] pb-4">
+              <Card className='h-full overflow-y-scroll'>
                 <CardContent className="flex items-center justify-center">
                   {step()}
                 </CardContent>

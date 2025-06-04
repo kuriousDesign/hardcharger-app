@@ -9,6 +9,8 @@ TODO:
 [ ] create classic draw name from hat game
 [ ] incorporate tie breaker type into game
 [ ] user gaining access to private games (like a join game for ncaa tourney)
+[ ] handle converting getPlayer and other server actions to convert private_games id's back and forth from string to ObjectId
+[ ] create player in middleware
 
 [ ] nav bar at top
 [ ] See how many users can register before clerk will bitch about me not paying --> then bang head on desk very hard

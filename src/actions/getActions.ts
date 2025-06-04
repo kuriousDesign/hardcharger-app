@@ -15,6 +15,8 @@ import { RacerModel, RacerDoc, RacerClientType, RacerDriverClientType } from '@/
 import { createClientSafeGetAllHandler, createClientSafeGetHandler } from '@/utils/actionHelpers';
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
+import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
+import { currentUser } from '@clerk/nextjs/server';
 
 export const connectToDatabase = async () => {await dbConnect();}
 
@@ -63,18 +65,38 @@ export const getGamesByEventId = async (eventId: string): Promise<GameClientType
   //return games;
 }
 
-export const getRacesByEventId = async (eventId: string): Promise<RaceClientType[]> => {
+export const getRacesByEventIdOld = async (eventId: string): Promise<RaceClientType[]> => {
   await dbConnect();
   const raceDocs = await RaceModel.find({ event_id: new Types.ObjectId(eventId) });
   const races = raceDocs.map((doc) => toClientObject<RaceClientType>(doc));
   return races;
 };
 
+export const getRacesByEventId = async (eventId: string): Promise<RaceClientType[]> => {
+  const filter = { event_id: new Types.ObjectId(eventId) };
+  const races = await getRaces(filter);
+  return races as RaceClientType[];
+  //console.log('getRacesByEventId',
+}
 
-export const getRacersWithDriversByRaceId = async (raceId: string) => {
-  // get racers by race ID
-  const filter = {race_id: new Types.ObjectId(raceId)};
+export const getRacersByRaceId = async (raceId: string): Promise<RacerClientType[]>  => {
+  const filter = { race_id: new Types.ObjectId(raceId) };
   const racers = await getRacers(filter);
+  return racers;
+}
+
+export const getDriversNotInRace = async (raceId: string): Promise<DriverClientType[]>  => {
+  const allDrivers = await getDrivers();
+  const racers = await getRacersByRaceId(raceId);
+  const racerDriverIds = new Set(racers.map(racer => racer.driver_id));
+  const availableDrivers = allDrivers.filter(driver => driver._id && !racerDriverIds.has(driver._id.toString()));
+  return availableDrivers as DriverClientType[];
+};
+
+export const getRacersWithDriversByRaceId = async (raceId: string): Promise<RacerDriverClientType[]>  => {
+
+  const racers = await getRacersByRaceId(raceId);
+  //console.log('getRacersWithDriversByRaceId', raceId, racers.length, racers);
 
   const racerDrivers = [] as RacerDriverClientType[];
   if (racers.length === 0) {
@@ -100,12 +122,7 @@ export const getRacersWithDriversByRaceId = async (raceId: string) => {
   return racerDrivers as RacerDriverClientType[];
 };
 
-export const getRacersByRaceId = async (raceId: string) => {
-  await dbConnect();
-  const racerDocs = await RacerModel.find({ race_id: new Types.ObjectId(raceId) });
-  const racers = racerDocs.map(doc => toClientObject<RacerClientType>(doc));
-  return racers as RacerClientType[];
-}
+
 
 export const getPicksByPlayerId = async (playerId: string) => {
   const filter = { player_id: new Types.ObjectId(playerId) };
@@ -151,5 +168,61 @@ export const getRacersWithDriversForPickCreation = async (gameId: string) => {
     const racerDriver = await getRacersWithDriversByRaceId(raceId);
     racerDrivers.push(...racerDriver);
   }
+
+  if (racerDrivers.length === 0) {
+    console.warn('No racers found for game', gameId);
+    return racerDrivers;
+  }
+
+  // get rid of multiple racers with the same driver or any driver where last_names starts with transfer
+  const uniqueRacerDrivers = new Map<string, RacerDriverClientType>();
+  for (const racerDriver of racerDrivers) {
+    const driverId = racerDriver?.driver?._id ? racerDriver.driver._id : '';
+    if (!uniqueRacerDrivers.has(driverId) && !racerDriver.driver.last_name.startsWith('Transfer')) {
+      uniqueRacerDrivers.set(driverId, racerDriver);
+    }
+  }
+  // Convert the map values back to an array
+  racerDrivers.length = 0; // Clear the original array
+  uniqueRacerDrivers.forEach((value) => {
+    racerDrivers.push(value);
+  });
+  //console.log('getRacersWithDriversForPickCreation', racerDrivers);
+
+
   return racerDrivers as RacerDriverClientType[];
 };
+
+
+export const getPlayersByUserId = async (userId: string): Promise<PlayerClientType> => {
+  const filter = { user_id: userId }; //in this case userId is saved as a string in the database
+  let players = await getPlayers(filter);
+  if (players.length === 0) {
+    //throw new Error(`No player found with user_id: ${userId}`);
+    console.warn(`No player found with user_id: ${userId}, creating a new player`);
+    // If no player is found, create a new player
+    await createPlayerByUserId(userId);
+    players = await getPlayers(filter);
+    if (players.length === 0) {
+      throw new Error(`Failed to create player with user_id: ${userId}`);
+    }
+  }
+  // Assuming user_id is unique, we take the first player
+  const player = players[0]; // Assuming user_id is unique, we take the first player
+  return player as PlayerClientType;
+};
+
+export const getUserFullName = async (): Promise<string> => {
+  const user = await currentUser();
+  if (!user) {
+    throw new Error(`No user found with user_id`);
+  }
+  const fullName = user.fullName || `${user.firstName} ${user.lastName}`;
+  return fullName;
+};
+
+export const getPicksByGameId = async (gameId: string): Promise<PickClientType[]> => {
+  const filter = { game_id: new Types.ObjectId(gameId) };
+  const picks = await getPicks(filter);
+  return picks as PickClientType[];
+}

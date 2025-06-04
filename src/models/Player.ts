@@ -3,8 +3,9 @@ import { createModel } from '@/lib/createModel';
 
 const schema = new mongoose.Schema(
   {
+    name: { type: String, required: true }, // player name
     user_id : { type: String, required: true }, // user id from the users collection from clerk
-    number: { type: Number, required: false }, // e.g., 1, 2, 3, etc.
+    phone_number: { type: Number, required: false }, // 
     //role: { type: String, required: true }, // e.g., 'admin', 'user', 'robot'
     private_games: { type: [mongoose.Schema.Types.ObjectId], required: true }, // array of private game ids the user can access
 

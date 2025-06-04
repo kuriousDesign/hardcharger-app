@@ -19,3 +19,4 @@ const { model: Driver, types } = createModel('Driver', driverSchema);
 export const DriverModel = Driver;
 export type DriverDoc = typeof types.server;
 export type DriverClientType = typeof types.client;
+
