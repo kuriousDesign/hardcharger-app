@@ -20,6 +20,7 @@ const gameSchema = new mongoose.Schema({
   num_top_finishers_predictions: { type: Number, required: true },
   top_finisher_prediction_penalty: { type: Number, required: true }, // penalty for not wrong prediction, point per car
   top_finisher_prediction_penalty_max: { type: Number, required: true }, // max penalty for not wrong prediction, point per car
+  tie_breaker: { type: Object, required: false }, // tie breaker object, e.g., { type: 'fastest_lap', value: 0 }
   is_private: { type: Boolean, required: true, default: false }, // whether the game is private or not
   password: { type: String, required: false, default: '' } // password to access the game,
 }, {

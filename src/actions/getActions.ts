@@ -12,7 +12,7 @@ import { DriverModel, DriverDoc, DriverClientType } from '@/models/Driver';
 import { RacerModel, RacerDoc, RacerClientType, RacerDriverClientType } from '@/models/Racer';
 
 
-import { createClientSafeGetAllHandler, createClientSafeGetHandler } from '@/utils/actionHelpers';
+import { createClientSafeGetAllHandler, createClientSafeGetHandler, createDocumentGetHandler } from '@/utils/actionHelpers';
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
 import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
@@ -25,6 +25,7 @@ export const getDrivers = createClientSafeGetAllHandler<DriverDoc, DriverClientT
 export const getEvent = createClientSafeGetHandler<EventDoc, EventClientType>(EventModel);
 export const getEvents = createClientSafeGetAllHandler<EventDoc, EventClientType>(EventModel);
 export const getGame = createClientSafeGetHandler<GameDoc,GameClientType>(GameModel);
+export const getGameServer = createDocumentGetHandler<GameDoc>(GameModel);
 export const getGames = createClientSafeGetAllHandler<GameDoc, GameClientType>(GameModel);
 export const getPayment = createClientSafeGetHandler<PaymentDoc, PaymentClientType>(PaymentModel);
 export const getPayments = createClientSafeGetAllHandler<PaymentDoc, PaymentClientType>(PaymentModel);
@@ -233,4 +234,17 @@ export const getPicksByGameId = async (gameId: string): Promise<PickClientType[]
   const filter = { game_id: new Types.ObjectId(gameId) };
   const picks = await getPicks(filter);
   return picks as PickClientType[];
+}
+
+export const getRacesByGameId = async (gameId: string): Promise<RaceClientType[]> => {
+  const game = await getGame(gameId) as GameClientType;
+  // get all races in game.races array of ObjectId
+  const races = [] as RaceClientType[];
+  for (const raceId of game.races) {
+    const race = await getRace(raceId);
+    if (race) {
+      races.push(race);
+    }
+  }
+  return races;
 }

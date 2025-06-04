@@ -17,8 +17,11 @@ import StepHardChargers from './StepHardChargers';
 import { postPick } from '@/actions/postActions';
 import { PickClientType } from '@/models/Pick';
 import { useRouter } from 'next/navigation';
-import { getRacersWithDriversForPickCreation } from '@/actions/getActions';
+import { getGame, getRacersWithDriversForPickCreation, getRacesByGameId } from '@/actions/getActions';
 import { RacerDriverClientType } from '@/models/Racer';
+import StepGameOverview from './StepGameOverview';
+import { GameClientType } from '@/models/Game';
+import { RaceClientType } from '@/models/Race';
 
 
 export default function MultiStepPickForm({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
@@ -39,13 +42,18 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
 
   // can i use a server action here to getRacersByGameId?
   const [racerDrivers, setRacerDrivers] = useState<RacerDriverClientType[]>([]);
+  const [game, setGame] = useState<GameClientType>({} as GameClientType);
+  const [races, setRaces] = useState<RaceClientType[]>([]);
   // This should be replaced with a server action to fetch racers based on gameId
   useEffect(() => {
     const fetchRacers = async () => {
       try {
         const data = await getRacersWithDriversForPickCreation(gameId);
         setRacerDrivers(data);
-
+        const gameData = await getGame(gameId);
+        setGame(gameData);
+        const raceData = await getRacesByGameId(gameId);
+        setRaces(raceData);
       } catch (error) {
         console.error('Error fetching racerDrivers:', error);
       }
@@ -68,7 +76,7 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
     return (
       <div className="text-center">
         <h2 className="text-xl font-bold mb-4">Review & Submit</h2>
-        <pre className="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto">
+        <pre className="bg-gray-100 p-4 rounded text-left text-xs overflow-x-auto">
           {JSON.stringify(pickForm, null, 2)}
         </pre>
         <button
@@ -82,6 +90,7 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
   }
 
   const steps = [
+    () => <StepGameOverview game={game} races={races}/>,
     () => <StepBasic pickForm={pickForm} setPickForm={setPickForm} />,
     () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
     stepSubmitPick,
@@ -95,11 +104,11 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
   //const carouselHeight = 'h-[90vh]';
 
   return (
-    <Carousel className="w-full h-[90vh] bg-pink-600">
+    <Carousel className="w-full h-[80vh] bg-amber-300">
       <CarouselContent className=' '>
         {steps.map((step, index) => (
           <CarouselItem key={index} >
-            <div className=" h-[80vh] pb-4">
+            <div className=" h-[70vh] p-4">
               <Card className='h-full overflow-y-scroll'>
                 <CardContent className="flex items-center justify-center">
                   {step()}

@@ -19,6 +19,8 @@ TODO:
 IDEAS FOR ANIMATION:
 - screen brightness sweeps from bottom to top (like when i plug in pixel 6a into charger)
 - press and hold to submit pick, charging animation like soda machine at boston amazon
+- rim of card in looping until you fill out all the info on that card
+- submit can involve dragging a piece of paper out of a hat
 
 NOT DOING:
 [ ] integrate grok for creating/suggesting fun pick nicknames --> not free so not doing
