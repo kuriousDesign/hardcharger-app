@@ -1,7 +1,8 @@
-import { RaceClientType as Race } from "@/models/Race";
-import { RacerClientType as Racer } from "@/models/Racer";
+import { RaceClientType } from "@/models/Race";
+import { RacerClientType } from "@/models/Racer";
 import { getRace, getRacersWithDriversByRaceId } from "@/actions/getActions";
 import Link from "next/link";
+import { DriverClientType } from "@/models/Driver";
 
 
 export default async function RacersCard({ eventId, raceId }: { eventId: string, raceId: string }){
@@ -10,26 +11,30 @@ export default async function RacersCard({ eventId, raceId }: { eventId: string,
 
 
     // Replace with your actual API endpoint
-    const race = await getRace(raceId) as Race;
-    const {racers, drivers } = await getRacersWithDriversByRaceId(raceId as string);
+    const race = await getRace(raceId) as RaceClientType;
+    const racerDrivers = await getRacersWithDriversByRaceId(raceId as string);
 
 
     //console.log("status:", raceResult.status);
-    if(!racers || racers.length === 0) {
+    if(!racerDrivers || racerDrivers.length === 0) {
         racersTitle = 'No Racers';
     }
     else if(race.status === 'finished' || race.status === 'in_progress') {
-        racers.sort((a, b) => a.current_position - b.current_position);
+        //racerDrivers.sort((racer.a, racer.b) => a.current_position - b.current_position);
         racersTitle='Current Standings';
         if(race.status === 'finished') {
             racersTitle='Final Results';
         }
     }
     else {
-        racers.sort((a, b) => a.starting_position - b.starting_position);
+        //racers.sort((a, b) => a.starting_position - b.starting_position);
+        racerDrivers.sort((a, b) => a.racer.starting_position - b.racer.starting_position);
     }
 
-    if (!racers || !race || !drivers) return <div>Race not found</div>;
+    const racers = racerDrivers.map(rd => rd.racer) as RacerClientType[];
+    const drivers = racerDrivers.map(rd => rd.driver) as DriverClientType[];
+
+    if (!racerDrivers || !race ) return <div>Race not found</div>;
 
     function getDriverFullName(driverId: string): string {
         //console.log("getDriverFullName called with driver_id:", driver_id);
@@ -53,7 +58,7 @@ export default async function RacersCard({ eventId, raceId }: { eventId: string,
     const RacersDiv = () => {   
         return (
              <div className="grid grid-cols-2 gap-2 space-x-2 w-fit">
-                {racers.map((racer:Racer) => (
+                {racers.map((racer:RacerClientType) => (
                     <Link 
                         key={racer._id} 
                         className="p-2 hover:bg-gray-50 rounded shadow-sm bg-gray-100 w-fit px-4"
