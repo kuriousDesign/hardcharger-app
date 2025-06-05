@@ -6,6 +6,7 @@ import ActiveGamesCard from './ActiveGamesCard';
 import AdminDashboardCard from './AdminDashboardCard';
 import { auth } from '@clerk/nextjs/server'
 
+
 export default async function Dashboard() {
     const { userId } = await auth();
     if (!userId) {
@@ -21,10 +22,17 @@ export default async function Dashboard() {
 
 
     return (
-        <div className="p-6 space-y-4 flex flex-col items-center justify-center">
-            Dashboard
-            <AdminDashboardCard />
-            <ActiveGamesCard />
-        </div>
+        <>
+            <div id="themes" className="container-wrapper scroll-mt-20">
+
+            </div>
+            <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
+                <div className="theme-container container flex flex-1 flex-col">
+                    Dashboard
+                    <AdminDashboardCard />
+                    <ActiveGamesCard />
+                </div>
+            </div>
+        </>
     );
 }
