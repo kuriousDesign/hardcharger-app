@@ -22,6 +22,7 @@ import { RacerDriverClientType } from '@/models/Racer';
 import StepGameOverview from './StepGameOverview';
 import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
+import CardStepRacerPredictions from '@/app/dashboard/[gameId]/create_pick/card-step-racer-predictions';
 
 
 export default function MultiStepPickForm({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
@@ -93,6 +94,7 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
     () => <StepGameOverview game={game} races={races}/>,
     () => <StepBasic pickForm={pickForm} setPickForm={setPickForm} />,
     () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
+    
     stepSubmitPick,
     // Add more steps as needed
     // () => <StepTopFinishers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
@@ -117,6 +119,9 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
             </div>
           </CarouselItem>
         ))}
+        <CarouselItem key='top-finishers'>
+          <CardStepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />
+        </CarouselItem>
       </CarouselContent>
       <div className="absolute top-full left-1/2 -translate-x-[12vh] -translate-y-1/2 flex items-center justify-center">
         <CarouselPrevious className={`${buttonSize} relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} />

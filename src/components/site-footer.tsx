@@ -8,7 +8,7 @@ export function SiteFooter() {
           <div className="text-muted-foreground w-full text-center text-xs leading-loose sm:text-sm">
             Built by{" "}
             <a
-              href={siteConfig.links.twitter}
+              href={siteConfig.links.kurious}
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"

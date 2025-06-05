@@ -1,6 +1,6 @@
 "use client"
 
-import { getCurrentPlayer, getGamePicksByPlayerId } from "@/actions/getActions"
+import { getCurrentPlayer, getGamePicksByPlayerId, getGames } from "@/actions/getActions"
 import { CardsGames } from "@/components/cards/games"
 import { CardsTeamMembers } from "@/components/cards/team-members"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -13,7 +13,8 @@ import { useEffect, useState } from "react";
 export default function GamesPage() {
 
   const [games, setGames] = useState<GameClientType[]>([]);
-  const [filterLabel, setFilterLabel] = useState<string>('Active');
+  //const [openGames, setOpenGames] = useState<GameClientType[]>([]);
+  const [filterLabel, setFilterLabel] = useState<string>('available');
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -23,7 +24,11 @@ export default function GamesPage() {
         return <div className="p-6">loading</div>;
       }
       const gamePicks = await getGamePicksByPlayerId(player._id as string) as GamePicksClientType[];
-      const gamesData = gamePicks.map((gamePick) => gamePick.game as GameClientType) as GameClientType[];
+      const openGameData = await getGames({ status: 'open' }) as GameClientType[]; 
+      //setOpenGames(openGameData);
+      const playerGames = gamePicks.map((gamePick) => gamePick.game as GameClientType) as GameClientType[];
+      // combine open games with player games
+      const gamesData = [...new Set([...openGameData, ...playerGames])];
       setGames(gamesData);
       setLoading(false);
     };
@@ -42,11 +47,11 @@ export default function GamesPage() {
       </div>
       <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
         <div className="theme-container container flex flex-1 flex-col gap-4">
-          <Tabs defaultValue="Active" onValueChange={(value) => setFilterLabel(value)} >
+          <Tabs defaultValue="available" onValueChange={(value) => setFilterLabel(value)} >
             <TabsList>
-              <TabsTrigger value="Active">Active</TabsTrigger>
-              <TabsTrigger value="Past">Past</TabsTrigger>
-              <TabsTrigger value="All">All</TabsTrigger>
+                <TabsTrigger value="available" className="data-[state=active]:text-primary ">Available</TabsTrigger>
+              <TabsTrigger value="past">Past</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
             </TabsList>
           </Tabs>
           <CardsGames games={games} filterLabel={filterLabel} />
