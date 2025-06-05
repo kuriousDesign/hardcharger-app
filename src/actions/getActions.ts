@@ -3,7 +3,7 @@
 import connectToDb from '@/lib/db';
 
 import { EventModel, EventDoc, EventClientType } from '@/models/Event';
-import { GameModel, GameDoc, GameClientType } from '@/models/Game';
+import { GameModel, GameDoc, GameClientType, GamePicksClientType } from '@/models/Game';
 import { PaymentModel, PaymentDoc, PaymentClientType } from '@/models/Payment';
 import { PickModel, PickDoc, PickClientType } from '@/models/Pick';
 import { PlayerModel, PlayerDoc, PlayerClientType } from '@/models/Player';
@@ -63,7 +63,36 @@ export const getGamesByEventId = async (eventId: string): Promise<GameClientType
   await connectToDb();
   const docs = await GameModel.find({ event_id: new Types.ObjectId(eventId) });
   return docs.map((doc) => toClientObject<GameClientType>(doc));
-  //return games;
+}
+
+
+
+export const getGamePicksByPlayerId = async (playerId: string): Promise<GamePicksClientType[]> => {
+  await connectToDb();
+  const gamePicks = [] as GamePicksClientType[];
+  const filter = { player_id: new Types.ObjectId(playerId) };
+  const picks = await getPicks(filter);
+  const gameIds = Array.from(new Set(picks.map(pick => pick.game_id.toString())));
+  // remove duplicates from gameIds
+  const uniqueGameIds = Array.from(new Set(gameIds));
+  
+  if( uniqueGameIds.length === 0) {
+    //console.warn(`No game IDs found for player ${playerId}`);
+    return gamePicks; // Return empty array if no game IDs found
+  }
+  for (const gameId of uniqueGameIds) {
+    const game = await getGame(gameId);
+    if (game) {
+      const gamePicksData: GamePicksClientType = {
+        game: game as GameClientType,
+        picks: picks.filter(pick => pick.game_id === gameId)
+      };
+      gamePicks.push(gamePicksData);
+    } else {
+      console.warn(`Game with ID ${gameId} not found for player ${playerId}`);
+    }
+  }
+  return gamePicks;
 }
 
 export const getRacesByEventIdOld = async (eventId: string): Promise<RaceClientType[]> => {

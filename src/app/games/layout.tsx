@@ -1,14 +1,9 @@
 import { Metadata } from "next"
-import Link from "next/link"
-
-
 import {
-  PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { Button } from "@/components/ui/button"
 
 const title = "Games"
 const description =
@@ -32,14 +27,14 @@ export default function CollectionLayout({
           {title}
         </PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
-        <PageActions>
+        {/* <PageActions>
           <Button asChild size="sm">
             <a href="#/dashboard/games">Active Games</a>
           </Button>
           <Button asChild variant="ghost" size="sm">
             <Link href="/docs/theming">Past Games</Link>
           </Button>
-        </PageActions>
+        </PageActions> */}
       </PageHeader>
       {children}
     </div>

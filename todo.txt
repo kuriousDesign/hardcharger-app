@@ -1,4 +1,5 @@
 TODO:
+[ ] see if server action for getCurrentPlayer is producing the clerkMiddleware warning
 [ ] GameDetails used for creating picks and also explaining game on [gameId] page
 [t] server actions get getPicksWithGamesByPlayerId and getPicksByPlayerIdAndGameStatus
 [ ] server component PlayerPicks (use getPicksByPlayerIdAndGameStatus of multiple game_status to build an array) or use the button filter approach shadcn 'tabs'

@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
 import { createModel } from '@/lib/createModel';
 import { EventClientType } from './Event';
+import { PickClientType } from './Pick';
 
 
 const gameSchema = new mongoose.Schema({
   name: { type: String, required: true },
   event_id: { type: mongoose.Schema.Types.ObjectId, required: true },
   races: [{ type: mongoose.Schema.Types.ObjectId, required: true }],
-  status: { type: String, required: true, default: 'pending' }, // e.g., 'pending', 'active', 'completed', 'cancelled'
+  status: { type: String, required: true, default: 'pending' }, // e.g., 'created', 'open', 'regisration_over', 'active', 'just_finished' 'completed', 'cancelled'
   entry_fee: { type: Number, required: true },
   house_cut: { type: Number, required: true },
   purse_amount: { type: Number, required: true },
@@ -55,4 +56,9 @@ export type GameClientType = typeof types.client;
 export interface GameEventClientType {
   game: GameClientType;
   event: EventClientType;
+}
+
+export interface GamePicksClientType {
+  game: GameClientType;
+  picks: PickClientType[];
 }
