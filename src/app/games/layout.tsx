@@ -10,16 +10,16 @@ import {
 } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 
-const title = "Pick your drivers. Win the pot."
+const title = "Games"
 const description =
-  "Find a game and create a pick. Look at your current picks too."
+  "Search for a game and create a pick or look at past games you played."
 
 export const metadata: Metadata = {
   title,
   description,
 }
 
-export default function DashboardLayout({
+export default function CollectionLayout({
   children,
 }: {
   children: React.ReactNode
@@ -28,14 +28,16 @@ export default function DashboardLayout({
     <div>
       <PageHeader>
        
-        <PageHeaderHeading>{title}</PageHeaderHeading>
+        <PageHeaderHeading > 
+          {title}
+        </PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>
           <Button asChild size="sm">
-            <Link href="/games">Browse games</Link>
+            <a href="#/dashboard/games">Active Games</a>
           </Button>
           <Button asChild variant="ghost" size="sm">
-            <Link href="/picks">Active Picks</Link>
+            <Link href="/docs/theming">Past Games</Link>
           </Button>
         </PageActions>
       </PageHeader>

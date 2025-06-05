@@ -1,38 +1,32 @@
 export const siteConfig = {
-  name: "shadcn/ui",
+  name: "hardcharger/ui",
   url: "https://ui.shadcn.com",
   ogImage: "https://ui.shadcn.com/og.jpg",
   description:
-    "A set of beautifully-designed, accessible components and a code distribution platform. Works with your favorite frameworks. Open Source. Open Code.",
+    "a pick 'em game that makes watching spring car racing even more thrilling.",
   links: {
     twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn-ui/ui",
+    kurious: "https://kurious-design.com",
+    github: "https://github.com/kuriousDesign/hardcharger-app",
   },
   navItems: [
     {
-      href: "/docs/installation",
-      label: "Docs",
+      href: "/games",
+      label: "Games",
     },
     {
-      href: "/docs/components",
-      label: "Components",
-    },
-    {
-      href: "/blocks",
-      label: "Blocks",
-    },
-    {
-      href: "/charts/area",
-      label: "Charts",
+      href: "/picks",
+      label: "Picks",
     },
     {
       href: "/themes",
       label: "Themes",
     },
-    {
-      href: "/colors",
-      label: "Colors",
+        {
+      href: "https://kurious-design.com",
+      label: "Kurious",
     },
+
   ],
 }
 

@@ -1,8 +1,8 @@
 export const dynamic = 'force-dynamic';
 
 import { getPlayersByUserId } from '@/actions/getActions';
-import ActiveGamesCard from './ActiveGamesCard';
-
+import ActiveGamesCard from '@/components/ActiveGamesCard';
+import { CardsDemo } from "@/components/cards"
 import AdminDashboardCard from './AdminDashboardCard';
 import { auth } from '@clerk/nextjs/server'
 
@@ -28,7 +28,7 @@ export default async function Dashboard() {
             </div>
             <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
                 <div className="theme-container container flex flex-1 flex-col">
-                    Dashboard
+                    <CardsDemo />
                     <AdminDashboardCard />
                     <ActiveGamesCard />
                 </div>

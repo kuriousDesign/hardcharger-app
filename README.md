@@ -34,3 +34,14 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+# Data Models and Scheme
+Event ← referenced by Race, Game
+Race → belongs to Event, has many Racers
+Racer → belongs to Race, references Driver
+Game → belongs to Event, includes Races, referenced by Pick
+Pick → belongs to Game, references Player, uses Racers
+Player → has Picks, has private Games
+Driver ← referenced by Racer
+Payment → belongs to Pick, managed by Admin

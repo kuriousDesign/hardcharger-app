@@ -1,6 +1,6 @@
 'use server'
 
-import dbConnect from '@/lib/dbConnect';
+import connectToDb from '@/lib/db';
 import { DriverModel, DriverClientType, DriverDoc } from '@/models/Driver'
 import { EventModel, EventClientType } from '@/models/Event';
 import { GameModel, GameClientType, GameDoc } from '@/models/Game';
@@ -27,7 +27,7 @@ export const deleteDriver = createDeleteHandler<DriverDoc>(DriverModel, adminRol
 export const deleteGame = createDeleteHandler<GameDoc>(GameModel, adminRoleProtectedOptions);
 
 export const postDriverLongForm = async (clientData: Partial<DriverClientType>) => {
-  await dbConnect();
+  await connectToDb();
 
   try {
     if (clientData._id && clientData?._id !== '') {
@@ -52,7 +52,7 @@ export const postDriverLongForm = async (clientData: Partial<DriverClientType>) 
 
 
 export const postEvent = async (event: Partial<EventClientType> & { _id?: string }) => {
-  await dbConnect();
+  await connectToDb();
 
   const eventData = {
     name: event.name?.trim() || '',
@@ -77,7 +77,7 @@ export const postEvent = async (event: Partial<EventClientType> & { _id?: string
 
 
 export const postPayment = async (payment: Partial<PaymentClientType> & { _id?: string }) => {
-  await dbConnect();
+  await connectToDb();
   let paymentData: Partial<PaymentDoc> = {};
 
   if (typeof payment.amount !== 'number') {
@@ -126,7 +126,7 @@ export const postPayment = async (payment: Partial<PaymentClientType> & { _id?: 
 
 
 export const postRace = async (race: Partial<RaceDoc | RaceClientType> & { _id?: string }) => {
-  await dbConnect();
+  await connectToDb();
 
   // check if event_id is a valid ObjectId, if its a string then convert it
   if (typeof(race.event_id) === 'string') {
@@ -163,7 +163,7 @@ export const postRace = async (race: Partial<RaceDoc | RaceClientType> & { _id?:
 //follow similar patter as postRace
 
 export const postGame = async (game: Partial<GameDoc | GameClientType> & { _id?: string }) => {
-  await dbConnect();
+  await connectToDb();
 
   // Convert string IDs to ObjectId
   if (typeof game.event_id === 'string') {
@@ -189,7 +189,7 @@ export const postGame = async (game: Partial<GameDoc | GameClientType> & { _id?:
 };
 
 export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?: string }) => {
-  await dbConnect();
+  await connectToDb();
 
   // Convert string IDs to ObjectId
   if (typeof pick.game_id === 'string') {
@@ -214,7 +214,7 @@ export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?:
 }
 
 export const postRacer = async (racer: Partial<RacerDoc | RacerClientType> & { _id?: string }) => {
-  await dbConnect();
+  await connectToDb();
 
   // Convert string IDs to ObjectId
   if (typeof racer.driver_id === 'string') {
@@ -234,7 +234,7 @@ export const postRacer = async (racer: Partial<RacerDoc | RacerClientType> & { _
 };
 
 export const postPlayer = async (player: Partial<PlayerDoc | PlayerClientType> & { _id?: string }) => {
-  await dbConnect();
+  await connectToDb();
 
   const { _id, ...rest } = player;
   if (_id && _id !== '') {
@@ -250,7 +250,7 @@ export const postPlayer = async (player: Partial<PlayerDoc | PlayerClientType> &
 }
 
 export const postNewPlayerByUserId = async (userId: string) => {
-  await dbConnect();
+  await connectToDb();
 
   // Check if player already exists
   const existingPlayer = await PlayerModel.findOne({ user_id: userId });

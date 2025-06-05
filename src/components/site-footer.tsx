@@ -13,7 +13,7 @@ export function SiteFooter() {
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              shadcn
+              kuriousDesign
             </a>
             . The source code is available on{" "}
             <a

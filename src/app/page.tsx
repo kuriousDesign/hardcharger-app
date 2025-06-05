@@ -1,4 +1,4 @@
-import { connectToDatabase } from '@/actions/getActions';
+import { getConnectToDb } from '@/actions/getActions';
 import VenmoLink from '@/components/VenmoLink';
 import Link from 'next/link';
 import { SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs'
@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 
 
 export default async function Home() {
-	await connectToDatabase();
+	await getConnectToDb();
   	// Get the userId from auth() -- if null, the user is not signed in
 	const { userId } = await auth();
 	// If the user is signed in, redirect to the dashboard

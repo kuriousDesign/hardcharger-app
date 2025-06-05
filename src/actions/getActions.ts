@@ -1,6 +1,6 @@
 "use server";
 
-import dbConnect from '@/lib/dbConnect';
+import connectToDb from '@/lib/db';
 
 import { EventModel, EventDoc, EventClientType } from '@/models/Event';
 import { GameModel, GameDoc, GameClientType } from '@/models/Game';
@@ -18,7 +18,7 @@ import { toClientObject } from '@/utils/mongooseHelpers';
 import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
 import { currentUser } from '@clerk/nextjs/server';
 
-export const connectToDatabase = async () => {await dbConnect();}
+export const getConnectToDb = async () => {await connectToDb();}
 
 export const getDriver = createClientSafeGetHandler<DriverDoc,DriverClientType>(DriverModel);
 export const getDrivers = createClientSafeGetAllHandler<DriverDoc, DriverClientType>(DriverModel);
@@ -41,7 +41,7 @@ export const getRacers = createClientSafeGetAllHandler<RacerDoc, RacerClientType
 
 // this will retrieve the game info from mongoDB and return the game object with the event info 
 export const getGameWithEvent = async (gameId: string) => {
-  await dbConnect();
+  await connectToDb();
   const game = await getGame(gameId);
   const event = await getEvent(game.event_id);
   const data = {
@@ -60,14 +60,14 @@ export const getGamesByStatus = async (status: string): Promise<GameClientType[]
 }
 
 export const getGamesByEventId = async (eventId: string): Promise<GameClientType[]> => {
-  await dbConnect();
+  await connectToDb();
   const docs = await GameModel.find({ event_id: new Types.ObjectId(eventId) });
   return docs.map((doc) => toClientObject<GameClientType>(doc));
   //return games;
 }
 
 export const getRacesByEventIdOld = async (eventId: string): Promise<RaceClientType[]> => {
-  await dbConnect();
+  await connectToDb();
   const raceDocs = await RaceModel.find({ event_id: new Types.ObjectId(eventId) });
   const races = raceDocs.map((doc) => toClientObject<RaceClientType>(doc));
   return races;

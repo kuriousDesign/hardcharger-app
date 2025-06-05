@@ -69,8 +69,8 @@ export function MobileNav({
               Menu
             </div>
             <div className="flex flex-col gap-3">
-              <MobileLink href="/" onOpenChange={setOpen}>
-                Home
+              <MobileLink className='text-warning-foreground' href="/dashboard" onOpenChange={setOpen}>
+                Dashboard
               </MobileLink>
               {items.map((item, index) => (
                 <MobileLink key={index} href={item.href} onOpenChange={setOpen}>

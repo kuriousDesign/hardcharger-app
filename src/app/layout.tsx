@@ -1,11 +1,6 @@
 import type { Metadata } from "next"
 import {
   ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
 } from '@clerk/nextjs'
 import { META_THEME_COLORS, siteConfig } from "@/lib/config"
 import { fontVariables } from "@/lib/fonts"
@@ -105,23 +100,6 @@ export default function RootLayout({
           >
             <LayoutProvider>
               <ActiveThemeProvider>
-                <header className="flex justify-end items-center p-4 gap-4 h-16 bg-opacity-10 backdrop-blur-md">
-                  <SignedOut>
-                    <SignInButton>
-                      <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Sign In
-                      </button>
-                    </SignInButton>
-                    <SignUpButton>
-                      <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                        Sign Up
-                      </button>
-                    </SignUpButton>
-                  </SignedOut>
-                  <SignedIn>
-                    <UserButton />
-                  </SignedIn>
-                </header>
                     <div className="bg-background relative z-10 flex min-h-svh flex-col">
                     <SiteHeader />
                     <main className="flex flex-1 flex-col">{children}</main>

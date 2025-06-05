@@ -1,5 +1,5 @@
 import { Types, Model, FilterQuery } from 'mongoose';
-import dbConnect from '@/lib/dbConnect';
+import connectToDb from '@/lib/db';
 import { toClientObject } from '@/utils/mongooseHelpers';
 
 import { Roles } from '@/types/globals';
@@ -35,7 +35,7 @@ export const createClientSafeGetHandler = <ServerType, ClientType>(
 ) => {
   return async (id: string): Promise<ClientType> => {
     await checkRoleProtected(options)();
-    await dbConnect();
+    await connectToDb();
     const doc = await model.findById(new Types.ObjectId(id));
     if (!doc) throw new Error(`Document with ID ${id} not found`);
 
@@ -49,7 +49,7 @@ export const createDocumentGetHandler = <ServerType>(
 ) => {
   return async (id: string): Promise<ServerType> => {
     await checkRoleProtected(options)();
-    await dbConnect();
+    await connectToDb();
     const doc = await model.findById(new Types.ObjectId(id));
     if (!doc) throw new Error(`Document with ID ${id} not found`);
     return doc;
@@ -64,7 +64,7 @@ export const createClientSafeGetAllHandler = <ServerType, ClientType>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (filter?:FilterQuery<any>): Promise<ClientType[]> => {
     await checkRoleProtected(options)();
-    await dbConnect();
+    await connectToDb();
     let docs;
     if(filter) {
       docs = await model.find(filter);
@@ -85,7 +85,7 @@ export const createDocumentGetAllHandler = <ServerType>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (filter:FilterQuery<any>): Promise<ServerType[]> => {
     await checkRoleProtected(options)();
-    await dbConnect();
+    await connectToDb();
     let docs;
     if(filter) {
       docs = await model.find(filter);
@@ -121,7 +121,7 @@ export const createClientSafePostHandler = <T extends { _id?: string }>(
 ) => {
   return async (clientData: Partial<T>) => {
     await checkRoleProtected(options)();
-    await dbConnect();
+    await connectToDb();
     const { _id, ...rest } = clientData;
     const serverData = toDocumentObject<T>(rest as Partial<T>);  // <-- cast here
 
@@ -144,7 +144,7 @@ export const createDeleteHandler = <T extends { _id?: string }>(
 ) => {
   return async (id: string) => {
     await checkRoleProtected(options)();
-    await dbConnect();
+    await connectToDb();
     const deleted = await model.findByIdAndDelete(new Types.ObjectId(id));
     if (!deleted) throw new Error(`Document with ID ${id} not found`);
 

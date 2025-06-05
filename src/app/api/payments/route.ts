@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PaymentModel as Payment, PaymentClientType } from '@/models/Payment'
-import dbConnect from '@/lib/dbConnect'
+import connectToDb from '@/lib/db'
 import mongoose from 'mongoose'
 import { postPayment } from '@/actions/postActions'
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
 export const GET = async () => {
     try {
-        await dbConnect()
+        await connectToDb()
 
         if (!mongoose.connection.db) {
             throw new Error('Database connection not established');
