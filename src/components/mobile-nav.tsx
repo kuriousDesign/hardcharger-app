@@ -12,17 +12,33 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { useUser } from "@clerk/nextjs"
 
 export function MobileNav({
   //tree,
   items,
+  adminItems,
   className,
 }: {
   //tree: typeof source.pageTree
   items: { href: string; label: string }[]
+  adminItems?: { href: string; label: string }[]
   className?: string
 }) {
   const [open, setOpen] = React.useState(false)
+  const { user, isLoaded } = useUser();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  React.useEffect(() => {
+
+
+
+    if (isLoaded) {
+      setIsAdmin(user?.publicMetadata?.role === 'admin');
+    }
+  }
+    , [isLoaded, user?.publicMetadata?.role]);
+
+
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -65,9 +81,7 @@ export function MobileNav({
       >
         <div className="flex flex-col gap-12 overflow-auto px-6 py-6">
           <div className="flex flex-col gap-4">
-            <div className="text-muted-foreground text-sm font-medium">
-              Menu
-            </div>
+
             <div className="flex flex-col gap-3">
               <MobileLink className='text-warning-foreground' href="/dashboard" onOpenChange={setOpen}>
                 Dashboard
@@ -78,6 +92,18 @@ export function MobileNav({
                 </MobileLink>
               ))}
             </div>
+            {isAdmin && adminItems && adminItems.length > 0 && (
+              <>
+                <div className="text-muted-foreground text-sm font-medium">
+                  Admin Links
+                </div>
+                {adminItems?.map((item, index) => (
+                  <MobileLink key={index} href={item.href} onOpenChange={setOpen}>
+                    {item.label}
+                  </MobileLink>
+                ))}
+              </>
+            )}
           </div>
 
         </div>

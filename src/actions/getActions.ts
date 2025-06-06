@@ -16,7 +16,7 @@ import { createClientSafeGetAllHandler, createClientSafeGetHandler, createDocume
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
 import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 export const getConnectToDb = async () => {await connectToDb();}
 
@@ -276,4 +276,21 @@ export const getRacesByGameId = async (gameId: string): Promise<RaceClientType[]
     }
   }
   return races;
+}
+
+export const getIsUserAdmin = async (): Promise<boolean> => {
+  const user = await currentUser();
+  if (!user) {
+    return false;
+    //throw new Error(`No user found with user_id`);
+  }
+  // Check if the user has admin role in metadata
+  return (await auth()).sessionClaims?.metadata?.role !== 'admin';
+}
+
+
+export const getOpenGames = async (): Promise<GameClientType[]> => {
+  const filter = { status: 'open' };
+  const games = await getGames(filter);
+  return games as GameClientType[];
 }

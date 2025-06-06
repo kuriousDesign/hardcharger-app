@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getGameWithEvent, getPicksByGameId } from '@/actions/getActions';
 import Link from 'next/link';
 
+
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }>}) {
     const { gameId } = await params;
 	const {game, event } = await getGameWithEvent(gameId);

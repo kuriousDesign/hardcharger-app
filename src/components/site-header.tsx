@@ -9,8 +9,6 @@ import { ModeSwitcher } from "@/components/mode-switcher"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 
-import { SiteConfig } from "./site-config"
-
 import {
   SignInButton,
   SignUpButton,
@@ -18,6 +16,12 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+
+const adminItems = [
+  { href: '/admin', label: 'Admin' },
+  { href: '/admin/users', label: 'Users' },
+  { href: '/admin/drivers', label: 'Drivers' },
+]
 
 export function SiteHeader() {
   //const colors = getColors()
@@ -30,6 +34,7 @@ export function SiteHeader() {
           <MobileNav
 
             items={siteConfig.navItems}
+            adminItems={adminItems}
             className="flex lg:hidden"
           />
           <Button
@@ -54,7 +59,7 @@ export function SiteHeader() {
             />
 
             <Separator orientation="vertical" className="3xl:flex hidden" />
-            <SiteConfig className="3xl:flex hidden" />
+
             <Separator orientation="vertical" />
             <ModeSwitcher />
             <Separator orientation="vertical" />

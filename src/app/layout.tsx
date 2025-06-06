@@ -5,7 +5,7 @@ import {
 import { META_THEME_COLORS, siteConfig } from "@/lib/config"
 import { fontVariables } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
-import { LayoutProvider } from "@/hooks/use-layout"
+//import { LayoutProvider } from "@/hooks/use-layout"
 import { ActiveThemeProvider } from "@/components/active-theme"
 // import { Analytics } from "@/components/analytics"
 // import { TailwindIndicator } from "@/components/tailwind-indicator"
@@ -98,7 +98,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <LayoutProvider>
+            {/* <LayoutProvider> */}
               <ActiveThemeProvider>
                     <div className="bg-background relative z-10 flex min-h-svh flex-col">
                     <SiteHeader />
@@ -109,7 +109,7 @@ export default function RootLayout({
                 <Toaster position="top-center" />
                 {/* <Analytics /> */}
               </ActiveThemeProvider>
-            </LayoutProvider>
+            {/* </LayoutProvider> */}
           </ThemeProvider>
         </body>
       </html>

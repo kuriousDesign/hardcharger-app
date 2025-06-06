@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic';
 
-import { getPlayersByUserId } from '@/actions/getActions';
-import ActiveGamesCard from '@/components/ActiveGamesCard';
-import { CardsDemo } from "@/components/cards"
+import { getOpenGames, getPlayersByUserId } from '@/actions/getActions';
+
 import AdminDashboardCard from './AdminDashboardCard';
 import { auth } from '@clerk/nextjs/server'
+import { CardsGames } from '@/components/cards/games';
 
 
 export default async function Dashboard() {
@@ -20,6 +20,8 @@ export default async function Dashboard() {
         return <div className="p-6">loading</div>;
     }
 
+    const openGames = await getOpenGames();
+
 
     return (
         <>
@@ -27,10 +29,11 @@ export default async function Dashboard() {
 
             </div>
             <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
-                <div className="theme-container container flex flex-1 flex-col">
-                    <CardsDemo />
+                <div className="theme-container container flex flex-1 flex-col gap-4">
+                    {/* <CardsDemo /> */}
+
+                    <CardsGames filterLabel="available" games={openGames}  />
                     <AdminDashboardCard />
-                    <ActiveGamesCard />
                 </div>
             </div>
         </>

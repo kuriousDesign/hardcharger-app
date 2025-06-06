@@ -22,7 +22,7 @@ import { RacerDriverClientType } from '@/models/Racer';
 import StepGameOverview from './StepGameOverview';
 import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
-import CardStepRacerPredictions from '@/app/dashboard/[gameId]/create_pick/card-step-racer-predictions';
+import CardStepRacerPredictions from '@/app/games/[gameId]/create_pick/card-step-racer-predictions';
 
 
 export default function MultiStepPickForm({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
