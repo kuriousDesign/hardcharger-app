@@ -12,7 +12,9 @@ import { RacerModel, RacerClientType, RacerDoc } from '@/models/Racer';
 import { Types } from 'mongoose';
 import { adminRoleProtectedOptions, createDeleteHandler, createClientSafePostHandler } from '@/utils/actionHelpers';
 import { PickClientType, PickDoc, PickModel } from '@/models/Pick';
+import parseDriverData from '@/data/parseDriverData';
 
+import { drivers as driversData } from '@/data/drivers';
 
 // export const getDrivers = async () => {
 //   await dbConnect();
@@ -270,3 +272,81 @@ export const postNewPlayerByUserId = async (userId: string) => {
   
   return { message: 'New player created successfully', player: newPlayer };
 }
+
+
+export const postDriversFromDataFolder = async () => {
+    //using driversData, insert drivers into the database, skipping duplicates
+  await connectToDb();
+  if (driversData.length === 0) {
+    return { success: false, message: 'No valid drivers found in the data' };
+  } else {
+    //const result = await DriverModel.insertMany(driversData);
+    // insert the drivers, but skip duplicates
+    const result = await DriverModel.bulkWrite(
+      driversData.map(driver => ({    
+        updateOne: {
+          filter: { car_number: driver.car_number },
+          update: { $setOnInsert: driver },
+          upsert: true
+        }
+      }))
+    );
+    if (result.upsertedCount === 0) {
+      return { success: false, message: 'No new drivers added, all were duplicates' };
+    }
+    console.log(`Inserted ${result.upsertedCount} new drivers`);
+    return { success: true, message: `Inserted ${result.upsertedCount} new drivers`, count: result.upsertedCount };
+  }
+
+};
+
+// Update an existing driver
+export async function updateDriver(id: string, data: DriverClientType) {
+  try {
+    await connectToDb();
+    const updatedDriver = await DriverModel.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true }
+    );
+    if (!updatedDriver) {
+      throw new Error('Driver not found');
+    }
+    return JSON.parse(JSON.stringify(updatedDriver)); // Serialize for Next.js
+  } catch (error) {
+    console.error('Error updating driver:', error);
+    throw new Error('Failed to update driver');
+  }
+}
+
+// extract drivers from data/drivers_2025.txt using parseDriverData() and post to drivers collection
+export const postDriversFromTextFile = async (filePath: string) => {
+  await connectToDb();
+  // read the file that is in src/data/drivers_2025.txt
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const fs = require('fs'); 
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+
+
+  const drivers = parseDriverData(fileContent);
+  if (drivers.length === 0) {
+    return { success: false, message: 'No valid drivers found in the file' };
+  } else {  
+    //const result = await DriverModel.insertMany(drivers);
+    // insert the drivers, but skip duplicates
+    const result = await DriverModel.bulkWrite(
+      drivers.map(driver => ({    
+        updateOne: {
+          filter: { car_number: driver.car_number },
+          update: { $setOnInsert: driver },
+          upsert: true
+        }
+      }))
+    );
+    if (result.upsertedCount === 0) {
+      return { success: false, message: 'No new drivers added, all were duplicates' };
+    }
+    console.log(`Inserted ${result.upsertedCount} new drivers`);
+    return { success: true, message: `Inserted ${result.upsertedCount} new drivers`, count: result.upsertedCount };
+  }
+};

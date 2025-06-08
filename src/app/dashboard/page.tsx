@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { getOpenGames, getPlayersByUserId } from '@/actions/getActions';
 
-import AdminDashboardCard from './AdminDashboardCard';
+import CardDashboardLinks from './card-dashboard-links';
 import { auth } from '@clerk/nextjs/server'
 import { CardsGames } from '@/components/cards/games';
 
@@ -33,7 +33,7 @@ export default async function Dashboard() {
                     {/* <CardsDemo /> */}
 
                     <CardsGames filterLabel="available" games={openGames}  />
-                    <AdminDashboardCard />
+                    <CardDashboardLinks />
                 </div>
             </div>
         </>

@@ -2,15 +2,20 @@
 
 import { getCurrentPlayer, getGamePicksByPlayerId, getGames } from "@/actions/getActions"
 import { CardsGames } from "@/components/cards/games"
-import { CardsTeamMembers } from "@/components/cards/team-members"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getLinks } from "@/lib/link-urls"
 import { GameClientType, GamePicksClientType } from "@/models/Game"
 import { PlayerClientType } from "@/models/Player"
+
+import Link from "next/link"
 import { useEffect, useState } from "react";
 
-
+import { useIsAdmin } from "@/hooks/use-is-admin"
+import { Button } from "@/components/ui/button"
 
 export default function GamesPage() {
+
+  const isAdmin = useIsAdmin();
 
   const [games, setGames] = useState<GameClientType[]>([]);
   //const [openGames, setOpenGames] = useState<GameClientType[]>([]);
@@ -55,7 +60,13 @@ export default function GamesPage() {
             </TabsList>
           </Tabs>
           <CardsGames games={games} filterLabel={filterLabel} />
-          <CardsTeamMembers />
+          {isAdmin && 
+          <Button size='lg' className="w-fit" >
+          <Link href={getLinks().getCreateGameUrl()} >
+            Add Game
+          </Link>
+          </Button>
+}
         </div>
       </div>
     </>

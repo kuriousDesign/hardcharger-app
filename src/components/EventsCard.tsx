@@ -1,3 +1,4 @@
+import { getLinks } from "@/lib/link-urls";
 import EventsDiv from "./EventsDiv";
 import Link from "next/link";
 
@@ -9,7 +10,7 @@ export default async function EventsCard(){
             <h2 className="text-xl font-bold mb-4">Events</h2>
             <EventsDiv />
             <Link 
-                href={`events/create_event`}
+                href={getLinks().getCreateEventUrl()}
                 className="flex justify-center bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-700 transition-colors duration-300 shadow-md"
             >
                 Add Event

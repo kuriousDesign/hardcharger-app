@@ -1,4 +1,5 @@
 import { getRaces, getRacesByEventId } from "@/actions/getActions";
+import { getLinks } from "@/lib/link-urls";
 import { RaceClientType } from "@/models/Race";
 import Link from "next/link";
 
@@ -25,7 +26,7 @@ export default async function RacesCard({ eventId }: { eventId: string }) {
             <div className="flex flex-wrap gap-4 pb-4">
                 {races.map((race: RaceClientType) => (
                     <Link
-                        href={`/events/${eventId}/races/${race._id}`}
+                        href={getLinks().getRaceUrl(eventId, race._id as string)}
                         key={race._id}
                         className="p-2 hover:bg-gray-50 rounded shadow-sm bg-gray-100 w-fit px-4"
                     >
@@ -37,7 +38,7 @@ export default async function RacesCard({ eventId }: { eventId: string }) {
                 ))}
             </div>
             <Link
-                href={`/events/${eventId}/races/create_race`}
+                href={getLinks().getCreateRaceUrl(eventId)}
                 className="flex justify-center bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-800 transition-colors duration-300 shadow-md"
             >
                 Create Race

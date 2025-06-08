@@ -3,7 +3,7 @@ import connectToDb from '@/lib/db';
 import { toClientObject } from '@/utils/mongooseHelpers';
 
 import { Roles } from '@/types/globals';
-import { checkRole } from './roles';
+import { getRole } from './roles';
 
 
 type HandlerOptions = {
@@ -19,7 +19,7 @@ export const adminRoleProtectedOptions = {
 function checkRoleProtected(options?: HandlerOptions) {
   return async () => {
     if (options?.isRoleProtected && options.role) {
-      const allowed = await checkRole(options.role);
+      const allowed = await getRole(options.role);
       if (!allowed) {
         throw new Error('Unauthorized access');
       }

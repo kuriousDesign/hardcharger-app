@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/popover"
 import { useUser } from "@clerk/nextjs"
 
+// Configure Permanent Marker for local use
+
 export function MobileNav({
   //tree,
   items,
@@ -41,12 +43,13 @@ export function MobileNav({
 
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} >
       <PopoverTrigger asChild>
+        
         <Button
           variant="ghost"
           className={cn(
-            "extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 !p-0 hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent",
+            "extend-touch-target h-8 touch-manipulationitems-centerjustify-start gap-2.5 !p-0 hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent",
             className
           )}
         >
@@ -67,10 +70,11 @@ export function MobileNav({
             </div>
             <span className="sr-only">Toggle Menu</span>
           </div>
-          <span className="flex h-8 items-center text-lg leading-none font-medium">
-            Menu
-          </span>
+
         </Button>
+
+      
+
       </PopoverTrigger>
       <PopoverContent
         className="bg-background/90 no-scrollbar h-(--radix-popper-available-height) w-(--radix-popper-available-width) overflow-y-auto rounded-none border-none p-0 shadow-none backdrop-blur duration-100"

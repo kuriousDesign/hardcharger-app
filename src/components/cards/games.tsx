@@ -35,16 +35,14 @@ export function CardsGames({ games, filterLabel }: { games: GameClientType[], fi
     )
   }
 
-  let cardDescription = 'Invite your team members to collaborate.'
-
-
+  let cardDescription = ''
 
   if (filterLabel) {
     let filterStatuses = [] as string[];
     if (filterLabel.toLowerCase() === 'available') {
       filterStatuses = ['open', 'regisration_over', 'active',];
       games = games.filter((game) => filterStatuses.includes(game.status));
-      cardDescription = 'Active games that you can join or view.';
+      cardDescription = 'make picks on these games.';
     } else if (filterLabel.toLowerCase() === 'past') {
       filterStatuses = ['just_finished', 'completed', 'cancelled'];
       games = games.filter((game) => filterStatuses.includes(game.status));
@@ -57,8 +55,6 @@ export function CardsGames({ games, filterLabel }: { games: GameClientType[], fi
       cardDescription = 'All games active or you have played.';
     }
   }
-
-
 
   return (
     <Card>

@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { RaceClientType } from '@/models/Race';
 import { postRace } from '@/actions/postActions';
 import { useRouter } from 'next/navigation';
+import { getLinks } from '@/lib/link-urls';
 
-export default function CreateRaceForm({eventId}: { eventId: string }) {
+export default function CreateRaceForm({eventId, redirectUrl}: { eventId: string, redirectUrl?: string }) {
   const router = useRouter();
   const [form, setForm] = useState<RaceClientType>({
     _id: '',
@@ -31,7 +32,7 @@ export default function CreateRaceForm({eventId}: { eventId: string }) {
     try {
       await postRace(form);
       console.log("CreateRaceForm submitted:", form);
-      router.push('../');
+      router.push(redirectUrl || getLinks().getRacesByEventUrl(eventId));
         } catch (error) {
       console.error('Error creating race:', error);
     }

@@ -9,6 +9,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
+import { getLinks } from "@/lib/link-urls"
 
 const title = "Pick your drivers. Win the pot."
 const description =
@@ -19,11 +20,13 @@ export const metadata: Metadata = {
   description,
 }
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
+
   return (
     <div>
       <PageHeader>
@@ -31,8 +34,8 @@ export default function DashboardLayout({
         <PageHeaderHeading>{title}</PageHeaderHeading>
         <PageHeaderDescription>{description}</PageHeaderDescription>
         <PageActions>
-          <Button asChild size="sm">
-            <Link href="/games">Browse games</Link>
+          <Button >
+            <Link href={getLinks().getEventsUrl()}>Browse Events</Link>
           </Button>
           <Button asChild variant="ghost" size="sm">
             <Link href="/picks">Active Picks</Link>

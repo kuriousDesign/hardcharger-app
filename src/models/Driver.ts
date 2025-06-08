@@ -7,6 +7,7 @@ const driverSchema = new mongoose.Schema(
     first_name: { type: String, required: true },
     suffix: { type: String, required: false, trim: true, default: '' },
     car_number: { type: String, required: true },
+    hometown: { type: String, required: false },
   },
   {
     collection: 'drivers',
@@ -20,3 +21,19 @@ export const DriverModel = Driver;
 export type DriverDoc = typeof types.server;
 export type DriverClientType = typeof types.client;
 
+export function getDriverFullName(driver: DriverClientType): string {
+  return driver ? `${driver.first_name} ${driver.last_name} ${driver.suffix}` : '';
+}
+
+export interface Hometown {
+  city: string;
+  region: string;
+}
+
+export function parseHometown(hometown: string): Hometown {
+  const [city, region] = hometown.split(', ').map(part => part.trim());
+  return { city, region };
+}
+export function formatHometown({ city, region }: Hometown): string {
+  return `${city}, ${region}`;
+}
