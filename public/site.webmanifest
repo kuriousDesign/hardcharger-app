@@ -1,0 +1,21 @@
+{
+  "name": "HardCharger",
+  "short_name": "HardCharger",
+  "description": "A thrilling pick'em game for spring car racing fans, enhancing your Games 2025 experience.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

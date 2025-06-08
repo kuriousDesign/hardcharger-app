@@ -1,7 +1,7 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { DriverClientType, formatHometown, Hometown, parseHometown } from '@/models/Driver';
+import { DriverClientType } from '@/models/Driver';
 import { postDriver, updateDriver } from '@/actions/postActions';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { getLinks } from '@/lib/link-urls';
 import { useState } from 'react';
+import { formatHometown, parseHometown } from '@/types/helpers';
+import { Hometown } from '@/types/globals';
 
 // List of US states, Canadian provinces, and Australian states/territories
 const regions = [
@@ -92,6 +94,9 @@ interface DriverFormProps {
   initialData?: DriverClientType; // Optional initial data for edit mode
 }
 
+
+
+
 export default function DriverForm({ initialData }: DriverFormProps) {
   const router = useRouter();
   const isEditMode = !!initialData?._id; // Determine mode based on _id presence
@@ -105,6 +110,8 @@ export default function DriverForm({ initialData }: DriverFormProps) {
     city,
     region,
   });
+
+
 
   // Initialize form with React Hook Form, handles creation vs. editing
   const form = useForm<DriverClientType>({
@@ -121,7 +128,7 @@ export default function DriverForm({ initialData }: DriverFormProps) {
           last_name: '',
           suffix: '',
           car_number: '',
-
+          hometown: '',
         },
   });
 

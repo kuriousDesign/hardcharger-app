@@ -10,10 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 
 import {
-  SignInButton,
-  SignUpButton,
   SignedIn,
-  SignedOut,
   UserButton,
 } from '@clerk/nextjs'
 import { LinkButton } from "./LinkButton"
@@ -49,7 +46,7 @@ export function SiteHeader() {
               <span className="sr-only">{'jake'}</span>
             </Link>
           </Button>
-          <MainNav items={siteConfig.navItems} className="hidden lg:flex bg-amber-400" />
+          <MainNav items={siteConfig.navItems} className="hidden lg:flex" />
           <div className="ml-auto flex items-center gap-2 md:flex-1 md:justify-end ">
             <LinkButton href='/dashboard' variant='link'
               className={`absolute left-1/2 -translate-x-1/2 flex h-8 items-center text-lg leading-none ${fontPermanentMarker.className}`}>
@@ -70,18 +67,6 @@ export function SiteHeader() {
             <ModeSwitcher />
             <Separator orientation="vertical" />
 
-            <SignedOut>
-              <SignInButton>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                  Sign In
-                </button>
-              </SignInButton>
-              <SignUpButton>
-                <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                  Sign Up
-                </button>
-              </SignUpButton>
-            </SignedOut>
             <SignedIn>
               <UserButton />
             </SignedIn>

@@ -23,6 +23,7 @@ import { checkIsAdmin } from "@/utils/roles";
 import { SquarePen } from "lucide-react";
 import { getDriverFullName } from "@/types/helpers";
 import { getDrivers } from "@/actions/getActions";
+import Link from "next/link";
 export default async function DriversCard() {
     const isAdmin = await checkIsAdmin();
     const unfilteredDrivers = await getDrivers();
@@ -51,9 +52,11 @@ export default async function DriversCard() {
                         <Button
                             key={driver._id}
                             className="w-full flex items-center justify-between gap-y-2 hover:bg-muted transition-colors shadow-md p-7 rounded-md z-50"
-                            // href={getLinks().getDriverUrl(driver._id || '')}
-                            variant='link' >
-                            <div className="flex items-center gap-4 ">
+                            
+                            variant='outline' >
+                            <Link 
+                                href={getLinks().getDriverUrl(driver._id || '')}
+                                className="flex items-center gap-4 ">
                                 <Avatar className="border">
                                     {/* <AvatarImage src={"/avatars/01.png"} alt="Image" /> */}
                                     <AvatarFallback>{`${driver.first_name.charAt(0)}${driver.last_name.charAt(0)}`}</AvatarFallback>
@@ -68,8 +71,8 @@ export default async function DriversCard() {
                                         <div>{`${driver.hometown}`}</div>
                                     </div>
                                 </div>
-                            </div>
-                            {true &&
+                            </Link>
+                            {isAdmin &&
                                 <LinkButton
                                     size="sm"
                                     href={getLinks().getEditDriverUrl(driver._id || '')}

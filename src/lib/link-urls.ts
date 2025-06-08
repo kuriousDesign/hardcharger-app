@@ -16,6 +16,10 @@ export function getLinks() {
         return '/events';
     };
 
+    const getEventUrl = (eventId?: string) => {
+        return `${getEventsUrl()}/${eventId || '_'}`;
+    }
+
     const getDriversUrl = () => {
         return '/drivers';
     };
@@ -35,6 +39,10 @@ export function getLinks() {
 
     const getGamesUrl = () => {
         return '/games';
+    };
+
+    const getGameUrl = (gameId?: string) => {
+        return `${getGamesUrl()}/${gameId || '_'}`;
     };
 
     const getCreateEventUrl = () => {
@@ -72,6 +80,9 @@ export function getLinks() {
         return `/races/${eventId}`;
     }
 
+    const getPicksUrl = (gameId?: string) => {
+        return `${getGameUrl(gameId)}/picks`;
+    }   
 
 
     return {
@@ -80,6 +91,7 @@ export function getLinks() {
         getCreateGameUrl,
         getHomeUrl,
         getEventsUrl,
+        getEventUrl,
         getDriversUrl,
         getDriverUrl,
         getCreateDriverUrl,
@@ -91,6 +103,7 @@ export function getLinks() {
         getRaceUrl,
         getEditRaceUrl,
         getRacesUrl,
+        getPicksUrl,
         //currentPath: pathname
     };
 }

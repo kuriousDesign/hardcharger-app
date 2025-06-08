@@ -35,14 +35,14 @@ export default async function Home() {
 
 			<SignedOut>
 				<SignInButton>
-				<button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+				<div className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-600">
 					Sign In
-				</button>
+				</div>
 				</SignInButton>
 				<SignUpButton>
-				<button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+				<div className="px-4 py-2 bg-secondary text-white rounded hover:bg-green-600">
 					Sign Up
-				</button>
+				</div>
 				</SignUpButton>
 			</SignedOut>
 			<VenmoLink pickId={pickId} amount={0.01} />

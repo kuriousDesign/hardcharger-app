@@ -10,3 +10,9 @@ declare global {
     }
   }
 }
+
+
+export interface Hometown {
+  city: string;
+  region: string;
+}

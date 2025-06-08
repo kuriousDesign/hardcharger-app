@@ -38,7 +38,7 @@ export default async function DashboardLayout({
             <Link href={getLinks().getEventsUrl()}>Browse Events</Link>
           </Button>
           <Button asChild variant="ghost" size="sm">
-            <Link href="/picks">Active Picks</Link>
+            <Link href={getLinks().getPicksUrl()}>Active Picks</Link>
           </Button>
         </PageActions>
       </PageHeader>

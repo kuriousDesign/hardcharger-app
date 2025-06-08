@@ -1,46 +1,49 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { checkIsAdmin } from './utils/roles';
+import { getLinks } from './lib/link-urls';
 
 // Define public routes (accessible without authentication)
 const isPublicRoute = createRouteMatcher([
-  '/',                  // Home page
-  '/sign-in(.*)',      // Sign-in routes
-  '/sign-up(.*)',      // Sign-up routes
-  '/(api|trpc)(.*)',   // API and TRPC routes
+  '/',                    // Home page
+  '/sign-in(.*)',        // Sign-in routes
+  '/sign-up(.*)',        // Sign-up routes
+  '/api(.*)',            // API routes
+  '/trpc(.*)',           // TRPC routes
+  '/opengraph-image.png', // Open Graph image
+  '/site.webmanifest',   // Web manifest
+  '/favicon.ico',        // Favicon
+  '/favicon-16x16.png',  // Shortcut icon
+  '/apple-touch-icon.png', // Apple touch icon
 ]);
 
-// Define admin routes (all routes under app/admin, requires admin role)
+// Define admin routes (requires admin role)
 const isAdminRoute = createRouteMatcher([
-  '/admin(.*)',        // Maps to app/admin and all sub-routes (e.g., /admin/events, /admin/dashboard)
+  '/admin(.*)',          // All /admin routes (e.g., /admin/drivers, /admin/events)
 ]);
+
+
 
 export default clerkMiddleware(async (auth, req) => {
-  const { sessionClaims, userId } = await auth();
 
-  // Protect all routes except public ones
-  if (!isPublicRoute(req)) {
-    await auth.protect(); // Ensures user is logged in
-  }
+  // Protect non-public routes
+  if (!isPublicRoute(req)) await auth.protect()
 
-  // Protect all routes under app/admin with role check
+  // Protect admin routes with role check
   if (isAdminRoute(req)) {
-    // Check if user is logged in and has admin role
-    if (!userId || !sessionClaims?.metadata?.role || sessionClaims.metadata.role !== 'admin') {
-      // Redirect based on login status
-      const redirectUrl = new URL(userId ? '/dashboard' : '/', req.url);
+    if (!checkIsAdmin()){
+      // Redirect to dashboard if logged in, else to home
+      const redirectUrl = new URL(getLinks().getDashboardUrl(), req.url);
       return NextResponse.redirect(redirectUrl);
     }
   }
-
-  // Allow the request to proceed
-  return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
+    // Apply to all routes except Next.js internals and specific static files
+    '/((?!_next/static|_next/image|.*\\.(?:jpg|jpeg|png|gif|svg|ico|webp|woff2?|ttf)).*)',
+    // Always run for API and TRPC routes
     '/(api|trpc)(.*)',
   ],
 };

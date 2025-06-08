@@ -5,12 +5,13 @@ import { getOpenGames, getPlayersByUserId } from '@/actions/getActions';
 import CardDashboardLinks from './card-dashboard-links';
 import { auth } from '@clerk/nextjs/server'
 import { CardsGames } from '@/components/cards/games';
-
+import { redirect } from 'next/navigation';
 
 export default async function Dashboard() {
     const { userId } = await auth();
     if (!userId) {
-        return <div className="p-6">You must be logged in to view this page.</div>;
+        // redirect to login if userId is not available
+        redirect('/');
     }
     // const user = await currentUser();
     console.log('Dashboard userId', userId);
