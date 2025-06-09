@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { getEvent, getRace, getRacersByRaceId } from '@/actions/getActions';
 import RacersCard from '@/components/RacersCard';
+import { getLinks } from '@/lib/link-urls';
 import Link from 'next/link';
 
 export default async function RacePage({
@@ -30,9 +31,9 @@ export default async function RacePage({
             <p>{event.name}</p>
             <p>{race.letter} {race.type} </p>
             {raceId}
-            <RacersCard eventId={eventId} raceId={raceId} />
+            <RacersCard eventId={eventId as string} raceId={raceId as string} />
             <Link
-                href={`/events/${eventId}`}
+                href={getLinks().getEventUrl(eventId)}
                 className="flex justify-center mt-4 bg-gray-50 text-gray-700 p-4 rounded-full w-fit min-w-[150px] hover:bg-black hover:text-white transition-colors duration-300 shadow-md"
             >
                 Back to Event

@@ -8,7 +8,7 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { getCurrentPlayer, getPicksWithGamesByPlayerId } from '@/actions/getActions';
+import { getCurrentPlayer, getGame, getPicksByGameId } from '@/actions/getActions';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { LinkButton } from "@/components/LinkButton";
@@ -19,16 +19,21 @@ import { GameClientType } from "@/models/Game";
 import { PickClientType } from "@/models/Pick";
 import { PlayerClientType } from "@/models/Player";
 import Loading from "./loading";
+import { useParams } from 'next/navigation';
 
-const title = "Your Picks"
-const description = "Browse your picks and the games they are in."
+const title = "Game Picks"
+const description = "Browse these picks for a certain game."
 
 // not allowed with use client
 // export const metadata: Metadata = {
 //     title,
 //     description,
 // }
-export default function PicksPage() {
+export default function GamePicksPage(){
+
+    //const { gameId } = await params;
+    const { gameId } = useParams() as { gameId: string };
+    
     const [games, setGames] = useState<GameClientType[]>([]);
     const [picks, setPicks] = useState<PickClientType[]>([]);
     const [filterLabel, setFilterLabel] = useState<string>('available');
@@ -39,9 +44,11 @@ export default function PicksPage() {
             setLoading(true);
             const player = await getCurrentPlayer() as PlayerClientType;
             if (player) {
-                const picksWithGames = await getPicksWithGamesByPlayerId(player._id as string);
-                setGames(picksWithGames.games as GameClientType[]);
-                setPicks(picksWithGames.picks as PickClientType[]);
+                const picks = await getPicksByGameId(gameId);
+                const game = await getGame(gameId) as GameClientType;
+                const games = [game];
+                setGames(games as GameClientType[]);
+                setPicks(picks as PickClientType[]);
             }
             setLoading(false);
         };

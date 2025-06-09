@@ -62,7 +62,7 @@ export function getLinks() {
     }
 
     const getRaceUrl = (eventId: string, raceId: string) => {
-        return `${getRacesUrl(eventId)}/races/${raceId}`;
+        return `${getRacesUrl(eventId)}/${raceId}`;
     }
 
 
@@ -71,20 +71,20 @@ export function getLinks() {
     }
 
 
-    const getCreateRacerUrl = (raceId?: string) => {
-        return `/admin/create_racer/${raceId || '_'}`;
+    const getCreateRacerUrl = (eventId: string, raceId: string) => {
+        return `${getRaceUrl(eventId, raceId)}/create-racer`;
     }
 
-    const getCreateGameUrl = (eventId?: string) => {
-        return `${getEventUrl(eventId) || '_'}/create-game`;
+    const getCreateGameUrl = (eventId: string) => {
+        return `${getEventUrl(eventId)}/create-game`;
     }
-        const getCreateRaceUrl = (eventId?: string) => {
-        return `${getEventUrl(eventId) || '_'}/create-race`;
+    const getCreateRaceUrl = (eventId: string) => {
+        return `${getEventUrl(eventId)}/create-race`;
     }
 
 
-    const getRacesByEventUrl = (eventId: string) => {
-        return `/races/${eventId}`;
+    const getRaces = (eventId: string) => {
+        return `${getEventUrl(eventId)}/races`;
     }
 
     const getGamePicksUrl = (gameId?: string) => {
@@ -95,7 +95,7 @@ export function getLinks() {
         return `${getDashboardUrl()}/picks`;
     }
     
-    const getCreatePickUrl = (gameId?: string) => {
+    const getCreatePickUrl = (gameId: string) => {
         return `${getGameUrl(gameId)}/create-pick`;
     }
 
@@ -120,7 +120,7 @@ export function getLinks() {
         getGamesUrl,
         getDashboardUrl,
         getCreateRacerUrl,
-        getRacesByEventUrl,
+        getRacesByEventUrl: getRaces,
         getRaceUrl,
         getEditRaceUrl,
         getRacesUrl,

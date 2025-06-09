@@ -5,6 +5,7 @@ import { RacerClientType } from "@/models/Racer";
 import { getRace, getRacersWithDriversByRaceId } from "@/actions/getActions";
 import Link from "next/link";
 import { DriverClientType } from "@/models/Driver";
+import { getLinks } from "@/lib/link-urls";
 
 
 export default async function RacersCard({ eventId, raceId }: { eventId: string, raceId: string }){
@@ -92,7 +93,7 @@ export default async function RacersCard({ eventId, raceId }: { eventId: string,
             <h2 className="text-xl font-bold mb-4">{racersTitle}</h2>
             <RacersDiv />
             <Link 
-                href={`/events/${eventId}/races/${raceId}/racers/create_racer`}
+                href={getLinks().getCreateRacerUrl(eventId, raceId)}
                 className="flex justify-center bg-blue-600 text-white p-4 rounded-full w-fit min-w-[150px] hover:bg-blue-700 transition-colors duration-300 shadow-md"
             >
                 Add Racer

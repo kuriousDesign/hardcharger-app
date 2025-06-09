@@ -6,14 +6,21 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getLinks } from "@/lib/link-urls"
 import { GameClientType, GamePicksClientType } from "@/models/Game"
 import { PlayerClientType } from "@/models/Player"
+import {
+  PageActions,
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 
-import Link from "next/link"
 import { useEffect, useState } from "react";
 
 import { useIsAdmin } from "@/hooks/use-is-admin"
-import { Button } from "@/components/ui/button"
-import Loading from "./loading"
 
+import Loading from "./loading"
+import { LinkButton } from "@/components/LinkButton"
+const title = "Games"
+const description = "Browse these games."
 export default function GamesPage() {
 
   const isAdmin = useIsAdmin();
@@ -30,7 +37,7 @@ export default function GamesPage() {
         return <div className="p-6">loading</div>;
       }
       const gamePicks = await getGamePicksByPlayerId(player._id as string) as GamePicksClientType[];
-      const openGameData = await getGames({ status: 'open' }) as GameClientType[]; 
+      const openGameData = await getGames({ status: 'open' }) as GameClientType[];
       //setOpenGames(openGameData);
       const playerGames = gamePicks.map((gamePick) => gamePick.game as GameClientType) as GameClientType[];
       // combine open games with player games
@@ -42,34 +49,36 @@ export default function GamesPage() {
   }, []);
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
 
 
   return (
-    <>
-      <div id="themes" className="container-wrapper scroll-mt-20">
-
-      </div>
+    <div>
+      <PageHeader>
+        <PageHeaderHeading>{title}</PageHeaderHeading>
+        <PageHeaderDescription>{description}</PageHeaderDescription>
+        <PageActions>
+          {isAdmin &&
+            <LinkButton href={getLinks().getEventsUrl()} >
+              Events
+            </LinkButton>
+          }
+        </PageActions>
+      </PageHeader>
       <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
         <div className="theme-container container flex flex-1 flex-col gap-4">
           <Tabs defaultValue="available" onValueChange={(value) => setFilterLabel(value)} >
             <TabsList>
-                <TabsTrigger value="available" className="data-[state=active]:text-primary ">Available</TabsTrigger>
+              <TabsTrigger value="available" className="data-[state=active]:text-primary ">Available</TabsTrigger>
               <TabsTrigger value="past">Past</TabsTrigger>
               <TabsTrigger value="all">All</TabsTrigger>
             </TabsList>
           </Tabs>
           <CardsGames games={games} filterLabel={filterLabel} />
-          {isAdmin && 
-          <Button size='lg' className="w-fit" >
-          <Link href={getLinks().getCreateGameUrl()} >
-            Add Game
-          </Link>
-          </Button>
-}
         </div>
       </div>
-    </>
+    </div>
+
   )
 }
