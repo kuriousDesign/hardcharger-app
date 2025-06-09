@@ -8,10 +8,17 @@ export function getLinks() {
         return '/';
     };
 
+    const getAdminUrl = () => {
+        return '/admin';
+    }
+
     const getDashboardUrl = () => {
         return '/dashboard';
     };
-
+    
+    const getDriversUrl = () => {
+        return '/drivers';
+    };
     const getEventsUrl = () => {
         return '/events';
     };
@@ -19,10 +26,6 @@ export function getLinks() {
     const getEventUrl = (eventId?: string) => {
         return `${getEventsUrl()}/${eventId || '_'}`;
     }
-
-    const getDriversUrl = () => {
-        return '/drivers';
-    };
 
     const getDriverUrl = (driverId: string) => {
         return `${getDriversUrl()}/${driverId}`;
@@ -46,9 +49,12 @@ export function getLinks() {
     };
 
     const getCreateEventUrl = () => {
-        return `/events/create`;
+        return `${getEventsUrl()}/create`;
     }
 
+    const getEditEventUrl = (eventId: string) => {
+        return `${getEventUrl(eventId)}/edit`;
+    }
 
 
     const getRacesUrl = (eventId: string) => {
@@ -56,12 +62,9 @@ export function getLinks() {
     }
 
     const getRaceUrl = (eventId: string, raceId: string) => {
-        return `${getRacesUrl(eventId)}/${raceId}`;
+        return `${getRacesUrl(eventId)}/races/${raceId}`;
     }
 
-    const getCreateRaceUrl = (eventId?: string) => {
-        return `${getRacesUrl(eventId || '_')}/create`;
-    }
 
     const getEditRaceUrl = (eventId: string, raceId: string) => {
         return `${getRacesUrl(eventId)}/${raceId}/edit`;
@@ -73,19 +76,37 @@ export function getLinks() {
     }
 
     const getCreateGameUrl = (eventId?: string) => {
-        return `/admin/create_game/${eventId || '_'}`;
+        return `${getEventUrl(eventId) || '_'}/create-game`;
     }
+        const getCreateRaceUrl = (eventId?: string) => {
+        return `${getEventUrl(eventId) || '_'}/create-race`;
+    }
+
 
     const getRacesByEventUrl = (eventId: string) => {
         return `/races/${eventId}`;
     }
 
-    const getPicksUrl = (gameId?: string) => {
+    const getGamePicksUrl = (gameId?: string) => {
         return `${getGameUrl(gameId)}/picks`;
-    }   
+    }
 
+    const getPlayerPicksUrl = () => {
+        return `${getDashboardUrl()}/picks`;
+    }
+    
+    const getCreatePickUrl = (gameId?: string) => {
+        return `${getGameUrl(gameId)}/create-pick`;
+    }
+
+    const getCurrentPath = () => {
+        // This function is a placeholder for the current path logic
+        // In a real application, you would use a hook or context to get the current path
+        return window.location.pathname;
+    };
 
     return {
+        getAdminUrl,
         getCreateEventUrl,
         getCreateRaceUrl,
         getCreateGameUrl,
@@ -103,7 +124,11 @@ export function getLinks() {
         getRaceUrl,
         getEditRaceUrl,
         getRacesUrl,
-        getPicksUrl,
-        //currentPath: pathname
+        getGamePicksUrl,
+        getPlayerPicksUrl,
+        getCreatePickUrl,
+        getGameUrl,
+        getEditEventUrl,
+        getCurrentPath,
     };
 }

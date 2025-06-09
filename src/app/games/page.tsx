@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 
 import { useIsAdmin } from "@/hooks/use-is-admin"
 import { Button } from "@/components/ui/button"
+import Loading from "./loading"
 
 export default function GamesPage() {
 
@@ -41,7 +42,7 @@ export default function GamesPage() {
   }, []);
 
   if (loading) {
-    return <div className="p-6">Loading...</div>;
+    return <Loading/>
   }
 
 

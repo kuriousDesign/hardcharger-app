@@ -1,4 +1,4 @@
-import CreateGameForm from './CreateGameForm';
+import CreateGameForm from '@/components/forms/CreateGameForm';
 
 export default async function CreateGamePage({
   params,

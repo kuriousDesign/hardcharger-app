@@ -1,4 +1,4 @@
-import CreateRacerForm from './CreateRacerForm';
+import CreateRacerForm from '../../../../../../components/forms/CreateRacerForm';
 
 export default async function CreateRacerPage({
   params,

@@ -1,4 +1,4 @@
-import MultiStepPickForm from './MultiStepPickForm';
+import MultiStepPickForm from '../../../../components/create-pick/MultiStepPickForm';
 import { PlayerClientType } from '@/models/Player';
 import { auth } from '@clerk/nextjs/server'
 import { getPlayersByUserId, getUserFullName} from '@/actions/getActions';

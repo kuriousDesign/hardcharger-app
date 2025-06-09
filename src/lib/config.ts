@@ -1,3 +1,5 @@
+import { getLinks } from "./link-urls"
+
 export const siteConfig = {
   name: "hardcharger/ui",
   url: "https://ui.shadcn.com",
@@ -11,18 +13,14 @@ export const siteConfig = {
   },
   navItems: [
     {
-      href: "/games",
+      href: getLinks().getGamesUrl(),
       label: "Games",
     },
     {
-      href: "/picks",
+      href: getLinks().getPlayerPicksUrl(),
       label: "Picks",
     },
     {
-      href: "/themes",
-      label: "Themes",
-    },
-        {
       href: "https://kurious-design.com",
       label: "Kurious",
     },
