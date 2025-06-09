@@ -11,8 +11,6 @@ import {
 import { getCurrentPlayer, getPicksWithGamesByPlayerId } from '@/actions/getActions';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-
-import { useAuth } from "@clerk/nextjs";
 import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";
 import { CardsPicks } from "@/components/cards/picks";
@@ -33,22 +31,13 @@ const description = "Browse your picks and the games they are in."
 export default function PicksPage() {
     const [games, setGames] = useState<GameClientType[]>([]);
     const [picks, setPicks] = useState<PickClientType[]>([]);
-    //const [openGames, setOpenGames] = useState<GameClientType[]>([]);
     const [filterLabel, setFilterLabel] = useState<string>('available');
     const [loading, setLoading] = useState<boolean>(true);
-    const { userId } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
-
             setLoading(true);
-            if (!userId) {
-                //console.error('No userId found in auth context');
-                //return;
-            }
             const player = await getCurrentPlayer() as PlayerClientType;
-
-            //const player = await getPlayersByUserId(userId) as PlayerClientType;
             if (player) {
                 const picksWithGames = await getPicksWithGamesByPlayerId(player._id as string);
                 setGames(picksWithGames.games as GameClientType[]);
@@ -63,7 +52,6 @@ export default function PicksPage() {
     if (loading) {
         return <Loading />
     }
-
 
     return (
         <div>
