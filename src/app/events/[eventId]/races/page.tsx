@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import RacesCard from '@/components/RacesCard';
+import RacesCard from '@/components/cards/races';
 import Link from 'next/link';
 
 export default async function RacesPage({

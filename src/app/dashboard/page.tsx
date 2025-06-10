@@ -27,10 +27,10 @@ export default async function DashboardPage() {
     const { userId } = await auth();
     if (!userId) {
         // redirect to login if userId is not available
-        redirect('/');
+        redirect('/'); //unnecessary, but just in case
     }
     // const user = await currentUser();
-    console.log('Dashboard userId', userId);
+    //console.log('Dashboard userId', userId);
     const player = await getPlayersByUserId(userId);
 
     if (!player) {

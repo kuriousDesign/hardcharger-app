@@ -30,7 +30,9 @@ export default async function RacePage({
         <div className='flex flex-col gap-4 w-full h-full p-4'>
             <p>{event.name}</p>
             <p>{race.letter} {race.type} </p>
-            {raceId}
+            Cars: {race.num_cars }
+             <p>First Transfer Position {race.first_transfer_position} </p>
+               <p>Num Transfer Cars {race.num_transfers} </p>
             <RacersCard eventId={eventId as string} raceId={raceId as string} />
             <Link
                 href={getLinks().getEventUrl(eventId)}

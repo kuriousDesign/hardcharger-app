@@ -24,7 +24,7 @@ import { SquarePen } from "lucide-react";
 import { getDriverFullName } from "@/types/helpers";
 import { getDrivers } from "@/actions/getActions";
 import Link from "next/link";
-export default async function DriversCard() {
+export default async function CardDrivers() {
     const isAdmin = await checkIsAdmin();
     const unfilteredDrivers = await getDrivers();
     // filter drivers whose first name begins with Transfer
@@ -46,11 +46,11 @@ export default async function DriversCard() {
 
             </CardHeader>
             <CardContent className="grid gap-6">
-                {drivers?.map((driver: DriverClientType, index:number) => (
+                {drivers?.map((driver: DriverClientType) => (
 
                     <div key={driver._id}>
                         <Button
-                            key={driver._id}
+                      
                             className="w-full flex items-center justify-between gap-y-2 hover:bg-muted transition-colors shadow-md p-7 rounded-md z-50"
                             
                             variant='outline' >
@@ -91,9 +91,7 @@ export default async function DriversCard() {
 
                         </Button>
 
-                        {index !== drivers.length - 1 &&
-                            <Separator orientation="horizontal" className='bg-muted' />
-                        }
+
                     </div>
                 ))}
             </CardContent>

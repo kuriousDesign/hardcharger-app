@@ -1,8 +1,26 @@
-import { getEvent } from "@/actions/getActions";
-import GamesCard from "@/components/GamesCard";
-import RacesCard from "@/components/RacesCard";
-import Link from "next/link";
+import { getEvent, getGamesByEventId } from "@/actions/getActions";
+import RacesCard from "@/components/cards/races";
+import {
+  PageActions,
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 
+
+import { CardsGames } from '@/components/cards/games';
+
+import { Metadata } from "next";
+import { LinkButton } from "@/components/LinkButton";
+import { getLinks } from "@/lib/link-urls";
+
+const title = "Event Page"
+const description = "Find a game and create a pick. Look at your current picks too."
+
+export const metadata: Metadata = {
+  title,
+  description,
+}
 export default async function EventPage({
   params,
 }: {
@@ -18,25 +36,32 @@ export default async function EventPage({
 		return <div className="p-6">Event not found</div>;
 	}
 
-	return (
-		<div className="p-6 space-y-4">
-			<div 
-				className="p-2 hover:bg-gray-50 rounded shadow-sm bg-gray-100 w-full px-4 flex items-center"
-			>
-				<div className='flex flex-col gap-2 justify-start'>
-					<p className="font-bold text-2xl">{event.name}</p>
-					<p className="font-bold text-gray-400">{event.location}</p>
-					<p className="font-bold text-gray-400">{event.date}</p>
+	const games = await getGamesByEventId(eventId);
+
+		return (
+			<div>
+				<PageHeader>
+					<PageHeaderHeading>{event.name}</PageHeaderHeading>
+					<PageHeaderDescription>{event.date}</PageHeaderDescription>
+					<PageHeaderDescription>{event.location}</PageHeaderDescription>
+					<PageActions>
+	
+						<LinkButton
+							variant="outline"
+							className='text-secondary-foreground'
+							size="sm"
+							href={getLinks().getEditEventUrl(eventId)}>
+							Edit Event
+						</LinkButton>
+					</PageActions>
+				</PageHeader>
+				<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
+					<div className="theme-container container flex flex-1 flex-col gap-4">
+						<RacesCard eventId={eventId} />
+						<CardsGames filterLabel="all" games={games} />
+					</div>
 				</div>
 			</div>
-			<GamesCard eventId={eventId} />
-			<RacesCard eventId={eventId} />
-			<Link
-				href={`/events`}
-				className="flex justify-center mt-4 bg-gray-50 text-gray-700 p-4 rounded-full w-fit min-w-[150px] hover:bg-black hover:text-white transition-colors duration-300 shadow-md"
-			>
-				Back to Events
-			</Link>
-		</div>
-	);
+	
+		);
 }

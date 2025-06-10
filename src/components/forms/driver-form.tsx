@@ -285,6 +285,14 @@ export default function DriverForm({ initialData }: DriverFormProps) {
         >
           {form.formState.isSubmitting ? 'Submitting...' : isEditMode ? 'Update Driver' : 'Create Driver'}
         </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          onClick={() => router.push(getLinks().getDriversUrl())}
+        >
+          Cancel
+        </Button>
       </form>
     </Form>
   );
