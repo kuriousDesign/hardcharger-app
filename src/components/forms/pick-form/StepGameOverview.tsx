@@ -1,14 +1,19 @@
 import { GameDetails } from '@/components/GameDetails';
 import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
+import { Card, CardContent } from '@/components/ui/card';
 
 
 export default function StepGameOverview({game, races}: { game: GameClientType; races:RaceClientType[] }) {
 
   
   return (
-    <div className="w-full h-full overflow-y-hidden">
-    <GameDetails game={game} races={races} />
-    </div>
+    
+    <Card className="w-full h-full overflow-y-hidden">
+      <CardContent>
+          <GameDetails game={game} races={races} />
+      </CardContent>
+    
+    </Card>
   );
 }

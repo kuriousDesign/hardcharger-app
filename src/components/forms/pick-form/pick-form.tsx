@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card"
+
 import {
   Carousel,
   CarouselContent,
@@ -115,11 +115,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
         {steps.map((step, index) => (
           <CarouselItem key={index} >
             <div className=" h-[70vh] p-4">
-              <Card className='h-full overflow-y-scroll'>
-                <CardContent className="flex items-center justify-center">
                   {step()}
-                </CardContent>
-              </Card>
             </div>
           </CarouselItem>
         ))}

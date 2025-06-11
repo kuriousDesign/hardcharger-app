@@ -1,4 +1,5 @@
 TODO:
+[ ] add guess prediction to hard charger
 [ ] race page needs to be organized to help create the lineup or update lineup during race and change status of race.
 [ ] need to filter list of races when one is selected so that duplicates can't be selected, or show warning.
 [ ] see if server action for getCurrentPlayer is producing the clerkMiddleware warning, could also be checkRole()

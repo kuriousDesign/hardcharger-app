@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -28,6 +29,7 @@ export function getRaceNameWithRaceId(raceId: string, races: RaceClientType[]): 
 }
 
 export default function CardStepRacerPredictions({
+
   type,
   game,
   racerDrivers,
@@ -35,6 +37,7 @@ export default function CardStepRacerPredictions({
   pickForm,
   setPickForm,
 }: {
+
   type: string;
   game: GameClientType;
   racerDrivers: RacerDriverClientType[];
@@ -52,7 +55,7 @@ export default function CardStepRacerPredictions({
     predictions = Array.from({ length: game.num_hard_chargers }, (_, i) => ({
       name: `Hard Charger ${i + 1}`,
       avatar: `/avatars/${i + 1}.png`,
-      role: `Hard Charger who will pass ${i === 0 ? 'the most' : 'a lot of'} cars`,
+      role: `Select Hard Charger ${i + 1}`,
       letter: 'H',
       number: i + 1,
     } as RacerPredictionDisplayProps));
@@ -62,7 +65,7 @@ export default function CardStepRacerPredictions({
     predictions = Array.from({ length: game.num_top_finishers }, (_, i) => ({
       name: `Top Finisher - ${convertNumberToStNdRdTh(i + 1)} Place`,
       avatar: `/avatars/${i + 1}.png`,
-      role: `Select driver ${i + 1}`,
+      role: `Select Top Finisher ${i + 1}`,
       letter: 'T',
       number: i + 1,
     } as RacerPredictionDisplayProps));
@@ -81,7 +84,7 @@ export default function CardStepRacerPredictions({
   );
 
   return (
-    <Card>
+    <Card className='h-full '>
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
@@ -99,6 +102,7 @@ export default function CardStepRacerPredictions({
           />
         ))}
       </CardContent>
+
     </Card>
   );
 }
