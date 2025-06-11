@@ -6,6 +6,7 @@ import { getRacesByEventId } from '@/actions/getActions';
 import { postGame } from '@/actions/postActions';
 import { useRouter } from 'next/navigation';
 import { RaceClientType } from '@/models/Race';
+import { getLinks } from '@/lib/link-urls';
 
 export default function CreateGameForm({eventId}: { eventId: string }) {
   const router = useRouter();
@@ -74,7 +75,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     console.log("CreateGameForm submitted:", gameFormWithRaces);
     await postGame(gameFormWithRaces);
     console.log('Game created successfully');
-    router.push('../');
+    router.push(getLinks().getEventUrl(eventId)); // Redirect to the event page after creation
   } catch (error) {
     console.error('Error creating game:', error);
   }

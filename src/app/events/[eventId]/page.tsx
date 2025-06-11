@@ -9,10 +9,11 @@ import {
 
 
 import { CardsGames } from '@/components/cards/games';
-
+import { checkIsAdmin } from "@/utils/roles";
 import { Metadata } from "next";
 import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";
+
 
 const title = "Event Page"
 const description = "Find a game and create a pick. Look at your current picks too."
@@ -36,6 +37,8 @@ export default async function EventPage({
 		return <div className="p-6">Event not found</div>;
 	}
 
+	const isAdmin = await checkIsAdmin();
+
 	const games = await getGamesByEventId(eventId);
 
 		return (
@@ -45,7 +48,6 @@ export default async function EventPage({
 					<PageHeaderDescription>{event.date}</PageHeaderDescription>
 					<PageHeaderDescription>{event.location}</PageHeaderDescription>
 					<PageActions>
-	
 						<LinkButton
 							variant="outline"
 							className='text-secondary-foreground'
@@ -58,7 +60,7 @@ export default async function EventPage({
 				<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
 					<div className="theme-container container flex flex-1 flex-col gap-4">
 						<RacesCard eventId={eventId} />
-						<CardsGames filterLabel="all" games={games} />
+						<CardsGames games={games} showCreateButton={isAdmin} eventId={eventId}/>
 					</div>
 				</div>
 			</div>

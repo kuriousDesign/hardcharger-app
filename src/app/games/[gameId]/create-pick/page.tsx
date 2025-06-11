@@ -1,4 +1,4 @@
-import MultiStepPickForm from '../../../../components/create-pick/MultiStepPickForm';
+import FormPick from '../../../../components/forms/pick-form/pick-form';
 import { PlayerClientType } from '@/models/Player';
 import { auth } from '@clerk/nextjs/server'
 import { getPlayersByUserId, getUserFullName} from '@/actions/getActions';
@@ -28,7 +28,7 @@ export default async function CreatePickPage({
   return (
     <div className="absolute top-0 left-0 flex flex-col gap-y-4 justify-start items-center w-full h-full py-4">
       <h1 className="text-2xl font-bold ">Create Pick</h1>
-      <MultiStepPickForm gameId={gameId} playerId={player._id} defaultName={userFullName || ''}/>
+      <FormPick gameId={gameId} playerId={player._id} defaultName={userFullName || ''}/>
     </div>
   );
 }

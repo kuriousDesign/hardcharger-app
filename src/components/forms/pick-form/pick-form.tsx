@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/carousel"
 import StepBasic from './StepBasic';
 //import StepTopFinishers from './StepTopFinishers';
-import StepHardChargers from './StepHardChargers';
+//import StepHardChargers from './StepHardChargers';
 //import StepTieBreaker from './StepTieBreaker';
 import { postPick } from '@/actions/postActions';
 import { PickClientType } from '@/models/Pick';
@@ -22,10 +22,10 @@ import { RacerDriverClientType } from '@/models/Racer';
 import StepGameOverview from './StepGameOverview';
 import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
-import CardStepRacerPredictions from '@/components/create-pick/card-step-racer-predictions';
+import CardStepRacerPredictions from '@/components/forms/pick-form/card-step-racer-predictions';
 
 
-export default function MultiStepPickForm({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
+export default function FormPick({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
   const [pickForm, setPickForm] = useState<PickClientType>({
     _id: '',
     name: defaultName || '',
@@ -93,7 +93,11 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
   const steps = [
     () => <StepGameOverview game={game} races={races}/>,
     () => <StepBasic pickForm={pickForm} setPickForm={setPickForm} />,
-    () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
+    // () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
+    () => <CardStepRacerPredictions type={'hardcharger'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
+
+    () => <CardStepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
+
     
     stepSubmitPick,
     // Add more steps as needed
@@ -106,7 +110,7 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
   //const carouselHeight = 'h-[90vh]';
 
   return (
-    <Carousel className="w-full h-[80vh] bg-amber-300">
+    <Carousel className="w-full h-[80vh]">
       <CarouselContent className=' '>
         {steps.map((step, index) => (
           <CarouselItem key={index} >
@@ -119,9 +123,7 @@ export default function MultiStepPickForm({ gameId, playerId, defaultName }: { g
             </div>
           </CarouselItem>
         ))}
-        <CarouselItem key='top-finishers'>
-          <CardStepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />
-        </CarouselItem>
+
       </CarouselContent>
       <div className="absolute top-full left-1/2 -translate-x-[12vh] -translate-y-1/2 flex items-center justify-center">
         <CarouselPrevious className={`${buttonSize} relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} />
