@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { RacerDriverClientType } from '@/models/Racer';
 import { RaceClientType } from '@/models/Race';
 import { PickClientType, DriverPredictionClientType } from '@/models/Pick';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { getDriverFullName } from '@/types/helpers';
 import { CardPrediction } from './prediction';
@@ -49,6 +49,7 @@ export default function RacerPredictionSelectionDiv({
   races,
   pickForm,
   setPickForm,
+  index,
 }: {
   racerPredictionDisplayProps: RacerPredictionDisplayProps;
   type: string;
@@ -56,6 +57,7 @@ export default function RacerPredictionSelectionDiv({
   races: RaceClientType[];
   pickForm: PickClientType;
   setPickForm: React.Dispatch<React.SetStateAction<PickClientType>>;
+  index: number; // New prop to identify the prediction slot
 }) {
   const [open, setOpen] = useState(false);
   const [racerDr, setRacerDr] = useState<RacerDriverClientType | undefined>();
@@ -71,43 +73,46 @@ export default function RacerPredictionSelectionDiv({
     userHint = '';
   } else if (type === 'topfinisher') {
     update_key = 'top_finishers';
-    userHint = '';//`Who you think will finish in ${convertNumberToStNdRdTh(racerPredictionDisplayProps.number)}`;
+    userHint = ''; //`Who you think will finish in ${convertNumberToStNdRdTh(racerPredictionDisplayProps.number)}`;
     console.log('Updating top finishers');
   } else {
     console.error('Invalid type provided for predictions:', type);
-    return null;
+    //return null;
   }
+
+  // Initialize racerDr and guess based on existing prediction at index
+  useEffect(() => {
+    const predictions = pickForm[update_key] as DriverPredictionClientType[];
+    const prediction = predictions[index];
+    if (prediction && prediction.driver_id) {
+      const driver = racerDrivers.find(
+        (rd) => rd.driver._id === prediction.driver_id
+      );
+      setRacerDr(driver);
+      if (type === 'hardcharger') {
+        setGuess(prediction.prediction || defaultGuess);
+      }
+    }
+  }, [pickForm, update_key, index, racerDrivers, type]);
 
   const handleRacerChange = (newRacerDriver: RacerDriverClientType) => {
     const driverId = newRacerDriver.driver._id as string;
     setPickForm((prevPickForm) => {
-      const existingPredictions = prevPickForm[update_key] as DriverPredictionClientType[];
-      const driverExists = existingPredictions.some((pred) => pred.driver_id === driverId);
-
-      if (driverExists) {
-        // Update existing prediction if driver is already selected
-        return {
-          ...prevPickForm,
-          [update_key]: existingPredictions.map((pred) =>
-            pred.driver_id === driverId
-              ? { ...pred, prediction: type === 'hardcharger' ? guess : 0 }
-              : pred
-          ),
-        };
-      } else {
-        // Add new prediction
-        return {
-          ...prevPickForm,
-          [update_key]: [
-            ...existingPredictions,
-            {
-              driver_id: driverId,
-              prediction: type === 'hardcharger' ? guess : 0,
-              score: 0,
-            } as DriverPredictionClientType,
-          ],
-        };
+      const predictions = [...(prevPickForm[update_key] as DriverPredictionClientType[])];
+      // Ensure the array is long enough to hold the index
+      while (predictions.length <= index) {
+        predictions.push({ driver_id: '', prediction: 0, score: 0 });
       }
+      // Update or set the prediction at the specified index
+      predictions[index] = {
+        driver_id: driverId,
+        prediction: type === 'hardcharger' ? guess : index + 1, // For hard chargers, use the guess; for top finishers, use index + 1
+        score: predictions[index]?.score || 0,
+      };
+      return {
+        ...prevPickForm,
+        [update_key]: predictions,
+      };
     });
     setRacerDr(newRacerDriver);
     setOpen(false);
@@ -120,33 +125,22 @@ export default function RacerPredictionSelectionDiv({
     setGuess(newGuess);
 
     setPickForm((prevPickForm) => {
-      const existingPredictions = prevPickForm[update_key] as DriverPredictionClientType[];
-      const driverId = racerDr.driver._id as string;
-
-      // Update or add prediction for the selected driver
-      const driverExists = existingPredictions.some((pred) => pred.driver_id === driverId);
-      if (driverExists) {
-        return {
-          ...prevPickForm,
-          [update_key]: existingPredictions.map((pred) =>
-            pred.driver_id === driverId
-              ? { ...pred, prediction: newGuess }
-              : pred
-          ),
-        };
-      } else {
-        return {
-          ...prevPickForm,
-          [update_key]: [
-            ...existingPredictions,
-            {
-              driver_id: driverId,
-              prediction: newGuess,
-              score: 0,
-            } as DriverPredictionClientType,
-          ],
+      const predictions = [...(prevPickForm[update_key] as DriverPredictionClientType[])];
+      // Ensure the array is long enough
+      while (predictions.length <= index) {
+        predictions.push({ driver_id: '', prediction: 0, score: 0 });
+      }
+      // Update prediction at the specified index
+      if (predictions[index]?.driver_id) {
+        predictions[index] = {
+          ...predictions[index],
+          prediction: newGuess,
         };
       }
+      return {
+        ...prevPickForm,
+        [update_key]: predictions,
+      };
     });
   }
 

@@ -101,6 +101,7 @@ export default function CardStepRacerPredictions({
               races={races}
               pickForm={pickForm}
               setPickForm={setPickForm}
+              index={predictionIndex} // Pass the index to identify the prediction slot
             />
             {predictionIndex < predictions.length - 1 && (
               <Separator className="" />
