@@ -26,6 +26,11 @@ export const siteConfig = {
     },
 
   ],
+  adminNavItems: [
+  { href: '/admin', label: 'Admin' },
+  //{ href: getLinks().getUsersUrl(), label: 'Users' },
+  { href: getLinks().getDriversUrl(), label: 'Drivers' },
+]
 }
 
 export const META_THEME_COLORS = {

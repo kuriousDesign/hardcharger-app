@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { getGameWithEvent, getPicksByGameId } from '@/actions/getActions';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Metadata } from "next"
+
 import {
 	PageActions,
 	PageHeader,
@@ -11,24 +11,37 @@ import {
 } from "@/components/page-header"
 import { LinkButton } from "@/components/LinkButton"
 import { getLinks } from "@/lib/link-urls"
+import ButtonUpdateGame from './button-update-game';
+import { checkIsAdmin } from '@/utils/roles';
+import { TableHardChargerLeaderboard } from '@/components/tables/hard-charger-leaderboard';
+import { CardPicksGame } from '@/components/cards/picks-game';
+import { PlayerClientType } from '@/models/Player';
+import { getPlayer } from '@/actions/getActions';
 
-const title = "Games"
-const description = "Search for a game and create a pick or look at past games you played."
 
-export const metadata: Metadata = {
-	title,
-	description,
-}
+
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
 	const { gameId } = await params;
 	const { game, event } = await getGameWithEvent(gameId);
+	const title = "Game" + game.name
+	const description = event.name
+	const isAdmin = await checkIsAdmin();
 
 	const picks = await getPicksByGameId(gameId);
+	const players = [] as PlayerClientType[];
+	for (const pick of picks) {
+		if (!players.find(player => player._id === pick.player_id)) {
+			const player = await getPlayer(pick.player_id);
+			if (player) {
+				players.push(player);
+			}
+		}
+	}
 
-	const paidString = (isPaid: boolean) => {
-		return isPaid ? 'Paid' : 'Unpaid';
-	};
+	// function paidString(isPaid: boolean) {
+	// 	return isPaid ? 'Paid' : 'Unpaid';
+	// };
 
 	return (
 		<div>
@@ -43,30 +56,22 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 					>
 						Make a Pick
 					</LinkButton>
+					{isAdmin && <ButtonUpdateGame gameId={gameId} />}
 				</PageActions>
 			</PageHeader>
-			<Card className="p-6 space-y-4">
-				<CardHeader>
-					{game.name}
-					{event.name}
-
-				</CardHeader>
-				<CardContent>
-					{picks.length > 0 ? (
-						<ul className="space-y-2">
-							{picks.map((pick) => (
-								<li key={pick._id} className="p-4 bg-gray-100 rounded shadow">
-									<h3 className="text-lg font-semibold">{pick.nickname}</h3>
-									<p>pickId: {pick._id}</p>
-									<p>{paidString(pick.is_paid)}</p>
-								</li>
-							))}
-						</ul>
-					) : (
-						<p>No picks found for this game.</p>
-					)}
-				</CardContent>
-			</Card>
+			<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
+				<div className="theme-container container flex flex-1 flex-col gap-4">
+					<CardPicksGame picks={picks} players={players} filterLabel='all' viewType='peek' />
+					<Card className="p-6 space-y-4">
+						<CardHeader>
+							Hard Chargers
+						</CardHeader>
+						<CardContent>
+							<TableHardChargerLeaderboard />
+						</CardContent>
+					</Card>
+				</div>
+			</div>
 		</div>
 	);
 }

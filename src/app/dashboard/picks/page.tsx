@@ -13,7 +13,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";
-import { CardsPicks } from "@/components/cards/picks";
+import { CardPicksGame } from "@/components/cards/picks-game";
 import { useEffect, useState } from "react";
 import { GameClientType } from "@/models/Game";
 import { PickClientType } from "@/models/Pick";
@@ -76,7 +76,7 @@ export default function PicksPage() {
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <CardsPicks picks={picks} games={games} filterLabel={filterLabel} />
+                    <CardPicksGame picks={picks} games={games} filterLabel={filterLabel} />
                 </div>
             </div>
         </div>

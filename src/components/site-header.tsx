@@ -15,11 +15,7 @@ import {
 } from '@clerk/nextjs'
 import { LinkButton } from "./LinkButton"
 
-const adminItems = [
-  { href: '/admin', label: 'Admin' },
-  { href: '/admin/users', label: 'Users' },
-  { href: '/admin/drivers', label: 'Drivers' },
-]
+
 
 export function SiteHeader() {
   //const colors = getColors()
@@ -32,7 +28,7 @@ export function SiteHeader() {
           <MobileNav
 
             items={siteConfig.navItems}
-            adminItems={adminItems}
+            adminItems={siteConfig.adminNavItems}
             className="flex lg:hidden"
           />
           <Button

@@ -11,7 +11,7 @@ import {
 import { RacerDriverClientType } from '@/models/Racer';
 import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
-import { PickClientType, RacerPredictionClientType } from '@/models/Pick';
+import { PickClientType, DriverPredictionClientType } from '@/models/Pick';
 import RacerPredictionSelectionDiv, { RacerPredictionDisplayProps } from './RacerPredictionSelectionDiv';
 
 export function convertNumberToStNdRdTh(num: number): string {
@@ -73,7 +73,7 @@ export default function CardStepRacerPredictions({
 
   // Get the list of already selected racer IDs for the current type
   const selectedRacerIds = pickForm[type === 'hardcharger' ? 'hard_chargers' : 'top_finishers'].map(
-    (rp: RacerPredictionClientType) => rp.racer_id
+    (rp: DriverPredictionClientType) => rp.racer_id
   );
 
   // Filter racerDrivers to exclude "Transfer" drivers and already selected racers

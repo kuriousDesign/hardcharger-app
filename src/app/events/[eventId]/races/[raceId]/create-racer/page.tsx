@@ -1,6 +1,6 @@
 import { getDrivers, getRace, getRacersByRaceId } from '@/actions/getActions';
 
-import RaceStartingLineupForm from '@/components/forms/race-starting-lineup-form';
+import CreateRacersRaceStartingLineupForm from '@/components/forms/create-racers-race-starting-lineup';
 import { getLinks } from '@/lib/link-urls';
 
 
@@ -16,7 +16,7 @@ export default async function CreateRacerPage({
 
   return (
     <div className="p-8">
-      <RaceStartingLineupForm race={race} existingRacers={racers} drivers={drivers} redirectUrl={getLinks().getRaceUrl(eventId,raceId)} />
+      <CreateRacersRaceStartingLineupForm race={race} existingRacers={racers} drivers={drivers} redirectUrl={getLinks().getRaceUrl(eventId,raceId)} />
     </div>
   );
 }

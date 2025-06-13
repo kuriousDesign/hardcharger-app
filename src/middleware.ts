@@ -6,6 +6,7 @@ import { getLinks } from './lib/link-urls';
 // Define public routes (accessible without authentication)
 const isPublicRoute = createRouteMatcher([
   '/',                    // Home page
+  '/test(.*)',
   '/sign-in(.*)',        // Sign-in routes
   '/sign-up(.*)',        // Sign-up routes
   '/api(.*)',            // API routes

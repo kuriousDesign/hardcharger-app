@@ -14,10 +14,11 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { RacerDriverClientType } from '@/models/Racer';
 import { RaceClientType } from '@/models/Race';
-import { PickClientType, RacerPredictionClientType } from '@/models/Pick';
+import { PickClientType, DriverPredictionClientType } from '@/models/Pick';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getDriverFullName } from '@/types/helpers';
+import { CardPrediction } from './prediction';
 
 export interface RacerPredictionDisplayProps {
   name: string;
@@ -57,18 +58,23 @@ export default function RacerPredictionSelectionDiv({
 }) {
   const [open, setOpen] = useState(false);
   const [racerDr, setRacerDr] = useState<RacerDriverClientType | undefined>();
+  const defaultGuess = 7;
+  const [guess, setGuess] = useState(defaultGuess);
+
+  const racerMaxCars = 24;
+  const racerMinCars = 3;
+  let update_key: keyof PickClientType = 'hard_chargers';
+  if (type === 'hardcharger') {
+    update_key = 'hard_chargers';
+  } else if (type === 'topfinisher') {
+    update_key = 'top_finishers';
+    console.log('Updating top finishers');
+  } else {
+    console.error('Invalid type provided for predictions:', type);
+    return;
+  }
 
   const handleRacerChange = (newRacerDriver: RacerDriverClientType) => {
-    let update_key: keyof PickClientType = 'hard_chargers';
-    if (type === 'hardcharger') {
-      update_key = 'hard_chargers';
-    } else if (type === 'topfinisher') {
-      update_key = 'top_finishers';
-      console.log('Updating top finishers');
-    } else {
-      console.error('Invalid type provided for predictions:', type);
-      return;
-    }
 
     // Add new racer to pickForm
     setPickForm((prevPickForm) => ({
@@ -78,12 +84,27 @@ export default function RacerPredictionSelectionDiv({
         {
           racer_id: newRacerDriver.racer._id as string,
           prediction: 0,
-        } as RacerPredictionClientType,
+        } as DriverPredictionClientType,
       ],
     }));
     setRacerDr(newRacerDriver);
     setOpen(false);
   };
+
+  function onPredictionClick(adjustment: number) {
+    const newGuess = Math.max(racerMinCars, Math.min(racerMaxCars, guess + adjustment));
+    setPickForm((prevPickForm) => ({
+      ...prevPickForm,
+      [update_key]: [
+        ...prevPickForm[update_key],
+        {
+          //racer_id: newRacerDriver.racer._id as string,
+          prediction: newGuess,
+        } as DriverPredictionClientType,
+      ],
+    }));
+    setGuess(newGuess);
+  }
 
   return (
     <div className="flex items-center justify-between gap-4">
@@ -148,6 +169,9 @@ export default function RacerPredictionSelectionDiv({
           </Command>
         </PopoverContent>
       </Popover>
+      {type === 'hardcharger' &&
+        <CardPrediction min={5} max={24} guess={guess} onPredictionClick={onPredictionClick} />
+      }
     </div>
   );
 }

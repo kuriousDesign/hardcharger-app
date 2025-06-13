@@ -43,7 +43,7 @@ function getNextLetter(letter: string): string {
   return isUpperCase ? nextLetter.toUpperCase() : nextLetter;
 }
 
-export default function RaceStartingLineupForm({ race, drivers, redirectUrl, existingRacers }: RaceLineupFormProps) {
+export default function CreateRacersRaceStartingLineupForm({ race, drivers, redirectUrl, existingRacers }: RaceLineupFormProps) {
   const router = useRouter();
   const numCars = race.num_cars;
   const raceId = race._id;
@@ -72,12 +72,12 @@ export default function RaceStartingLineupForm({ race, drivers, redirectUrl, exi
     };
     // Auto-fill driver_id for transfer positions if no existing racer
     if (drivers.length > 0 && position >= race.first_transfer_position && position < race.first_transfer_position + race.num_transfers) {
-      console.log(`Looking for transfer driver for position T${position + 2 - race.first_transfer_position}${getNextLetter(race.letter)}`);
+      console.log(`Looking for transfer driver for position ${position}`);
       const transferDriver = drivers.find(
-        (d) => d.car_number === `T${position + 2 - race.first_transfer_position}${getNextLetter(race.letter)}`
+        (d) => d.car_number === `T${position - race.first_transfer_position + 1}${getNextLetter(race.letter)}`
       );
       if (transferDriver) {
-        console.log(`Auto-filling transfer driver for position ${position}:`, transferDriver);
+        console.log(`Auto-filling transfer driver for position ${position}:`, transferDriver.car_number);
       }
       racer.driver_id = transferDriver?._id || '';
     }
@@ -101,12 +101,14 @@ export default function RaceStartingLineupForm({ race, drivers, redirectUrl, exi
           starting_position: index + 1, // Auto-order by position in array
           current_position: index + 1, // Sync current with starting for lineup
         };
-        if (isEditMode && racer._id) {
+        if (isEditMode && racer._id && racer._id !== '') {
           await postRacer(racerData);
           console.log('Updated racer:', racerData);
-        } else {
+        } else if (racer.driver_id && racer.driver_id !== '') {
           await postRacer(racerData);
           console.log('Created racer:', racerData);
+        } else {
+          console.warn(`Skipping racer at position ${index + 1} due to missing driver_id`);
         }
       });
       await Promise.all(racerPromises); // Wait for all racers to be created/updated

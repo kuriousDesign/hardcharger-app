@@ -32,6 +32,19 @@ export default async function CardDrivers() {
         return driver.first_name && driver.first_name.toLowerCase().indexOf('transfer') === -1;
     });
 
+    // sort drivers by last name, then first name
+    drivers.sort((a: DriverClientType, b: DriverClientType) => {
+        const lastNameA = a.last_name.toLowerCase();
+        const lastNameB = b.last_name.toLowerCase();
+        if (lastNameA < lastNameB) return -1;
+        if (lastNameA > lastNameB) return 1;
+        const firstNameA = a.first_name.toLowerCase();
+        const firstNameB = b.first_name.toLowerCase();
+        if (firstNameA < firstNameB) return -1;
+        if (firstNameA > firstNameB) return 1;
+        return 0; // names are equal
+    });
+
     return (
         <Card>
             <CardHeader>

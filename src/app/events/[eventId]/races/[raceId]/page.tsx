@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { getEvent, getRace, getRacersByRaceId } from '@/actions/getActions';
-import RacersCard from '@/components/RacersCard';
+import CardRacers from '@/components/cards/racers';
 import { getLinks } from '@/lib/link-urls';
 import Link from 'next/link';
 
@@ -33,7 +33,7 @@ export default async function RacePage({
             Cars: {race.num_cars }
              <p>First Transfer Position {race.first_transfer_position} </p>
                <p>Num Transfer Cars {race.num_transfers} </p>
-            <RacersCard eventId={eventId as string} raceId={raceId as string} />
+            <CardRacers eventId={eventId as string} raceId={raceId as string} />
             <Link
                 href={getLinks().getEventUrl(eventId)}
                 className="flex justify-center mt-4 bg-gray-50 text-gray-700 p-4 rounded-full w-fit min-w-[150px] hover:bg-black hover:text-white transition-colors duration-300 shadow-md"
