@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -17,10 +15,10 @@ export function CardPrediction({min, max, guess, onPredictionClick}:{min:number,
   // const [guess, setGuess] = React.useState(7)
 
   return (
-    <Card className="h-full gap-5">
+    <Card className="gap-0 p-1">
       <CardHeader>
-        <CardTitle>Prediction</CardTitle>
-        <CardDescription>Guess how many cars they will pass.</CardDescription>
+        <CardTitle className='text-center text-sm'>Prediction</CardTitle>
+        {/* <CardDescription>Guess how many cars they will pass.</CardDescription> */}
       </CardHeader>
       <CardContent className="flex flex-1 flex-col">
         <div className="flex items-center justify-center gap-4">
@@ -28,7 +26,7 @@ export function CardPrediction({min, max, guess, onPredictionClick}:{min:number,
             variant="outline"
             
             size="icon"
-            className={`${guess <=min ? "invisible" : ""} size-7 rounded-full`}
+            className={`${guess <=min ? "invisible" : ""} size-8 rounded-full`}
             onClick={() => onPredictionClick(-1)}
             disabled={guess <= min}
           >
@@ -46,7 +44,7 @@ export function CardPrediction({min, max, guess, onPredictionClick}:{min:number,
           <Button
             variant="outline"
             size="icon"
-            className={`${guess >=max ? "invisible" : ""} size-7 rounded-full`}
+            className={`${guess >=max ? "invisible" : ""} size-8 rounded-full`}
             onClick={() => onPredictionClick(1)}
             disabled={guess >= max}
           >
@@ -55,11 +53,7 @@ export function CardPrediction({min, max, guess, onPredictionClick}:{min:number,
           </Button>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full" variant="secondary">
-          Set
-        </Button>
-      </CardFooter>
+
     </Card>
   )
 }

@@ -10,7 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import StepBasic from './StepBasic';
+import StepNamePick from './step-name-pick';
 //import StepTopFinishers from './StepTopFinishers';
 //import StepHardChargers from './StepHardChargers';
 //import StepTieBreaker from './StepTieBreaker';
@@ -96,7 +96,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
 
   const steps = [
     () => <StepGameOverview game={game} races={races}/>,
-    () => <StepBasic pickForm={pickForm} setPickForm={setPickForm} />,
+    () => <StepNamePick pickForm={pickForm} setPickForm={setPickForm} />,
     // () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
     () => <CardStepRacerPredictions type={'hardcharger'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
 

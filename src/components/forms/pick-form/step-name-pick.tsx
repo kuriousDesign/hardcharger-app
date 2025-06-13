@@ -5,7 +5,7 @@ import { BiRefresh } from 'react-icons/bi';
 import { Card, CardContent, CardHeader, CardDescription, CardTitle } from '@/components/ui/card';
 
 
-export default function StepBasic({ pickForm, setPickForm }: {
+export default function StepNamePick({ pickForm, setPickForm }: {
   pickForm: PickClientType;
   setPickForm: React.Dispatch<React.SetStateAction<PickClientType>>;
 }) {
@@ -20,14 +20,14 @@ export default function StepBasic({ pickForm, setPickForm }: {
 
 
   return (
-    <Card>
-      <CardHeader className="p-6">
+    <Card className=" h-full">
+      <CardHeader className="">
         <CardTitle className="text-2xl font-bold">Name your pick</CardTitle>
         <CardDescription>
           Please provide your name and a nickname for your pick.
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="">
         <div className="space-y-4  w-full">
           <div>
             <label className="block mb-2 font-medium">Your Name</label>

@@ -13,6 +13,7 @@ import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
 import { PickClientType, DriverPredictionClientType } from '@/models/Pick';
 import RacerPredictionSelectionDiv, { RacerPredictionDisplayProps } from './RacerPredictionSelectionDiv';
+import { Separator } from '@/components/ui/separator';
 
 export function convertNumberToStNdRdTh(num: number): string {
   const mod10 = num % 10;
@@ -50,22 +51,22 @@ export default function CardStepRacerPredictions({
   let predictions: RacerPredictionDisplayProps[] = [];
 
   if (type === 'hardcharger') {
-    cardTitle = 'Hard Charger Predictions';
+    cardTitle = 'Choose Hard Chargers';
     cardDescription = 'Pick who you think will pass the most cars!';
     predictions = Array.from({ length: game.num_hard_chargers }, (_, i) => ({
       name: `Hard Charger ${i + 1}`,
       avatar: `/avatars/${i + 1}.png`,
-      role: `Select Hard Charger ${i + 1}`,
+      role: 'Select Driver', //`Select Hard Charger ${i + 1}`,
       letter: 'H',
       number: i + 1,
     } as RacerPredictionDisplayProps));
   } else if (type === 'topfinisher') {
-    cardTitle = 'Top Finisher Predictions';
+    cardTitle = 'Choose Top Finishers';
     cardDescription = `Pick who you think will finish in the top ${game.num_top_finishers}!`;
     predictions = Array.from({ length: game.num_top_finishers }, (_, i) => ({
       name: `Top Finisher - ${convertNumberToStNdRdTh(i + 1)} Place`,
       avatar: `/avatars/${i + 1}.png`,
-      role: `Select Top Finisher ${i + 1}`,
+      role: 'Select Driver',//`Select Top Finisher ${i + 1}`,
       letter: 'T',
       number: i + 1,
     } as RacerPredictionDisplayProps));
@@ -84,22 +85,27 @@ export default function CardStepRacerPredictions({
   );
 
   return (
-    <Card className='h-full '>
+    <Card className='w-full h-full '>
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         {predictions?.map((prediction: RacerPredictionDisplayProps, predictionIndex) => (
-          <RacerPredictionSelectionDiv
-            key={predictionIndex}
-            racerPredictionDisplayProps={prediction}
-            type={type}
-            racerDrivers={filteredRacerDrivers} // Pass filtered list
-            races={races}
-            pickForm={pickForm}
-            setPickForm={setPickForm}
-          />
+            <div key={predictionIndex} className="space-y-6">
+            <RacerPredictionSelectionDiv
+              key={predictionIndex}
+              racerPredictionDisplayProps={prediction}
+              type={type}
+              racerDrivers={filteredRacerDrivers}
+              races={races}
+              pickForm={pickForm}
+              setPickForm={setPickForm}
+            />
+            {predictionIndex < predictions.length - 1 && (
+              <Separator className="" />
+            )}
+            </div>
         ))}
       </CardContent>
 
