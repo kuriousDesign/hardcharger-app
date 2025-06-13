@@ -81,28 +81,29 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
     return (
       <div className="text-center">
         <h2 className="text-xl font-bold mb-4">Review & Submit</h2>
-        <pre className="bg-gray-100 p-4 rounded text-left text-xs overflow-x-auto">
-          {JSON.stringify(pickForm, null, 2)}
-        </pre>
         <button
           className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={handleSubmit}
         >
           Submit Pick
         </button>
+        <pre className="bg-gray-100 p-4 rounded text-left text-xs overflow-x-auto">
+          {JSON.stringify(pickForm, null, 2)}
+        </pre>
+
       </div>
     );
   }
 
   const steps = [
-    () => <StepGameOverview game={game} races={races}/>,
+    () => <StepGameOverview game={game} races={races} />,
     () => <StepNamePick pickForm={pickForm} setPickForm={setPickForm} />,
     // () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
     () => <CardStepRacerPredictions type={'hardcharger'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
 
     () => <CardStepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
 
-    
+
     stepSubmitPick,
     // Add more steps as needed
     // () => <StepTopFinishers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
@@ -119,7 +120,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
         {steps.map((step, index) => (
           <CarouselItem key={index} >
             <div className=" h-[70vh] p-4">
-                  {step()}
+              {step()}
             </div>
           </CarouselItem>
         ))}
