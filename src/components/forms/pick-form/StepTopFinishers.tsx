@@ -17,7 +17,7 @@ export default function StepHardCharger({
   const [selected, setSelected] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
     Array.from(pickForm.hard_chargers).forEach(prediction => {
-      initial[prediction.racer_id] = prediction.prediction;
+      initial[prediction.driver_id] = prediction.prediction;
     });
     return initial;
   });
@@ -43,9 +43,10 @@ export default function StepHardCharger({
 
   useEffect(() => {
     setPickForm(prev => {
-      const updatedHardChargers = Object.entries(selected).map(([racer_id, prediction]) => ({
-        racer_id,
-        prediction: Number(prediction)
+      const updatedHardChargers = Object.entries(selected).map(([driver_id, prediction]) => ({
+        driver_id,
+        prediction: Number(prediction),
+        score: 0
       }));
       return {
         ...prev,

@@ -73,7 +73,7 @@ export default function CardStepRacerPredictions({
 
   // Get the list of already selected racer IDs for the current type
   const selectedRacerIds = pickForm[type === 'hardcharger' ? 'hard_chargers' : 'top_finishers'].map(
-    (rp: DriverPredictionClientType) => rp.racer_id
+    (rp: DriverPredictionClientType) => rp.driver_id
   );
 
   // Filter racerDrivers to exclude "Transfer" drivers and already selected racers

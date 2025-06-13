@@ -1,10 +1,10 @@
 TODO:
 [ ] be able to delete items from collection
-[ ] BUG: when creating a new race and then adding racers, the transfer drivers are not autopopulating correctly (maybe an extra +1 is added to index?)
+[x] BUG: when creating a new race and then adding racers, the transfer drivers are not autopopulating correctly (maybe an extra +1 is added to index?)
 [ ] update races for mid-race and end of race finishing list (update current_position or racers of race id)
 [t] pick score calculation
 [x] hard charger leaderboard table
-[ ] add guess prediction to hard charger form
+[t] add guess prediction to hard charger form
 [ ] race page needs to be organized to help create the lineup or update lineup during race and change status of race.
 [ ] need to filter list of races when one is selected so that duplicates can't be selected, or show warning.
 [ ] see if server action for getCurrentPlayer is producing the clerkMiddleware warning, could also be checkRole()

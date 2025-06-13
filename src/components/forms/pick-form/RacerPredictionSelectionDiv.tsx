@@ -82,8 +82,9 @@ export default function RacerPredictionSelectionDiv({
       [update_key]: [
         ...prevPickForm[update_key],
         {
-          racer_id: newRacerDriver.racer._id as string,
+          driver_id: newRacerDriver.driver._id as string,
           prediction: 0,
+          score: 0,
         } as DriverPredictionClientType,
       ],
     }));

@@ -84,7 +84,7 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
                         Prediction Penalty Points
                     </p>
                     <p>
-                        {`You will predict the finishing positions of ${game.num_top_finishers_predictions} drivers. If they do not finish in that position, ${game.top_finisher_prediction_penalty} point will be added for each position you were off by. A max number of ${game.top_finisher_prediction_penalty_max} prediction penalty points will be added for each driver.`}
+                        {`You will predict the finishing positions of ${game.num_top_finishers_predictions} drivers. You automatically are awarded ${game.top_finisher_baseline_points} points for the driver. If they do not finish in the position you predicted, ${game.top_finisher_prediction_penalty} points will be added for each position you were off by. Penalty points will be capped at zero for each driver.`}
                     </p>
                 </AccordionContent>
             </AccordionItem>
@@ -101,7 +101,7 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
                         Prediction Penalty Points
                     </p>
                     <p>
-                        {`You will predict how many cars ${game.num_hard_chargers_predictions} drivers will pass over the course of the night. If you are wrong, ${game.hard_charger_prediction_penalty} point will be added for every car you were off by. A max number of ${game.hard_charger_prediction_penalty_max} prediction penalty points will be added for each driver.`}
+                        {`You will predict how many cars ${game.num_hard_chargers_predictions} drivers will pass over the course of the night. If you are wrong, ${game.hard_charger_prediction_scale*game.num_hard_chargers} points will be added for every car you were off by. Penalty will be capped at zero points for each driver.`}
                     </p>
                 </AccordionContent>
             </AccordionItem>

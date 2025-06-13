@@ -8,7 +8,7 @@ import { RaceClientType } from '@/models/Race';
 import { getRacesByEventId } from '@/actions/getActions';
 import { postGame } from '@/actions/postActions';
 import { getLinks } from '@/lib/link-urls';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 //import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -34,11 +34,12 @@ export default function CreateGameForm({ eventId }: CreateGameFormProps) {
       _id: '',
       event_id: eventId,
       name: '',
+      type: 'hybrid', // Default to hybrid for balanced UX
       status: 'created',
       entry_fee: 10,
       house_cut: 0,
       purse_amount: 0,
-      num_picks: 0, //not used as a form input
+      num_picks: 0,
       num_hard_chargers: 3,
       num_hard_chargers_predictions: 3,
       hard_charger_prediction_scale: 0.1,
@@ -46,13 +47,12 @@ export default function CreateGameForm({ eventId }: CreateGameFormProps) {
       num_top_finishers: 3,
       num_top_finishers_predictions: 3,
       top_finisher_baseline_points: 10,
-      top_finisher_prediction_penalty: 1.0,
-      top_finisher_prediction_bonus: 0,
+      top_finisher_prediction_penalty: 2.0,
+      top_finisher_prediction_bonus: 2.0,
       is_private: false,
       password: '',
       races: [],
       tie_breaker: {},
-
     },
   });
 
@@ -78,13 +78,15 @@ export default function CreateGameForm({ eventId }: CreateGameFormProps) {
     );
   };
 
-  // Handle form
+  // Handle form submission
   const onSubmit = async (data: GameFormData) => {
     try {
+      data.num_hard_chargers_predictions = data.num_hard_chargers;
+      data.num_top_finishers_predictions = data.num_top_finishers;
       const gameData: GameClientType = {
         ...data,
         races: selectedRaceIds,
-        tie_breaker: {}
+        tie_breaker: data.tie_breaker ?? {},
       };
 
       await postGame(gameData);
@@ -94,6 +96,11 @@ export default function CreateGameForm({ eventId }: CreateGameFormProps) {
       console.error('Error creating game:', error);
     }
   };
+
+  // Determine which fields to show based on game type
+  const gameType = form.watch('type');
+  const showHardChargerFields = gameType === 'hard_charger' || gameType === 'hybrid';
+  const showTopFinisherFields = gameType === 'hybrid' || gameType === 'top_finisher' || gameType === 'classic_draw';
 
   return (
 
@@ -113,6 +120,34 @@ export default function CreateGameForm({ eventId }: CreateGameFormProps) {
                       type="text"
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="type"
+              rules={{ required: 'Game type is required' }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Game Type</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select game type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hard_charger">Hard Charger</SelectItem>
+                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                        <SelectItem value="top_finisher">Top Finisher</SelectItem>
+                        <SelectItem value="classic_draw">Classic Draw</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormDescription>
+                    Choose the game type to define prediction options
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -188,45 +223,16 @@ export default function CreateGameForm({ eventId }: CreateGameFormProps) {
               )}
             />
 
-       
             <FormField
               control={form.control}
-              name="num_hard_chargers"
+              name="purse_amount"
               rules={{
-                required: 'Number of hard chargers is required',
-                min: { value: 1, message: 'Minimum is 1' },
-                max: { value: 24, message: 'Maximum is 24' },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Hard Chargers</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="3"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="num_hard_chargers_predictions"
-              rules={{
-                required: 'Number of predictions is required',
+                required: 'Purse amount is required',
                 min: { value: 0, message: 'Minimum is 0' },
-                max: {
-                  value: form.getValues('num_hard_chargers'),
-                  message: 'Cannot exceed number of hard chargers',
-                },
               }}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Number of Hard Charger Predictions</FormLabel>
+                  <FormLabel>Purse Amount</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -240,176 +246,184 @@ export default function CreateGameForm({ eventId }: CreateGameFormProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="hard_charger_prediction_scale"
-              rules={{
-                required: 'Prediction scale is required',
-                min: { value: 0, message: 'Minimum is 0' },
-                max: { value: 10, message: 'Maximum is 10' },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hard Charger Prediction Scale (points per car)</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="0.25"
-                      step="0.01"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {showHardChargerFields && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="num_hard_chargers"
+                  rules={{
+                    required: 'Number of hard chargers is required',
+                    min: { value: 1, message: 'Minimum is 1' },
+                    max: { value: 24, message: 'Maximum is 24' },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Hard Chargers</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="3"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="hard_charger_prediction_bonus"
-              rules={{
-                required: 'Prediction bonus is required',
-                min: { value: 0, message: 'Minimum is 0' },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Hard Charger Prediction Bonus</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="0"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              
 
-            <FormField
-              control={form.control}
-              name="num_top_finishers"
-              rules={{
-                required: 'Number of top finishers is required',
-                min: { value: 1, message: 'Minimum is 1' },
-                max: { value: 24, message: 'Maximum is 24' },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Top Finishers</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="3"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="hard_charger_prediction_scale"
+                  rules={{
+                    required: 'Prediction scale is required',
+                    min: { value: 0, message: 'Minimum is 0' },
+                    max: { value: 10, message: 'Maximum is 10' },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hard Charger Prediction Scale (points per car)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="0.1"
+                          step="0.01"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="num_top_finishers_predictions"
-              rules={{
-                required: 'Number of predictions is required',
-                min: { value: 0, message: 'Minimum is 0' },
-                max: {
-                  value: form.getValues('num_top_finishers'),
-                  message: 'Cannot exceed number of top finishers',
-                },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Top Finisher Predictions</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="0"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="hard_charger_prediction_bonus"
+                  rules={{
+                    required: 'Prediction bonus is required',
+                    min: { value: 0, message: 'Minimum is 0' },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hard Charger Prediction Bonus</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="0"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
 
-            <FormField
-              control={form.control}
-              name="top_finisher_baseline_points"
-              rules={{
-                required: 'Baseline points are required',
-                min: { value: 0, message: 'Minimum is 0' },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Top Finisher Baseline Points</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="10"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {showTopFinisherFields && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="num_top_finishers"
+                  rules={{
+                    required: 'Number of top finishers is required',
+                    min: { value: 1, message: 'Minimum is 1' },
+                    max: { value: 24, message: 'Maximum is 24' },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Top Finishers</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="3"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="top_finisher_prediction_penalty"
-              rules={{
-                required: 'Prediction penalty is required',
-                min: { value: 0, message: 'Minimum is 0' },
-                max: { value: 10, message: 'Maximum is 10' },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Top Finisher Prediction Penalty (points per car)</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="1.0"
-                      step="0.01"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              
 
-            <FormField
-              control={form.control}
-              name="top_finisher_prediction_bonus"
-              rules={{
-                required: 'Prediction bonus is required',
-                min: { value: 0, message: 'Minimum is 0' },
-              }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Top Finisher Prediction Bonus</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="0"
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="top_finisher_baseline_points"
+                  rules={{
+                    required: 'Baseline points are required',
+                    min: { value: 0, message: 'Minimum is 0' },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Top Finisher Baseline Points</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="10"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
+                <FormField
+                  control={form.control}
+                  name="top_finisher_prediction_penalty"
+                  rules={{
+                    required: 'Prediction penalty is required',
+                    min: { value: 0, message: 'Minimum is 0' },
+                    max: { value: 10, message: 'Maximum is 10' },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Top Finisher Prediction Penalty (points per car)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="2.0"
+                          step="0.25"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="top_finisher_prediction_bonus"
+                  rules={{
+                    required: 'Prediction bonus is required',
+                    min: { value: 0, message: 'Minimum is 0' },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Top Finisher Prediction Bonus</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder="0"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
 
             <FormField
               control={form.control}

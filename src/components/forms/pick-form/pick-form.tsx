@@ -15,7 +15,7 @@ import StepBasic from './StepBasic';
 //import StepHardChargers from './StepHardChargers';
 //import StepTieBreaker from './StepTieBreaker';
 import { postPick } from '@/actions/postActions';
-import { PickClientType } from '@/models/Pick';
+import { DriverPredictionClientType, PickClientType } from '@/models/Pick';
 import { useRouter } from 'next/navigation';
 import { getGame, getRacersWithDriversForPickCreation, getRacesByGameId } from '@/actions/getActions';
 import { RacerDriverClientType } from '@/models/Racer';
@@ -30,14 +30,18 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
     _id: '',
     name: defaultName || '',
     nickname: '',
-    top_finishers: [],
-    hard_chargers: [],
+    top_finishers: [] as DriverPredictionClientType[],
+    hard_chargers: [] as DriverPredictionClientType[],
     tie_breaker: {},
-    outcome: { status: 'pending' },
     is_paid: false,
-    player_id: playerId,
-    game_id: gameId,
-  });
+    player_id: playerId as string,
+    game_id: gameId as string,
+    score_total: 0,
+    score_top_finishers: 0,
+    score_hard_chargers: 0,
+    score_tie_breaker: 0
+
+  } as PickClientType);
 
   const router = useRouter();
 

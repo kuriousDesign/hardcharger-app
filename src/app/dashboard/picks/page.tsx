@@ -15,7 +15,7 @@ import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";
 import { CardPicksGame } from "@/components/cards/picks-game";
 import { useEffect, useState } from "react";
-import { GameClientType } from "@/models/Game";
+//import { GameClientType } from "@/models/Game";
 import { PickClientType } from "@/models/Pick";
 import { PlayerClientType } from "@/models/Player";
 import Loading from "./loading";
@@ -29,18 +29,20 @@ const description = "Browse your picks and the games they are in."
 //     description,
 // }
 export default function PicksPage() {
-    const [games, setGames] = useState<GameClientType[]>([]);
+    //const [games, setGames] = useState<GameClientType[]>([]);
     const [picks, setPicks] = useState<PickClientType[]>([]);
     const [filterLabel, setFilterLabel] = useState<string>('available');
     const [loading, setLoading] = useState<boolean>(true);
+    const [player, setPlayer] = useState<PlayerClientType | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             const player = await getCurrentPlayer() as PlayerClientType;
+            setPlayer(player);
             if (player) {
                 const picksWithGames = await getPicksWithGamesByPlayerId(player._id as string);
-                setGames(picksWithGames.games as GameClientType[]);
+                //setGames(picksWithGames.games as GameClientType[]);
                 setPicks(picksWithGames.picks as PickClientType[]);
             }
             setLoading(false);
@@ -76,7 +78,7 @@ export default function PicksPage() {
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <CardPicksGame picks={picks} games={games} filterLabel={filterLabel} />
+                    <CardPicksGame picks={picks} players={[player as PlayerClientType]} filterLabel={filterLabel} />
                 </div>
             </div>
         </div>

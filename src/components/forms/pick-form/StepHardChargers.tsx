@@ -17,35 +17,36 @@ export default function StepHardCharger({
   const [selected, setSelected] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
     Array.from(pickForm.hard_chargers).forEach(prediction => {
-      initial[prediction.racer_id] = prediction.prediction;
+      initial[prediction.driver_id] = prediction.prediction;
     });
     return initial;
   });
 
-  const toggleRacer = (racerId: string) => {
+  const toggleRacer = (driverId: string) => {
     setSelected(prev => {
       const updated = { ...prev };
-      if (racerId in updated) {
-        delete updated[racerId];
+      if (driverId in updated) {
+        delete updated[driverId];
       } else {
-        updated[racerId] = 0;
+        updated[driverId] = 0;
       }
       return updated;
     });
   };
 
-  const handlePredictionChange = (racerId: string, value: number) => {
+  const handlePredictionChange = (driverId: string, value: number) => {
     setSelected(prev => ({
       ...prev,
-      [racerId]: value
+      [driverId]: value
     }));
   };
 
   useEffect(() => {
     setPickForm(prev => {
-      const updatedHardChargers = Object.entries(selected).map(([racer_id, prediction]) => ({
-        racer_id,
-        prediction: Number(prediction)
+      const updatedHardChargers = Object.entries(selected).map(([driver_id, prediction]) => ({
+        driver_id,
+        prediction: Number(prediction),
+        score: 0
       }));
       return {
         ...prev,

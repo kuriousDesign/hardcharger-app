@@ -8,20 +8,19 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { getCurrentPlayer, getGame, getPicksByGameId } from '@/actions/getActions';
+import { getCurrentPlayer, getPicksByGameId, getPlayer } from '@/actions/getActions';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";
 import { CardPicksGame } from "@/components/cards/picks-game";
 import { useEffect, useState } from "react";
-import { GameClientType } from "@/models/Game";
 import { PickClientType } from "@/models/Pick";
 import { PlayerClientType } from "@/models/Player";
 import Loading from "./loading";
 import { useParams } from 'next/navigation';
 
-const title = "Game Picks"
+const title = "Picks"
 const description = "Browse these picks for a certain game."
 
 // not allowed with use client
@@ -34,27 +33,38 @@ export default function GamePicksPage(){
     //const { gameId } = await params;
     const { gameId } = useParams() as { gameId: string };
     
-    const [games, setGames] = useState<GameClientType[]>([]);
+    //const [games, setGames] = useState<GameClientType[]>([]);
     const [picks, setPicks] = useState<PickClientType[]>([]);
     const [filterLabel, setFilterLabel] = useState<string>('available');
     const [loading, setLoading] = useState<boolean>(true);
+    const [players, setPlayers] = useState<PlayerClientType[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             const player = await getCurrentPlayer() as PlayerClientType;
             if (player) {
-                const picks = await getPicksByGameId(gameId);
-                const game = await getGame(gameId) as GameClientType;
-                const games = [game];
-                setGames(games as GameClientType[]);
-                setPicks(picks as PickClientType[]);
+                const picksData = await getPicksByGameId(gameId);
+                //const game = await getGame(gameId) as GameClientType;
+                //const games = [game];
+                //setGames(games as GameClientType[]);
+                setPicks(picksData as PickClientType[]);
+                const playersData = [] as PlayerClientType[];
+                for (const pk of picksData) {
+                    if (pk.player_id) {
+                        const newPlayer = await getPlayer(pk.player_id);
+                        if (newPlayer) {
+                            playersData.push(newPlayer as PlayerClientType);
+                        }
+                    }
+                }
+                setPlayers(playersData);
             }
             setLoading(false);
         };
         fetchData();
         setLoading(false);
-    }, []);
+    }, [gameId]);
 
     if (loading) {
         return <Loading />
@@ -83,7 +93,7 @@ export default function GamePicksPage(){
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <CardPicksGame picks={picks} games={games} filterLabel={filterLabel} />
+                    <CardPicksGame picks={picks} players={players} filterLabel={filterLabel} />
                 </div>
             </div>
         </div>

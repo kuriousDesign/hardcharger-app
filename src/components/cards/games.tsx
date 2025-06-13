@@ -1,5 +1,3 @@
-"use client"
-
 import { IoMdAddCircle } from "react-icons/io";
 
 import {
@@ -8,7 +6,6 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { LinkButton } from "@/components/LinkButton";
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -19,30 +16,29 @@ import {
 
 import { GameClientType } from "@/models/Game"
 import { Separator } from "../ui/separator"
-import { useRouter } from "next/navigation"
 import { getLinks } from "@/lib/link-urls";
 
-export function CardsGames({ games, filterLabel, showCreateButton, eventId }: { games: GameClientType[], filterLabel?: string, showCreateButton?: boolean, eventId?: string }) {
-  const router = useRouter();
+export async function CardsGames({ games, filterLabel, showCreateButton, eventId }: { games: GameClientType[], filterLabel?: string, showCreateButton?: boolean, eventId?: string }) {
+
   if (!games || games.length === 0) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>{filterLabel || ''} Games</CardTitle>
           <CardDescription>
-             <p className="pb-4">
-            There are no games available at the moment.
+            <p className="pb-4">
+              There are no games available at the moment.
             </p>
             {showCreateButton && eventId &&
               <LinkButton
-              className="w-fit text-primary-foreground"
+                className="w-fit text-primary-foreground"
                 href={getLinks().getCreateGameUrl(eventId)} >
-                    <IoMdAddCircle />
+                <IoMdAddCircle />
                 Create Game
               </LinkButton>
-              
+
             }
- 
+
           </CardDescription>
 
         </CardHeader>
@@ -83,18 +79,26 @@ export function CardsGames({ games, filterLabel, showCreateButton, eventId }: { 
         <CardDescription>
           {cardDescription}
         </CardDescription>
+        {showCreateButton && eventId &&
+          <LinkButton
+            className="w-fit "
+            href={getLinks().getCreateGameUrl(eventId)} >
+            <IoMdAddCircle />
+            Create Game
+          </LinkButton>
+        }
+
       </CardHeader>
+
       <CardContent className="grid gap-6">
-        {games.map((game: GameClientType, index) => (
+        {games.map((game: GameClientType) => (
           <div key={game._id}>
 
-            <Button
+            <div
               key={game._id}
-
               className="w-full flex items-center justify-between gap-y-2 hover:bg-muted transition-colors shadow-md p-7 rounded-md z-50"
-              onClick={() => { router.push(`/games/${game._id}`) }}
-              variant='outline' >
-              <div className="flex items-center gap-4 ">
+            >
+              <LinkButton className="flex items-center gap-4 " href={getLinks().getGameUrl(game._id)} variant='ghost'  >
                 <Avatar className="border">
                   <AvatarImage src={"/avatars/01.png"} alt="Image" />
                   <AvatarFallback>{game.name.charAt(0)}</AvatarFallback>
@@ -109,27 +113,21 @@ export function CardsGames({ games, filterLabel, showCreateButton, eventId }: { 
                     <div>{`$${game.purse_amount.toString()} pot`}</div>
                   </div>
                 </div>
-              </div>
+              </LinkButton>
               {game.status === 'open' &&
-                <Button
+                <LinkButton
                   size="sm"
 
                   className='rounded-l-full rounded-r-full z-100'
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent Link click
-                    router.push(`/games/${game._id}/create_pick`)
-                  }}
+                  href={getLinks().getCreatePickUrl(game._id as string)}
                 >
                   <IoMdAddCircle />
                   Pick
-                </Button>
+                </LinkButton>
               }
 
-            </Button>
+            </div>
 
-            {index !== games.length - 1 &&
-              <Separator orientation="horizontal" className='bg-muted' />
-            }
           </div>
         ))}
       </CardContent>

@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export function CardPrediction({min, max, guess, onPredictionClick}:{min:number, max:number, guess:number, onPredictionClick: unknown}) {
+export function CardPrediction({min, max, guess, onPredictionClick}:{min:number, max:number, guess:number, onPredictionClick: (value: number) => void}) {
 
   // const [guess, setGuess] = React.useState(7)
 
