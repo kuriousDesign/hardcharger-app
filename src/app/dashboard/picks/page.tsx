@@ -21,7 +21,7 @@ import { PlayerClientType } from "@/models/Player";
 import Loading from "./loading";
 
 const title = "Your Picks"
-const description = "Browse your picks and the games they are in."
+
 
 // not allowed with use client
 // export const metadata: Metadata = {
@@ -43,6 +43,7 @@ export default function PicksPage() {
             if (player) {
                 const picksWithGames = await getPicksWithGamesByPlayerId(player._id as string);
                 //setGames(picksWithGames.games as GameClientType[]);
+                // filter picksWithGames 
                 setPicks(picksWithGames.picks as PickClientType[]);
             }
             setLoading(false);
@@ -59,7 +60,7 @@ export default function PicksPage() {
         <div>
             <PageHeader>
                 <PageHeaderHeading>{title}</PageHeaderHeading>
-                <PageHeaderDescription>{description}</PageHeaderDescription>
+                <PageHeaderDescription>{player?.name}, here are your picks</PageHeaderDescription>
                 <PageActions>
                     <LinkButton
                         variant='secondary'
@@ -78,7 +79,7 @@ export default function PicksPage() {
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <CardPicksGame picks={picks} players={[player as PlayerClientType]} filterLabel={filterLabel} />
+                    <CardPicksGame picks={picks} filterLabel={filterLabel} />
                 </div>
             </div>
         </div>

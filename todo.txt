@@ -1,4 +1,5 @@
 TODO:
+[ ] Better user instructions if pick form is submitted and has error --> how to fix the form
 [ ] be able to delete items from collection
 [x] BUG: when creating a new race and then adding racers, the transfer drivers are not autopopulating correctly (maybe an extra +1 is added to index?)
 [ ] update races for mid-race and end of race finishing list (update current_position or racers of race id)

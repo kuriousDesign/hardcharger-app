@@ -37,7 +37,7 @@ export default function GamePicksPage(){
     const [picks, setPicks] = useState<PickClientType[]>([]);
     const [filterLabel, setFilterLabel] = useState<string>('available');
     const [loading, setLoading] = useState<boolean>(true);
-    const [players, setPlayers] = useState<PlayerClientType[]>([]);
+    //const [players, setPlayers] = useState<PlayerClientType[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -58,7 +58,7 @@ export default function GamePicksPage(){
                         }
                     }
                 }
-                setPlayers(playersData);
+                //setPlayers(playersData);
             }
             setLoading(false);
         };
@@ -93,7 +93,7 @@ export default function GamePicksPage(){
                             <TabsTrigger value="all">All</TabsTrigger>
                         </TabsList>
                     </Tabs>
-                    <CardPicksGame picks={picks} players={players} filterLabel={filterLabel} />
+                    <CardPicksGame picks={picks} filterLabel={filterLabel} />
                 </div>
             </div>
         </div>

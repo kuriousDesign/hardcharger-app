@@ -61,7 +61,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 			</PageHeader>
 			<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
 				<div className="theme-container container flex flex-1 flex-col gap-4">
-					<CardPicksGame picks={picks} players={players} filterLabel='all' viewType='peek' />
+					<CardPicksGame picks={picks} filterLabel='all' viewType='peek' />
 					<Card className="p-6 space-y-4">
 						<CardHeader>
 							Hard Chargers
