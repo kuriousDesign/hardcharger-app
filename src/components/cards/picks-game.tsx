@@ -1,8 +1,8 @@
-// import {
-//   Avatar,
-//   AvatarFallback,
-//   AvatarImage,
-// } from "@/components/ui/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  //AvatarImage,
+} from "@/components/ui/avatar"
 
 import {
   Card,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "../ui/separator"
 import { PickClientType } from "@/models/Pick";
-import { PlayerClientType } from "@/models/Player";
+
 
 function getCardTitle(filterLabel: string | undefined): string {
   if (!filterLabel) return 'Picks';
@@ -30,7 +30,12 @@ function getCardTitle(filterLabel: string | undefined): string {
       return `${filterLabel.charAt(0).toUpperCase() + filterLabel.slice(1)} Picks`;
   }
 }
-export async function CardPicksGame({ picks, players, filterLabel, viewType }: { picks: PickClientType[], players: PlayerClientType[], filterLabel?: string, viewType?: 'full' | 'peek' }) {
+export async function CardPicksGame({ 
+    picks,
+    filterLabel, viewType }: {
+    picks: PickClientType[],
+    filterLabel?: string, viewType?: 'full' | 'peek'
+  }) {
   //const router = useRouter();
   if (!picks || picks.length === 0) {
     return (
@@ -64,16 +69,17 @@ export async function CardPicksGame({ picks, players, filterLabel, viewType }: {
   }
 
   const PeekDiv = ({ pick }: { pick: PickClientType }) => {
-    const player = players.find(player => player._id === pick.player_id);
-    const playerName = player ? player.name : 'Unknown Player';
+    //const player = players.find(player => player._id === pick.player_id);
     return (
-      <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-        <div className="flex items-center space-x-4">
-          {/* <Avatar>
-            <AvatarImage src={pick.driver?.image || ''} alt={pick.driver?.name || 'Driver Avatar'} />
-            <AvatarFallback>{pick.driver?.name?.charAt(0) || 'D'}</AvatarFallback>
-          </Avatar> */}
-          <span className="font-medium">{`${playerName} | ${pick.nickname}`}</span>
+      <div className="flex flex-row items-center justify-start p-2 gap-4 bg-muted rounded-lg">
+        <Avatar className='size-8'>
+          {/* <AvatarImage src={pick.driver?.image || ''} alt={pick.driver?.name || 'Driver Avatar'} /> */}
+          <AvatarFallback className='bg-accent-foreground text-accent size-8'>{pick?.name?.charAt(0) || ''}</AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col items-start space-x-4">
+
+          <div className="font-medium">{`${pick.name}`}</div>
+          <div className="text-secondary-foreground">{`${pick.nickname}`}</div>
         </div>
 
       </div>
@@ -93,12 +99,12 @@ export async function CardPicksGame({ picks, players, filterLabel, viewType }: {
       <CardContent className="grid gap-6">
         {viewType === 'peek' && picks.map((pick: PickClientType, index: number) => {
           return (
-            <>
+            <div key={pick._id} className="flex flex-col justify-between">
               <PeekDiv key={pick._id} pick={pick} />
               {index !== picks.length - 2 &&
                 <Separator orientation="horizontal" className='bg-muted' />
               }
-            </>
+            </div>
           )
         })}
 

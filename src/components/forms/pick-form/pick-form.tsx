@@ -23,6 +23,7 @@ import StepGameOverview from './StepGameOverview';
 import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
 import CardStepRacerPredictions from '@/components/forms/pick-form/card-step-racer-predictions';
+import { getLinks } from '@/lib/link-urls';
 
 
 export default function FormPick({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
@@ -71,7 +72,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
   const handleSubmit = async () => {
     try {
       await postPick(pickForm);
-      router.push(`/dashboard/${gameId}`);
+      router.push(getLinks().getGameUrl(gameId));
     } catch (err) {
       console.error('Error submitting pick:', err);
     }
@@ -87,7 +88,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
         >
           Submit Pick
         </button>
-        <pre className="bg-gray-100 p-4 rounded text-left text-xs overflow-x-auto">
+        <pre className="p-4 rounded text-left text-xs overflow-auto">
           {JSON.stringify(pickForm, null, 2)}
         </pre>
 
