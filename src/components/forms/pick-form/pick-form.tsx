@@ -102,12 +102,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
     () => <CardStepRacerPredictions type={'hardcharger'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
 
     () => <CardStepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
-
-
     stepSubmitPick,
-    // Add more steps as needed
-    // () => <StepTopFinishers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
-    // () => <StepTieBreaker pickForm={pickForm} setPickForm={setPickForm} />,
   ];
 
   const buttonSize = "w-[10vh] h-[10vh]";
