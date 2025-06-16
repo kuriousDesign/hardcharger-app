@@ -7,7 +7,7 @@ import { DriverClientType } from "@/models/Driver";
 import { getLinks } from "@/lib/link-urls";
 import { LinkButton } from "@/components/LinkButton";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
-import { checkIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/utils/roles";
 
 export default async function CardRacers({ eventId, raceId }: { eventId: string, raceId: string }) {
 
@@ -17,7 +17,7 @@ export default async function CardRacers({ eventId, raceId }: { eventId: string,
     // Replace with your actual API endpoint
     const race = await getRace(raceId) as RaceClientType;
     const racerDrivers = await getRacersWithDriversByRaceId(raceId as string);
-    const isAdmin = await checkIsAdmin();
+    const isAdmin = await getIsAdmin();
 
 
     //console.log("status:", raceResult.status);

@@ -9,7 +9,7 @@ import {
 
 
 import { CardsGames } from '@/components/cards/games';
-import { checkIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/utils/roles";
 import { Metadata } from "next";
 import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";
@@ -37,7 +37,7 @@ export default async function EventPage({
 		return <div className="p-6">Event not found</div>;
 	}
 
-	const isAdmin = await checkIsAdmin();
+	const isAdmin = await getIsAdmin();
 
 	const games = await getGamesByEventId(eventId);
 

@@ -30,9 +30,9 @@ function getCardTitle(filterLabel: string | undefined): string {
       return `${filterLabel.charAt(0).toUpperCase() + filterLabel.slice(1)} Picks`;
   }
 }
-export async function CardPicksGame({ 
-    picks,
-    filterLabel, viewType }: {
+export async function CardPicksGame({
+  picks,
+  filterLabel, viewType }: {
     picks: PickClientType[],
     filterLabel?: string, viewType?: 'full' | 'peek'
   }) {
@@ -71,17 +71,18 @@ export async function CardPicksGame({
   const PeekDiv = ({ pick }: { pick: PickClientType }) => {
     //const player = players.find(player => player._id === pick.player_id);
     return (
-      <div className="flex flex-row items-center justify-start p-2 gap-4 bg-muted rounded-lg">
-        <Avatar className='size-8'>
+      <div className="flex flex-row items-center justify-start py-1 gap-4 rounded-lg">
+        <Avatar className='size-6'>
           {/* <AvatarImage src={pick.driver?.image || ''} alt={pick.driver?.name || 'Driver Avatar'} /> */}
-          <AvatarFallback className='bg-accent-foreground text-accent size-8'>{pick?.name?.charAt(0) || ''}</AvatarFallback>
+            <AvatarFallback className='bg-accent flex size-6 items-center justify-center text-xs'>
+            {pick?.name?.charAt(0) || ''}
+            </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col items-start space-x-4">
-
-          <div className="font-medium">{`${pick.name}`}</div>
-          <div className="text-secondary-foreground">{`${pick.nickname}`}</div>
+        <div className="flex flex-row items-start space-x-4">
+          <div className="text-sm">{`${pick.nickname}`}</div>
+          <div className="text-sm text-muted-foreground">{`|`}</div>
+          <div className="text-secondary-foreground font-light text-sm">{`${pick.name}`}</div>
         </div>
-
       </div>
     )
   }
@@ -96,18 +97,18 @@ export async function CardPicksGame({
           {cardDescription}
         </CardDescription>
       </CardHeader>
+
       <CardContent className="grid gap-6">
         {viewType === 'peek' && picks.map((pick: PickClientType, index: number) => {
           return (
             <div key={pick._id} className="flex flex-col justify-between">
-              <PeekDiv key={pick._id} pick={pick} />
-              {index !== picks.length - 2 &&
+              <PeekDiv pick={pick} />
+              {index !== picks.length - 1 &&
                 <Separator orientation="horizontal" className='bg-muted' />
               }
             </div>
           )
         })}
-
       </CardContent>
     </Card>
   )

@@ -75,7 +75,9 @@ export default function GamesPage() {
               <TabsTrigger value="all">All</TabsTrigger>
             </TabsList>
           </Tabs>
-          <CardsGames games={games} filterLabel={filterLabel} />
+          {games && filterLabel &&
+            <CardsGames games={games} filterLabel={filterLabel} />
+          }
         </div>
       </div>
     </div>

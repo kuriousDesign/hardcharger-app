@@ -12,7 +12,7 @@ export const getRole = async (requiredRole: Roles) => {
  * Checks if the current user has the 'admin' role.
  * @returns {Promise<boolean>} True if the user is an admin, false otherwise.
  */
-export const checkIsAdmin = async () => {
+export const getIsAdmin = async () => {
   const { sessionClaims } = await auth();
   return sessionClaims?.metadata?.role === 'admin';
 }

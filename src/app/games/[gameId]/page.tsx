@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
-import { getGameWithEvent, getPicksByGameId } from '@/actions/getActions';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { getCurrentPlayer, getGameWithEvent, getPicksByGameId } from '@/actions/getActions';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 
 import {
 	PageActions,
@@ -12,21 +12,22 @@ import {
 import { LinkButton } from "@/components/LinkButton"
 import { getLinks } from "@/lib/link-urls"
 import ButtonUpdateGame from './button-update-game';
-import { checkIsAdmin } from '@/utils/roles';
+import { getIsAdmin } from '@/utils/roles';
 import { TableHardChargerLeaderboard } from '@/components/tables/hard-charger-leaderboard';
-import { CardPicksGame } from '@/components/cards/picks-game';
+//import { CardPicksGame } from '@/components/cards/picks-game';
 import { PlayerClientType } from '@/models/Player';
 import { getPlayer } from '@/actions/getActions';
-
-
+import TabsCard, { FilterOption } from '@/components/cards/tabs-card';
+import PeekDiv from '@/components/cards/pick-div';
 
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
 	const { gameId } = await params;
 	const { game, event } = await getGameWithEvent(gameId);
+	const player = await getCurrentPlayer();;
 	const title = "Game" + game.name
 	const description = event.name
-	const isAdmin = await checkIsAdmin();
+	const isAdmin = await getIsAdmin();
 
 	const picks = await getPicksByGameId(gameId);
 	const players = [] as PlayerClientType[];
@@ -39,9 +40,19 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 		}
 	}
 
+	// Define filterable options
+	const filterableOptions = [
+		{ key: "player_id", value: null, tabLabel: 'All' }, // "All" tab
+		{ key: "player_id", value: player._id, tabLabel: 'Yours' }, // "My Picks" tab
+	] as FilterOption[];
+
+
+
 	// function paidString(isPaid: boolean) {
 	// 	return isPaid ? 'Paid' : 'Unpaid';
 	// };
+
+
 
 	return (
 		<div>
@@ -61,15 +72,26 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 			</PageHeader>
 			<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
 				<div className="theme-container container flex flex-1 flex-col gap-4">
-					<CardPicksGame picks={picks} filterLabel='all' viewType='peek' />
-					<Card className="p-6 space-y-4">
-						<CardHeader>
+					<Card>
+						<CardHeader >
 							Hard Chargers
 						</CardHeader>
+						<CardDescription className='mb-0 pb-0'>
+							These are the players who have made the most picks in this game.
+						</CardDescription>
 						<CardContent>
 							<TableHardChargerLeaderboard />
 						</CardContent>
 					</Card>
+					<TabsCard
+						cardTitle="Picks"
+						cardDescription="These are the picks for this game."
+						items={picks}
+						filterableOptions={filterableOptions}
+						ComponentDiv={PeekDiv}
+					/>
+					{/* <CardPicksGame picks={picks} filterLabel='all' viewType='peek' /> */}
+
 				</div>
 			</div>
 		</div>

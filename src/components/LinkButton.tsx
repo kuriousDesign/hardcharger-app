@@ -7,11 +7,13 @@ type LinkButtonProps = {
   href: string
   children: ReactNode
   asChild?: boolean
+  isNavigation?: boolean
 } & ComponentProps<"button"> & VariantProps<typeof buttonVariants>
 
 export function LinkButton({
   href,
   children,
+  isNavigation = false,
   variant,
   size,
   className,
@@ -22,7 +24,7 @@ export function LinkButton({
       asChild
       variant={variant}
       size={size}
-      className={className}
+      className={`${isNavigation ? 'rounded-full w-fit' : ''} ${className || ''}`}
       {...props}
     >
       <Link href={href}>{children}</Link>

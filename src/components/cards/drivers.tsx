@@ -18,14 +18,14 @@ import { getLinks } from "@/lib/link-urls";
 
 import { Separator } from "../ui/separator";
 import { IoMdAddCircle } from "react-icons/io";
-import { checkIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/utils/roles";
 
 import { SquarePen } from "lucide-react";
 import { getDriverFullName } from "@/types/helpers";
 import { getDrivers } from "@/actions/getActions";
 import Link from "next/link";
 export default async function CardDrivers() {
-    const isAdmin = await checkIsAdmin();
+    const isAdmin = await getIsAdmin();
     const unfilteredDrivers = await getDrivers();
     // filter drivers whose first name begins with Transfer
     const drivers = unfilteredDrivers.filter((driver: DriverClientType) => {

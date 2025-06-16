@@ -2,7 +2,7 @@ import { getRaces, getRacesByEventId } from "@/actions/getActions";
 import { getLinks } from "@/lib/link-urls";
 import { RaceClientType } from "@/models/Race";
 import Link from "next/link";
-import { checkIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/utils/roles";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -17,7 +17,7 @@ import { Separator } from "../ui/separator";
 import { SquarePen } from "lucide-react";
 
 export default async function RacesCard({ eventId }: { eventId: string }) {
-    const isAdmin = await checkIsAdmin();
+    const isAdmin = await getIsAdmin();
     let races: RaceClientType[] = [];
     if (!eventId || eventId === "_") {
         races = await getRaces();

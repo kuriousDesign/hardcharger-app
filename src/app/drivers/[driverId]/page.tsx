@@ -2,7 +2,7 @@ import { getDriver } from "@/actions/getActions";
 import { LinkButton } from "@/components/LinkButton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLinks } from "@/lib/link-urls";
-import { checkIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/utils/roles";
 import { SquarePen } from "lucide-react";
 import { getDriverFullName } from "@/types/helpers";
 
@@ -12,7 +12,7 @@ export default async function DriverPage({
   params: Promise<{ driverId: string; }>
 }) {
   const { driverId } = await params;
-  const isAdmin = await checkIsAdmin();
+  const isAdmin = await getIsAdmin();
 
   const driver = await getDriver(driverId);
 

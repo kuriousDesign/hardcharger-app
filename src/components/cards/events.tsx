@@ -13,13 +13,13 @@ import { LinkButton } from "../LinkButton";
 import { getLinks } from "@/lib/link-urls";
 import { Separator } from "../ui/separator";
 import { IoMdAddCircle } from "react-icons/io";
-import { checkIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/utils/roles";
 import { SquarePen } from "lucide-react";
 import { getEvents } from "@/actions/getActions";
 import { EventClientType } from "@/models/Event";
 
 export default async function CardEvents() {
-    const isAdmin = await checkIsAdmin();
+    const isAdmin = await getIsAdmin();
     const events = await getEvents();
     return (
         <Card>
@@ -28,13 +28,14 @@ export default async function CardEvents() {
                 <CardDescription>
                     Active events that you can add races and then games to
                 </CardDescription>
+
+
+            </CardHeader>
+            <CardContent className="grid gap-2">
                 {isAdmin && <LinkButton href={getLinks().getCreateEventUrl()} size="lg" className="w-fit text-primary-foreground">
                     <IoMdAddCircle />
                     Event
                 </LinkButton>}
-
-            </CardHeader>
-            <CardContent className="grid gap-6">
                 {events?.map((event: EventClientType) => (
 
                     <div key={event._id}>

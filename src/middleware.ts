@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import { checkIsAdmin } from './utils/roles';
+import { getIsAdmin } from './utils/roles';
 import { getLinks } from './lib/link-urls';
 
 // Define public routes (accessible without authentication)
@@ -32,7 +32,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   // Protect admin routes with role check
   if (isAdminRoute(req)) {
-    if (!checkIsAdmin()){
+    if (!getIsAdmin()){
       // Redirect to dashboard if logged in, else to home
       const redirectUrl = new URL(getLinks().getDashboardUrl(), req.url);
       return NextResponse.redirect(redirectUrl);
