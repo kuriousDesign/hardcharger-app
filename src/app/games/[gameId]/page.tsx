@@ -22,7 +22,7 @@ import PeekDiv from '@/components/cards/pick-div';
 import { GameStates, gameStatesToString } from '@/types/enums';
 
 import { GameClientType } from '@/models/Game';
-import BtnChangeGameState from './button-change-game-state';
+import BtnChangeGameState from '../../../components/button-change-game-state';
 
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {

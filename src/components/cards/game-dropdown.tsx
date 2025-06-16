@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { getLinks } from "@/lib/link-urls";
 export default function GameDropdown({ game }: { game: GameClientType }) {
+    const router = useRouter();
 
     return (
         <DropdownMenu>
@@ -28,10 +29,10 @@ export default function GameDropdown({ game }: { game: GameClientType }) {
                 <DropdownMenuItem
                     onClick={() => 
                         // want to go to the races page for this game
-                        useRouter().push(getLinks().getGameRaceUrl(game.races[0]._id))
+                        router.push(getLinks().getUpdateRaceStandingsUrl(game._id as string, game.races[0] as string))
                     }
                 >
-                    Races
+                    Update Race {game.races[0]}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>View customer</DropdownMenuItem>

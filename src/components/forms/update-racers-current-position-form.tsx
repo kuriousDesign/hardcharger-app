@@ -7,17 +7,22 @@ import { RaceClientType } from '@/models/Race';
 import { postRacer } from '@/actions/postActions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { getRacersWithDriversByRaceId } from '@/actions/getActions';
+import { AlertCircle } from 'lucide-react';
 
 // Props interface for the form
 interface UpdateRacersCurrentPositionFormProps {
   race: RaceClientType;
   redirectUrl: string;
+  restrictUnknownDropdowns?: boolean; // Feature flag
 }
 
 export default function UpdateRacersCurrentPositionForm({
   race,
   redirectUrl,
+  restrictUnknownDropdowns = true,
 }: UpdateRacersCurrentPositionFormProps) {
   const router = useRouter();
   const [racerDrivers, setRacerDrivers] = useState<RacerDriverClientType[]>([]);
@@ -25,22 +30,23 @@ export default function UpdateRacersCurrentPositionForm({
     Array.from({ length: race.num_cars }, (_, i) => ({ racerId: null, position: i + 1 }))
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
 
   // Fetch racers with drivers
   useEffect(() => {
     async function fetchData() {
       try {
-        const racerDriversData = await getRacersWithDriversByRaceId(race._id);
+        const racerDriversData = await getRacersWithDriversByRaceId(race._id as string);
         setRacerDrivers(racerDriversData);
 
         // Initialize positions based on current_position
-        const initialPositions = Array.from({ length: race.num_cars }, (_, i) => ({
+        const initialPositions: Array<{ racerId: string | null; position: number }> = Array.from({ length: race.num_cars }, (_, i) => ({
           racerId: null,
           position: i + 1,
         }));
         racerDriversData.forEach((rd) => {
           if (rd.racer.current_position && rd.racer.current_position <= race.num_cars) {
-            initialPositions[rd.racer.current_position - 1].racerId = rd.racer._id;
+            initialPositions[rd.racer.current_position - 1].racerId = rd.racer._id || null;
           }
         });
         setPositions(initialPositions);
@@ -51,10 +57,21 @@ export default function UpdateRacersCurrentPositionForm({
     fetchData();
   }, [race._id, race.num_cars]);
 
-  // Get all racers for a position (no filtering)
-  const getAvailableRacers = () => {
+  // Get racers for a position
+  const getAvailableRacers = (currentPosition: number, isUnknown: boolean) => {
+    if (restrictUnknownDropdowns && isUnknown) {
+      // Show only unassigned racers for "Unknown" dropdowns
+      const assignedRacerIds = positions
+        .filter((p) => p.position !== currentPosition && p.racerId)
+        .map((p) => p.racerId) as string[];
+      return [
+        { racer: { _id: 'unknown', driver_id: '', current_position: null, race_id: '', starting_position: 0 }, driver: { _id: '', first_name: 'Unknown', last_name: '', car_number: '', suffix: '' } },
+        ...racerDrivers.filter((rd) => !assignedRacerIds.includes(rd.racer._id as string)),
+      ];
+    }
+    // Show all racers otherwise
     return [
-      { racer: { _id: 'unknown', driver_id: '', current_position: null, race_id: '', starting_position: 0 }, driver: { _id: '', first_name: 'Unknown', last_name: '', car_number: '' } },
+      { racer: { _id: 'unknown', driver_id: '', current_position: null, race_id: '', starting_position: 0 }, driver: { _id: '', first_name: 'Unknown', last_name: '', car_number: '', suffix: '' } },
       ...racerDrivers,
     ];
   };
@@ -81,12 +98,22 @@ export default function UpdateRacersCurrentPositionForm({
     });
   };
 
+  // Check for unknown racers
+  const unknownPositions = positions
+    .filter((p) => p.racerId === null)
+    .map((p) => p.position);
+
   // Handle form submission
   const onSubmit = async () => {
+    if (unknownPositions.length > 0) {
+      setShowWarningDialog(true);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const racerPromises = racerDrivers.map(async (rd) => {
-        const newPosition = positions.find((p) => p.racerId === rd.racer._id)?.position || null;
+        const newPosition = positions.find((p) => p.racerId === rd.racer._id)?.position || 0;
         if (rd.racer.current_position !== newPosition) {
           const racerData: RacerClientType = {
             ...rd.racer,
@@ -107,12 +134,13 @@ export default function UpdateRacersCurrentPositionForm({
 
   return (
     <div className="flex flex-col gap-4 max-w-lg">
-      <h2 className="text-xl font-bold">Update Racer Positions for {race.name}</h2>
+      <h2 className="text-xl font-bold">Update Racer Positions for {race._id}</h2>
 
       {/* Dynamic Position Dropdowns */}
       {positions.map((pos) => {
         const position = pos.position;
         const selectedRacer = racerDrivers.find((rd) => rd.racer._id === pos.racerId);
+        const isUnknown = pos.racerId === null;
         return (
           <div key={position} className="border p-4 rounded-md flex flex-col gap-2">
             <h3 className="text-md font-semibold">Position #{position}</h3>
@@ -126,16 +154,23 @@ export default function UpdateRacersCurrentPositionForm({
                   <SelectValue placeholder="Select a racer" />
                 </SelectTrigger>
                 <SelectContent>
-                  {getAvailableRacers().map((rd) => (
-                    <SelectItem key={rd.racer._id} value={rd.racer._id}>
+                  {getAvailableRacers(position, isUnknown).map((rd) => (
+                    <SelectItem key={rd.racer._id} value={rd.racer._id as string}>
                       {rd.racer._id !== 'unknown'
-                        ? `${rd.driver.first_name} ${rd.driver.last_name} ${rd.driver.suffix || ''} - Car #${rd.driver.car_number}`
+                        ? `${rd.driver.first_name} ${rd.driver.last_name} ${rd.driver?.suffix || ''} - Car #${rd.driver.car_number}`
                         : 'Unknown'}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
+            {isUnknown && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Warning</AlertTitle>
+                <AlertDescription>Position #{position} is unassigned. Please select a racer.</AlertDescription>
+              </Alert>
+            )}
             {selectedRacer && pos.racerId !== 'unknown' && (
               <p className="text-sm text-muted-foreground">
                 Starting: #{selectedRacer.racer.starting_position}
@@ -145,7 +180,7 @@ export default function UpdateRacersCurrentPositionForm({
         );
       })}
 
-      <Button onClick={onSubmit} disabled={isSubmitting} className="w-full">
+      <Button onClick={onSubmit} disabled={isSubmitting || unknownPositions.length > 0} className="w-full">
         {isSubmitting ? 'Submitting...' : 'Update Positions'}
       </Button>
       <Button
@@ -156,6 +191,21 @@ export default function UpdateRacersCurrentPositionForm({
       >
         Cancel
       </Button>
+
+      {/* Warning Dialog */}
+      <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Missing Racers</DialogTitle>
+            <DialogDescription>
+              The following positions are unassigned: {unknownPositions.join(', ')}. Please assign racers to all positions before submitting.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowWarningDialog(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

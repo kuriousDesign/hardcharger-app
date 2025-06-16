@@ -107,8 +107,12 @@ export function getLinks() {
         return `${getPicksByGameUrl(gameId)}/${pickId}`;
     };
 
+    const getGameRaceUrl = (gameId: string, raceId: string) => {
+        return `${getGameUrl(gameId)}/${raceId}`;
+    };
+
     const getUpdateRaceStandingsUrl = (gameId: string, raceId: string) => {
-        return `${getGameUrl(gameId)}/${raceId}/update`;
+        return `${getGameRaceUrl(gameId,raceId)}/update`;
     }
 
     return {
@@ -137,6 +141,7 @@ export function getLinks() {
         getEditEventUrl,
         getPicksByGameUrl,
         getPickByGameUrl,
+        getGameRaceUrl,
         getUpdateRaceStandingsUrl,
     };
 }

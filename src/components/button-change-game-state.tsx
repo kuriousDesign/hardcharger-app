@@ -40,14 +40,14 @@ export default function BtnChangeGameState({ game, state }: ActivateGameButtonPr
         hideButton = true;
     }
     switch (state) {
+        case GameStates.UPCOMING:
+            buttonLabel = "Created";
+            break;
         case GameStates.OPEN:
             buttonLabel = "Open";
             break;
         case GameStates.IN_PLAY:
             buttonLabel = "Activate";
-            break;
-        case GameStates.UPCOMING:
-            buttonLabel = "Created";
             break;
         case GameStates.FINISHED:
             buttonLabel = "End";
