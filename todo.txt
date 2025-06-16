@@ -1,4 +1,6 @@
 TODO:
+[x] HardChargerTable Calculations
+[ ] Need to test and debug score calculation
 [ ] Better user instructions if pick form is submitted and has error --> how to fix the form
 [ ] be able to delete items from collection
 [x] BUG: when creating a new race and then adding racers, the transfer drivers are not autopopulating correctly (maybe an extra +1 is added to index?)
@@ -8,7 +10,7 @@ TODO:
 [t] add guess prediction to hard charger form
 [ ] race page needs to be organized to help create the lineup or update lineup during race and change status of race.
 [ ] need to filter list of races when one is selected so that duplicates can't be selected, or show warning.
-[ ] see if server action for getCurrentPlayer is producing the clerkMiddleware warning, could also be checkRole()
+[ ] see if server action for getCurrentPlayer is producing the clerkMiddleware warning, could also be checkRole()5
 [ ] GameDetails used for creating picks and also explaining game on [gameId] page
 [t] server actions get getPicksWithGamesByPlayerId and getPicksByPlayerIdAndGameStatus
 [ ] server component PlayerPicks (use getPicksByPlayerIdAndGameStatus of multiple game_status to build an array) or use the button filter approach shadcn 'tabs'

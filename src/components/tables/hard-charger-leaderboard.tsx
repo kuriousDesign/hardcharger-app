@@ -8,60 +8,19 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-
-export interface HardChargerLeaderboardEntry {
-    rank: number; // Rank of the driver in the leaderboard
-    _driver_id: string;
-    driver_name: string; // Name of the driver
-    total_cars_passed: number; // Total number of cars passed
-    cars_passed_by_race: number[]; // Array
-}
-
-const defaultEntries = [
-    {
-   
-        _driver_id: "1",
-        driver_name: "John Doe",
-        total_cars_passed: 15,
-        cars_passed_by_race: [5, 3, 7],
-    },
-    {
-   
-        _driver_id: "2",
-        driver_name: "Jane Smith",
-        total_cars_passed: 20,
-        cars_passed_by_race: [6, 8, 6],
-    },
-    {
-    
-        _driver_id: "3",
-        driver_name: "Jake Gardner",
-        total_cars_passed: 20,
-        cars_passed_by_race: [7, 7, 6],
-    },
-    {
-        _driver_id: "4",
-        driver_name: "Alice Johnson",
-        total_cars_passed: 10,
-        cars_passed_by_race: [2, 4, 4],
-    },
-    {
-        _driver_id: "5",
-        driver_name: "Bob Brown",
-        total_cars_passed: 18,
-        cars_passed_by_race: [7, 5, 6],
-    }
-] as HardChargerLeaderboardEntry[];
+import { HardChargerTableClientType, HardChargerEntryClientType } from "@/models/HardChargerTable";
 
 function convertIndexToLetter(index: number): string {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     return letters[index % letters.length];
 }
 
-export function TableHardChargerLeaderboard({ entries = defaultEntries }: { entries?: HardChargerLeaderboardEntry[] }) {
-    if (!entries || entries.length === 0) {
+export function TableHardChargerLeaderboard({ table }: { table?: HardChargerTableClientType }) {
+    if (!table || table.entries.length === 0) {
         return <div className="text-center text-gray-500">No entries available.</div>;
     }
+    //console.log('TableHardChargerLeaderboard', table);
+    const entries: HardChargerEntryClientType[] = [...table.entries];
 
     // sort entries by total_cars_passed in descending order
     entries.sort((a, b) => b.total_cars_passed - a.total_cars_passed);
@@ -107,7 +66,7 @@ export function TableHardChargerLeaderboard({ entries = defaultEntries }: { entr
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {entries.map((entry: HardChargerLeaderboardEntry, index: number) => (
+                {entries.map((entry: HardChargerEntryClientType, index: number) => (
                     <TableRow key={index}>
                         <TableCell className="text-center">{entry.rank}</TableCell>
                         <TableCell className="text-left">{entry.driver_name}</TableCell>

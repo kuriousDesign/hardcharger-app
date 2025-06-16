@@ -17,6 +17,8 @@ import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
 import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { HardChargerTableModel, HardChargerTableClientType } from '@/models/HardChargerTable';
+
 
 export const getConnectToDb = async () => {await connectToDb();}
 
@@ -293,4 +295,14 @@ export const getOpenGames = async (): Promise<GameClientType[]> => {
   const filter = { status: 'open' };
   const games = await getGames(filter);
   return games as GameClientType[];
+}
+
+export const getHardChargerTable = async (gameId: string): Promise<HardChargerTableClientType | null> => {
+  await connectToDb();
+  const hardChargerTable = await HardChargerTableModel.findOne({ game_id: new Types.ObjectId(gameId) });
+  if (!hardChargerTable) {
+    //throw new Error(`No hard charger table found for game_id: ${gameId}`);
+    return null; // Return null if no table is found
+  }
+  return toClientObject<HardChargerTableClientType>(hardChargerTable);
 }

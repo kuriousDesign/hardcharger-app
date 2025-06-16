@@ -17,6 +17,7 @@ import { getLinks } from "@/lib/link-urls";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { Button } from "../ui";
 import { postGame } from "@/actions/postActions";
+import GameDropdown from "./game-dropdown";
 export default function GameDiv({
     data,
 }: {
@@ -70,6 +71,7 @@ export default function GameDiv({
                         Pick
                     </LinkButton>
                 }
+                <GameDropdown game={data} />
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import { getCurrentPlayer, getGameWithEvent, getPicksByGameId } from '@/actions/getActions';
+import { getCurrentPlayer, getGameWithEvent, getHardChargerTable, getPicksByGameId } from '@/actions/getActions';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/components/page-header"
 import { LinkButton } from "@/components/LinkButton"
 import { getLinks } from "@/lib/link-urls"
-import ButtonUpdateGame from './button-update-game';
+import ButtonUpdateGame from '../../../components/button-update-game';
 import { getIsAdmin } from '@/utils/roles';
 import { TableHardChargerLeaderboard } from '@/components/tables/hard-charger-leaderboard';
 //import { CardPicksGame } from '@/components/cards/picks-game';
@@ -43,6 +43,8 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 			}
 		}
 	}
+
+	const hardChargerTable = await getHardChargerTable(gameId);
 
 	// Define filterable options
 	const filterableOptions = [
@@ -76,7 +78,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 					{game.status === GameStates.IN_PLAY && isAdmin && <ButtonUpdateGame gameId={gameId} />}
 					<BtnChangeGameState game={game as GameClientType} />
 					<LinkButton
-						href={getLinks().getUpdateRaceStandingsUrl(gameId, game.races[0] as string )}
+						href={getLinks().getUpdateRaceStandingsUrl(gameId, game.races[0] as string)}
 					>
 						Update Race Standings
 					</LinkButton>
@@ -100,7 +102,9 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 								These are the players who have made the most picks in this game.
 							</CardDescription>
 							<CardContent>
-								<TableHardChargerLeaderboard />
+								{hardChargerTable &&
+									<TableHardChargerLeaderboard table={hardChargerTable} />
+								}
 							</CardContent>
 						</Card>
 					}
