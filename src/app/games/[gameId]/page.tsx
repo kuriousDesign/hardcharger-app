@@ -19,6 +19,10 @@ import { PlayerClientType } from '@/models/Player';
 import { getPlayer } from '@/actions/getActions';
 import TabsCard, { FilterOption } from '@/components/cards/tabs-card';
 import PeekDiv from '@/components/cards/pick-div';
+import { GameStates, gameStatesToString } from '@/types/enums';
+
+import { GameClientType } from '@/models/Game';
+import BtnChangeGameState from './button-change-game-state';
 
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
@@ -53,7 +57,6 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 	// };
 
 
-
 	return (
 		<div>
 			<PageHeader>
@@ -61,28 +64,26 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 					{title}
 				</PageHeaderHeading>
 				<PageHeaderDescription>{description}</PageHeaderDescription>
+				{gameStatesToString(game.status as GameStates)}
 				<PageActions>
+					{game.status === GameStates.OPEN &&
+						<LinkButton
+							href={getLinks().getCreatePickUrl(gameId)}
+						>
+							Make a Pick
+						</LinkButton>
+					}
+					{game.status === GameStates.IN_PLAY && isAdmin && <ButtonUpdateGame gameId={gameId} />}
+					<BtnChangeGameState game={game as GameClientType} />
 					<LinkButton
-						href={getLinks().getCreatePickUrl(gameId)}
+						href={getLinks().getUpdateRaceStandingsUrl(gameId, game.races[0] as string )}
 					>
-						Make a Pick
+						Update Race Standings
 					</LinkButton>
-					{isAdmin && <ButtonUpdateGame gameId={gameId} />}
 				</PageActions>
 			</PageHeader>
 			<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
-				<div className="theme-container container flex flex-1 flex-col gap-4">
-					<Card>
-						<CardHeader >
-							Hard Chargers
-						</CardHeader>
-						<CardDescription className='mb-0 pb-0'>
-							These are the players who have made the most picks in this game.
-						</CardDescription>
-						<CardContent>
-							<TableHardChargerLeaderboard />
-						</CardContent>
-					</Card>
+				<div className="theme-container container flex flex-1 flex-col gap-10">
 					<TabsCard
 						cardTitle="Picks"
 						cardDescription="These are the picks for this game."
@@ -90,8 +91,19 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 						filterableOptions={filterableOptions}
 						ComponentDiv={PeekDiv}
 					/>
-					{/* <CardPicksGame picks={picks} filterLabel='all' viewType='peek' /> */}
-
+					{(game.status === GameStates.IN_PLAY || game.status === GameStates.FINISHED) &&
+						<Card>
+							<CardHeader >
+								Hard Chargers
+							</CardHeader>
+							<CardDescription >
+								These are the players who have made the most picks in this game.
+							</CardDescription>
+							<CardContent>
+								<TableHardChargerLeaderboard />
+							</CardContent>
+						</Card>
+					}
 				</div>
 			</div>
 		</div>

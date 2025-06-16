@@ -66,7 +66,7 @@ export default function TabsCard({
         onValueChange={setActiveTab}
         defaultValue={tabLabels[0]?.toLowerCase() || "all"}
       >
-        <TabsList className="grid w-fit" style={{ gridTemplateColumns: `repeat(${tabLabels.length}, 1fr)` }}>
+        <TabsList className="grid w-fit translate-y-1" style={{ gridTemplateColumns: `repeat(${tabLabels.length}, 1fr)` }}>
           {tabLabels.map((label) => (
             <TabsTrigger key={label} value={label.toLowerCase()}>
               {label}
