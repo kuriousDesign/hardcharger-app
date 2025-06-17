@@ -9,8 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { getRacersWithDriversByRaceId } from '@/actions/getActions';
+import { getGamesByEventId, getRacersWithDriversByRaceId } from '@/actions/getActions';
 import { AlertCircle } from 'lucide-react';
+import { GameClientType } from '@/models/Game';
+import { calculateHardChargersLeaderboardByGameId } from '@/actions/calc-score';
 
 // Props interface for the form
 interface UpdateRacersCurrentPositionFormProps {
@@ -124,6 +126,19 @@ export default function UpdateRacersCurrentPositionForm({
         }
       });
       await Promise.all(racerPromises);
+      // Recalculate the leaderboard after updating positions for all games that belong to event that race belongs to
+      const games = await getGamesByEventId(race.event_id);
+      // wait an additional 5sec to ensure all racer updates are processed
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      console.log('Recalculating leaderboard for all games in event');
+      games.forEach(async (game: GameClientType) => {
+        const gameId = game._id;
+        console.log('Calculating leaderboard for game:', gameId);
+        await calculateHardChargersLeaderboardByGameId(gameId as string);
+      }
+      );
+      router.refresh(); // Force revalidation of the cache
+      console.log('routing back to url:', redirectUrl);
       router.push(redirectUrl);
     } catch (error) {
       console.error('Error updating racer positions:', error);

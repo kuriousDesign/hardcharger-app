@@ -215,23 +215,32 @@ export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?:
     return { message: 'Pick created successfully' };
   }
 }
-
+// 
 export const postHardChargerTable = async (hardChargerTable: Partial<HardChargerTableDoc | HardChargerTableClientType> & { _id?: string }) => {
   await connectToDb();
   // Convert game_id to ObjectId if it's a string
   if (typeof hardChargerTable.game_id === 'string') {
     hardChargerTable.game_id = new Types.ObjectId(hardChargerTable.game_id);
   }
-  const { _id, ...rest } = hardChargerTable;  
-  if (_id && _id !== '') {
-    // Update existing hard charger table
-    await HardChargerTableModel.findByIdAndUpdate(_id, rest, { new: true });
-    return { message: 'Hard Charger Table updated successfully' };
-  } else {
-    // Strip _id when creating a new document
-    const newTable = new HardChargerTableModel(rest);
-    await newTable.save();
-    return { message: 'Hard Charger Table created successfully' };
+
+  try {
+    const existingTable = await HardChargerTableModel.findOne({ game_id: hardChargerTable.game_id });
+    
+    if (existingTable) {
+      // Update existing table
+      await HardChargerTableModel.findByIdAndUpdate(existingTable._id, hardChargerTable, { new: true });
+      console.log('Hard Charger Table updated successfully');
+      return { message: 'Hard Charger Table updated successfully' };
+    } else {
+      // Create new table
+      const newTable = new HardChargerTableModel(hardChargerTable);
+      console.log('Creating new Hard Charger Table');
+      await newTable.save();
+      return { message: 'Hard Charger Table created successfully' };
+    }
+  } catch (error) {
+    console.error('Hard Charger Table save error:', error);
+    throw new Error('Failed to save Hard Charger Table');
   }
 };
 
