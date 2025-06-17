@@ -77,8 +77,8 @@ export async function calculateHardChargersLeaderboardByGameId(gameId: string) {
         // Calculate cars passed for each race
         orderedRaceIds.forEach((raceIdObj) => {
             const racer = driverRacers.find((racer) => racer.race_id === raceIdObj.id);
-            const carsPassed = racer ? racer.starting_position - racer.current_position : 0;
-            totalCarsPassed += carsPassed;
+            const carsPassed = racer ? racer.starting_position - racer.current_position : 999;
+            totalCarsPassed += carsPassed === 999 ? 0 : carsPassed; // If carsPassed is 999, set to 0
             carsPassedByRace.push(carsPassed);
         });
 
@@ -92,7 +92,7 @@ export async function calculateHardChargersLeaderboardByGameId(gameId: string) {
         entries.push(hardChargerEntry);
     });
 
-    // Calculate ranks
+    // Calculate pick ranks
     console.log('4. Assign ranks');
     entries.sort((a, b) => b.total_cars_passed - a.total_cars_passed);
     entries.forEach((entry, index) => {

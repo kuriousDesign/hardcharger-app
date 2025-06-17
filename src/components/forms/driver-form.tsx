@@ -8,13 +8,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { formatHometown } from '@/types/helpers';
+import { useState, useEffect } from 'react';
+import { formatHometown, parseHometown } from '@/types/helpers';
 import { Hometown } from '@/types/globals';
 import { toast } from 'sonner';
 import { getLinks } from '@/lib/link-urls';
 
-// List of regions with country abbreviations for foreign regions
+// List of regions with country abbreviations
 const regions = [
   // US States
   { value: 'AL', label: 'Alabama', country: 'US' },
@@ -67,7 +67,7 @@ const regions = [
   { value: 'WV', label: 'West Virginia', country: 'US' },
   { value: 'WI', label: 'Wisconsin', country: 'US' },
   { value: 'WY', label: 'Wyoming', country: 'US' },
-  // Canadian Provinces and Territories
+  // Canadian Provinces
   { value: 'AB', label: 'CAN - Alberta', country: 'CAN' },
   { value: 'BC', label: 'CAN - British Columbia', country: 'CAN' },
   { value: 'MB', label: 'CAN - Manitoba', country: 'CAN' },
@@ -81,7 +81,7 @@ const regions = [
   { value: 'NT', label: 'CAN - Northwest Territories', country: 'CAN' },
   { value: 'NU', label: 'CAN - Nunavut', country: 'CAN' },
   { value: 'YT', label: 'CAN - Yukon', country: 'CAN' },
-  // Australian States and Territories
+  // Australian Territories
   { value: 'NSW', label: 'AUS - New South Wales', country: 'AUS' },
   { value: 'QLD', label: 'AUS - Queensland', country: 'AUS' },
   { value: 'SA', label: 'AUS - South Australia', country: 'AUS' },
@@ -93,24 +93,37 @@ const regions = [
 ];
 
 interface DriverFormProps {
-  onSuccess?: (driver: DriverClientType) => void; // Callback for successful creation
-  redirectUrl?: string; // Optional redirect URL after submission
+  onSuccess?: (driver: DriverClientType) => void;
+  redirectUrl?: string;
+  initialData?: DriverClientType;
 }
 
-export default function DriverForm({ onSuccess, redirectUrl }: DriverFormProps) {
+export default function DriverForm({ onSuccess, redirectUrl, initialData }: DriverFormProps) {
   const router = useRouter();
   const [hometown, setHometown] = useState<Hometown>({ city: '', region: '' });
 
   // Initialize form
   const form = useForm<DriverClientType>({
     defaultValues: {
-      first_name: '',
-      last_name: '',
-      suffix: '',
-      car_number: '',
-      hometown: '',
+      _id: initialData?._id || '',
+      first_name: initialData?.first_name || '',
+      last_name: initialData?.last_name || '',
+      suffix: initialData?.suffix || '',
+      car_number: initialData?.car_number || '',
+      hometown: initialData?.hometown || '',
     },
   });
+
+  // Set hometown from initialData
+  useEffect(() => {
+    if (initialData?.hometown) {
+      const parsedHometown = parseHometown(initialData.hometown);
+      setHometown({
+        city: parsedHometown.city || '',
+        region: parsedHometown.region || '',
+      });
+    }
+  }, [initialData]);
 
   // Handle form submission
   const onFormSubmit = async (data: DriverClientType) => {
@@ -119,16 +132,26 @@ export default function DriverForm({ onSuccess, redirectUrl }: DriverFormProps) 
       return;
     }
     try {
-      const driverData = {
+      const driverData: DriverClientType = {
         ...data,
+        _id: initialData?._id,
         hometown: formatHometown(hometown),
       };
-      const createdDriver = await postDriver(driverData) as DriverClientType;
-      toast.success('Driver created successfully!');
+      let driver: DriverClientType;
+      if (initialData?._id) {
+        // Update existing driver
+        driver = await postDriver(driverData) as DriverClientType;
+        toast.success('Driver updated successfully!');
+      } else {
+        // Create new driver
+        driver = await postDriver(driverData) as DriverClientType;
+        toast.success('Driver created successfully!');
+      }
+
       form.reset();
       setHometown({ city: '', region: '' });
       if (onSuccess) {
-        onSuccess(createdDriver);
+        onSuccess(driver);
       }
       if (redirectUrl) {
         router.push(redirectUrl);
@@ -136,15 +159,15 @@ export default function DriverForm({ onSuccess, redirectUrl }: DriverFormProps) 
         router.push(getLinks().getDriversUrl());
       }
     } catch (error) {
-      console.error('Error creating driver:', error);
-      toast.error('Failed to create driver. Please try again.');
+      console.error('Error saving driver:', error);
+      toast.error(initialData?._id ? 'Failed to update driver.' : 'Failed to create driver.');
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onFormSubmit)} className="flex flex-col gap-4 max-w-md">
-        <h2 className="text-2xl font-bold">Create Driver</h2>
+        <h2 className="text-2xl font-bold">{initialData?._id ? 'Edit Driver' : 'Create Driver'}</h2>
 
         <FormField
           control={form.control}
@@ -264,7 +287,7 @@ export default function DriverForm({ onSuccess, redirectUrl }: DriverFormProps) 
           disabled={form.formState.isSubmitting}
           className="w-full"
         >
-          {form.formState.isSubmitting ? 'Submitting...' : 'Create Driver'}
+          {form.formState.isSubmitting ? 'Submitting...' : initialData?._id ? 'Update Driver' : 'Create Driver'}
         </Button>
         <Button
           type="button"

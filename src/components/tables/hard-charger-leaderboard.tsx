@@ -73,7 +73,7 @@ export function TableHardChargerLeaderboard({ table }: { table?: HardChargerTabl
                         <TableCell className="text-center text-primary font-bold">{entry.total_cars_passed}</TableCell>
                         {entry.cars_passed_by_race.map((carsPassed, raceIndex) => (
                             <TableCell key={raceIndex} className="text-center text-muted-foreground">
-                                {carsPassed}
+                                {carsPassed === 999 ? '-' : carsPassed}
                             </TableCell>
                         ))}
                     </TableRow>
