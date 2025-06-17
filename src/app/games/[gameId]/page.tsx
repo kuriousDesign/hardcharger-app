@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import { getCurrentPlayer, getGameWithEvent, getHardChargerTable, getPicksByGameId } from '@/actions/getActions';
+import { getCurrentPlayer, getGameWithEvent, getHardChargerTable, getPicksByGameId, getRace } from '@/actions/getActions';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 
 import {
@@ -23,6 +23,7 @@ import { GameStates, gameStatesToString } from '@/types/enums';
 
 import { GameClientType } from '@/models/Game';
 import BtnChangeGameState from '../../../components/button-change-game-state';
+import { RaceClientType } from '@/models/Race';
 
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
@@ -32,6 +33,13 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 	const title = "Game" + game.name
 	const description = event.name
 	const isAdmin = await getIsAdmin();
+	// get races from raceIds in game
+	const raceIds = game?.races || [];
+	const races = await Promise.all(
+		raceIds.map(async (raceId) => {
+			return await getRace(raceId);
+		})
+	);
 
 	const picks = await getPicksByGameId(gameId);
 	const players = [] as PlayerClientType[];
@@ -76,12 +84,15 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 						</LinkButton>
 					}
 					{game.status === GameStates.IN_PLAY && isAdmin && <ButtonUpdateGame gameId={gameId} />}
-					<BtnChangeGameState game={game as GameClientType} />
-					<LinkButton
-						href={getLinks().getUpdateRaceStandingsUrl(gameId, game.races[0] as string)}
-					>
-						Update Race Standings
-					</LinkButton>
+					{isAdmin && <BtnChangeGameState game={game as GameClientType} />}
+					{isAdmin && races.map((race: RaceClientType) => (
+						<LinkButton
+							key={race._id}
+							href={getLinks().getUpdateRaceStandingsUrl(gameId, race._id as string)}
+						>
+							Adjust {race.letter} {race.type} Standings
+						</LinkButton>
+					))}
 				</PageActions>
 			</PageHeader>
 			<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">

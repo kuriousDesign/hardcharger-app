@@ -128,11 +128,12 @@ export const createClientSafePostHandler = <T extends { _id?: string }>(
     if (_id && _id !== '') {
       const updated = await model.findByIdAndUpdate(_id, { $set: serverData }, { new: true });
       if (!updated) throw new Error(`Document with ID ${_id} not found`);
-      return { message: 'Updated successfully' };
+      //return { message: 'Updated successfully' };
+      return toClientObject(updated);
     } else {
       const created = new model(serverData);
       await created.save();
-      return { message: 'Created successfully' };
+      return toClientObject(created);
     }
   };
 };

@@ -27,7 +27,8 @@ export const siteConfig = {
 
   ],
   adminNavItems: [
-  { href: '/admin', label: 'Admin' },
+  { href: getLinks().getEventsUrl(), label: 'Events' },
+   { href: getLinks().getCreateEventUrl(), label: 'Create Event' },
   //{ href: getLinks().getUsersUrl(), label: 'Users' },
   { href: getLinks().getDriversUrl(), label: 'Drivers' },
 ]

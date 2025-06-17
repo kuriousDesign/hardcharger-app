@@ -1,169 +1,150 @@
 'use client';
+
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { DriverClientType } from '@/models/Driver';
-import { postDriver, updateDriver } from '@/actions/postActions';
+import { postDriver } from '@/actions/postActions';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { getLinks } from '@/lib/link-urls';
 import { useState } from 'react';
-import { formatHometown, parseHometown } from '@/types/helpers';
+import { formatHometown } from '@/types/helpers';
 import { Hometown } from '@/types/globals';
+import { toast } from 'sonner';
+import { getLinks } from '@/lib/link-urls';
 
-// List of US states, Canadian provinces, and Australian states/territories
+// List of regions with country abbreviations for foreign regions
 const regions = [
   // US States
-  { value: 'AL', label: 'Alabama' },
-  { value: 'AK', label: 'Alaska' },
-  { value: 'AZ', label: 'Arizona' },
-  { value: 'AR', label: 'Arkansas' },
-  { value: 'CA', label: 'California' },
-  { value: 'CO', label: 'Colorado' },
-  { value: 'CT', label: 'Connecticut' },
-  { value: 'DE', label: 'Delaware' },
-  { value: 'FL', label: 'Florida' },
-  { value: 'GA', label: 'Georgia' },
-  { value: 'HI', label: 'Hawaii' },
-  { value: 'ID', label: 'Idaho' },
-  { value: 'IL', label: 'Illinois' },
-  { value: 'IN', label: 'Indiana' },
-  { value: 'IA', label: 'Iowa' },
-  { value: 'KS', label: 'Kansas' },
-  { value: 'KY', label: 'Kentucky' },
-  { value: 'LA', label: 'Louisiana' },
-  { value: 'ME', label: 'Maine' },
-  { value: 'MD', label: 'Maryland' },
-  { value: 'MA', label: 'Massachusetts' },
-  { value: 'MI', label: 'Michigan' },
-  { value: 'MN', label: 'Minnesota' },
-  { value: 'MS', label: 'Mississippi' },
-  { value: 'MO', label: 'Missouri' },
-  { value: 'MT', label: 'Montana' },
-  { value: 'NE', label: 'Nebraska' },
-  { value: 'NV', label: 'Nevada' },
-  { value: 'NH', label: 'New Hampshire' },
-  { value: 'NJ', label: 'New Jersey' },
-  { value: 'NM', label: 'New Mexico' },
-  { value: 'NY', label: 'New York' },
-  { value: 'NC', label: 'North Carolina' },
-  { value: 'ND', label: 'North Dakota' },
-  { value: 'OH', label: 'Ohio' },
-  { value: 'OK', label: 'Oklahoma' },
-  { value: 'OR', label: 'Oregon' },
-  { value: 'PA', label: 'Pennsylvania' },
-  { value: 'RI', label: 'Rhode Island' },
-  { value: 'SC', label: 'South Carolina' },
-  { value: 'SD', label: 'South Dakota' },
-  { value: 'TN', label: 'Tennessee' },
-  { value: 'TX', label: 'Texas' },
-  { value: 'UT', label: 'Utah' },
-  { value: 'VT', label: 'Vermont' },
-  { value: 'VA', label: 'Virginia' },
-  { value: 'WA', label: 'Washington' },
-  { value: 'WV', label: 'West Virginia' },
-  { value: 'WI', label: 'Wisconsin' },
-  { value: 'WY', label: 'Wyoming' },
+  { value: 'AL', label: 'Alabama', country: 'US' },
+  { value: 'AK', label: 'Alaska', country: 'US' },
+  { value: 'AZ', label: 'Arizona', country: 'US' },
+  { value: 'AR', label: 'Arkansas', country: 'US' },
+  { value: 'CA', label: 'California', country: 'US' },
+  { value: 'CO', label: 'Colorado', country: 'US' },
+  { value: 'CT', label: 'Connecticut', country: 'US' },
+  { value: 'DE', label: 'Delaware', country: 'US' },
+  { value: 'FL', label: 'Florida', country: 'US' },
+  { value: 'GA', label: 'Georgia', country: 'US' },
+  { value: 'HI', label: 'Hawaii', country: 'US' },
+  { value: 'ID', label: 'Idaho', country: 'US' },
+  { value: 'IL', label: 'Illinois', country: 'US' },
+  { value: 'IN', label: 'Indiana', country: 'US' },
+  { value: 'IA', label: 'Iowa', country: 'US' },
+  { value: 'KS', label: 'Kansas', country: 'US' },
+  { value: 'KY', label: 'Kentucky', country: 'US' },
+  { value: 'LA', label: 'Louisiana', country: 'US' },
+  { value: 'ME', label: 'Maine', country: 'US' },
+  { value: 'MD', label: 'Maryland', country: 'US' },
+  { value: 'MA', label: 'Massachusetts', country: 'US' },
+  { value: 'MI', label: 'Michigan', country: 'US' },
+  { value: 'MN', label: 'Minnesota', country: 'US' },
+  { value: 'MS', label: 'Mississippi', country: 'US' },
+  { value: 'MO', label: 'Missouri', country: 'US' },
+  { value: 'MT', label: 'Montana', country: 'US' },
+  { value: 'NE', label: 'Nebraska', country: 'US' },
+  { value: 'NV', label: 'Nevada', country: 'US' },
+  { value: 'NH', label: 'New Hampshire', country: 'US' },
+  { value: 'NJ', label: 'New Jersey', country: 'US' },
+  { value: 'NM', label: 'New Mexico', country: 'US' },
+  { value: 'NY', label: 'New York', country: 'US' },
+  { value: 'NC', label: 'North Carolina', country: 'US' },
+  { value: 'ND', label: 'North Dakota', country: 'US' },
+  { value: 'OH', label: 'Ohio', country: 'US' },
+  { value: 'OK', label: 'Oklahoma', country: 'US' },
+  { value: 'OR', label: 'Oregon', country: 'US' },
+  { value: 'PA', label: 'Pennsylvania', country: 'US' },
+  { value: 'RI', label: 'Rhode Island', country: 'US' },
+  { value: 'SC', label: 'South Carolina', country: 'US' },
+  { value: 'SD', label: 'South Dakota', country: 'US' },
+  { value: 'TN', label: 'Tennessee', country: 'US' },
+  { value: 'TX', label: 'Texas', country: 'US' },
+  { value: 'UT', label: 'Utah', country: 'US' },
+  { value: 'VT', label: 'Vermont', country: 'US' },
+  { value: 'VA', label: 'Virginia', country: 'US' },
+  { value: 'WA', label: 'Washington', country: 'US' },
+  { value: 'WV', label: 'West Virginia', country: 'US' },
+  { value: 'WI', label: 'Wisconsin', country: 'US' },
+  { value: 'WY', label: 'Wyoming', country: 'US' },
   // Canadian Provinces and Territories
-  { value: 'AB', label: 'Alberta' },
-  { value: 'BC', label: 'British Columbia' },
-  { value: 'MB', label: 'Manitoba' },
-  { value: 'NB', label: 'New Brunswick' },
-  { value: 'NL', label: 'Newfoundland and Labrador' },
-  { value: 'NS', label: 'Nova Scotia' },
-  { value: 'ON', label: 'Ontario' },
-  { value: 'PE', label: 'Prince Edward Island' },
-  { value: 'QC', label: 'Quebec' },
-  { value: 'SK', label: 'Saskatchewan' },
-  { value: 'NT', label: 'Northwest Territories' },
-  { value: 'NU', label: 'Nunavut' },
-  { value: 'YT', label: 'Yukon' },
+  { value: 'AB', label: 'CAN - Alberta', country: 'CAN' },
+  { value: 'BC', label: 'CAN - British Columbia', country: 'CAN' },
+  { value: 'MB', label: 'CAN - Manitoba', country: 'CAN' },
+  { value: 'NB', label: 'CAN - New Brunswick', country: 'CAN' },
+  { value: 'NL', label: 'CAN - Newfoundland and Labrador', country: 'CAN' },
+  { value: 'NS', label: 'CAN - Nova Scotia', country: 'CAN' },
+  { value: 'ON', label: 'CAN - Ontario', country: 'CAN' },
+  { value: 'PE', label: 'CAN - Prince Edward Island', country: 'CAN' },
+  { value: 'QC', label: 'CAN - Quebec', country: 'CAN' },
+  { value: 'SK', label: 'CAN - Saskatchewan', country: 'CAN' },
+  { value: 'NT', label: 'CAN - Northwest Territories', country: 'CAN' },
+  { value: 'NU', label: 'CAN - Nunavut', country: 'CAN' },
+  { value: 'YT', label: 'CAN - Yukon', country: 'CAN' },
   // Australian States and Territories
-  { value: 'NSW', label: 'New South Wales' },
-  { value: 'QLD', label: 'Queensland' },
-  { value: 'SA', label: 'South Australia' },
-  { value: 'TAS', label: 'Tasmania' },
-  { value: 'VIC', label: 'Victoria' },
-  { value: 'WA-AUS', label: 'Western Australia' },
-  { value: 'ACT', label: 'Australian Capital Territory' },
-  { value: 'NT-AU', label: 'Northern Territory' },
+  { value: 'NSW', label: 'AUS - New South Wales', country: 'AUS' },
+  { value: 'QLD', label: 'AUS - Queensland', country: 'AUS' },
+  { value: 'SA', label: 'AUS - South Australia', country: 'AUS' },
+  { value: 'TAS', label: 'AUS - Tasmania', country: 'AUS' },
+  { value: 'VIC', label: 'AUS - Victoria', country: 'AUS' },
+  { value: 'WA-AUS', label: 'AUS - Western Australia', country: 'AUS' },
+  { value: 'ACT', label: 'AUS - Australian Capital Territory', country: 'AUS' },
+  { value: 'NT-AU', label: 'AUS - Northern Territory', country: 'AUS' },
 ];
 
 interface DriverFormProps {
-  initialData?: DriverClientType; // Optional initial data for edit mode
+  onSuccess?: (driver: DriverClientType) => void; // Callback for successful creation
+  redirectUrl?: string; // Optional redirect URL after submission
 }
 
-
-
-
-export default function DriverForm({ initialData }: DriverFormProps) {
+export default function DriverForm({ onSuccess, redirectUrl }: DriverFormProps) {
   const router = useRouter();
-  const isEditMode = !!initialData?._id; // Determine mode based on _id presence
+  const [hometown, setHometown] = useState<Hometown>({ city: '', region: '' });
 
-  // Split hometown for edit mode if it exists
-  //const initialCity = initialData?.hometown ? initialData.hometown.split(', ')[0] : '';
-  //const initialRegion = initialData?.hometown ? initialData.hometown.split(', ')[1] : '';
-
-  const {city, region }= initialData ? parseHometown(initialData?.hometown || '') as Hometown : { city: '', region: '' };
-  const [hometown, setHometown] = useState({
-    city,
-    region,
-  });
-
-
-
-  // Initialize form with React Hook Form, handles creation vs. editing
+  // Initialize form
   const form = useForm<DriverClientType>({
-    defaultValues: initialData
-      ? {
-          first_name: initialData.first_name,
-          last_name: initialData.last_name,
-          suffix: initialData.suffix || '',
-          car_number: initialData.car_number,
-          hometown: initialData.hometown || '',
-        }
-      : {
-          first_name: '',
-          last_name: '',
-          suffix: '',
-          car_number: '',
-          hometown: '',
-        },
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      suffix: '',
+      car_number: '',
+      hometown: '',
+    },
   });
 
   // Handle form submission
   const onFormSubmit = async (data: DriverClientType) => {
+    if (!hometown.city || !hometown.region) {
+      form.setError('hometown', { message: 'City and region are required' });
+      return;
+    }
     try {
-      // Concatenate city and region into hometown
       const driverData = {
         ...data,
         hometown: formatHometown(hometown),
       };
-
-      if (isEditMode) {
-        // Edit mode: call updateDriver
-        if (!initialData?._id) throw new Error('Driver ID is missing');
-        await updateDriver(initialData._id, driverData);
-        console.log('Updated driver:', driverData);
-      } else {
-        // Create mode: call postDriver
-        await postDriver(driverData);
-        console.log('Created driver:', driverData);
+      const createdDriver = await postDriver(driverData) as DriverClientType;
+      toast.success('Driver created successfully!');
+      form.reset();
+      setHometown({ city: '', region: '' });
+      if (onSuccess) {
+        onSuccess(createdDriver);
       }
-      router.push(getLinks().getDriversUrl()); // Redirect to drivers list
+      if (redirectUrl) {
+        router.push(redirectUrl);
+      } else if (!onSuccess) {
+        router.push(getLinks().getDriversUrl());
+      }
     } catch (error) {
-      console.error(`Error ${isEditMode ? 'updating' : 'creating'} driver:`, error);
-      // Optionally show error to user (e.g., toast notification)
+      console.error('Error creating driver:', error);
+      toast.error('Failed to create driver. Please try again.');
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onFormSubmit)} className="flex flex-col gap-4 max-w-md">
-        <h2 className="text-2xl font-bold">
-          {isEditMode ? 'Edit Driver' : 'Create Driver'}
-        </h2>
+        <h2 className="text-2xl font-bold">Create Driver</h2>
 
         <FormField
           control={form.control}
@@ -274,24 +255,27 @@ export default function DriverForm({ initialData }: DriverFormProps) {
                 ))}
               </SelectContent>
             </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
 
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}
           className="w-full"
         >
-          {form.formState.isSubmitting ? 'Submitting...' : isEditMode ? 'Update Driver' : 'Create Driver'}
+          {form.formState.isSubmitting ? 'Submitting...' : 'Create Driver'}
         </Button>
         <Button
           type="button"
           variant="outline"
           className="w-full"
-          onClick={() => router.push(getLinks().getDriversUrl())}
+          onClick={() => {
+            form.reset();
+            setHometown({ city: '', region: '' });
+          }}
         >
-          Cancel
+          Clear
         </Button>
       </form>
     </Form>

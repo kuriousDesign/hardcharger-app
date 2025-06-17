@@ -1,4 +1,5 @@
 TODO:
+[x] Feature: be able to create driver from starting lineup form --> tested and working
 [x] HardChargerTable Calculations
 [ ] Need to test and debug score calculation
 [ ] Better user instructions if pick form is submitted and has error --> how to fix the form
@@ -25,7 +26,7 @@ TODO:
 [ ] handle converting getPlayer and other server actions to convert private_games id's back and forth from string to ObjectId
 [ ] create player in middleware
 
-[ ] nav bar at top
+[x] nav bar at top
 [ ] See how many users can register before clerk will bitch about me not paying --> then bang head on desk very hard
 [ ] Clerk production/deployment steps (very involved and requires custom domain)
 
