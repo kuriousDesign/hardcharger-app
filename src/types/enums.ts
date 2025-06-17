@@ -21,6 +21,28 @@ export function gameStatesToString(state: GameStates): string {
     }
 }
 
+export enum GameTypes {
+    HYBRID = 'hybrid',
+    TOP_FINISHER = 'top_finisher',
+    HARD_CHARGER = 'hard_charger',
+    CLASSIC_DRAW = 'classic_draw',
+}
+
+export function gameTypesToString(type: GameTypes): string {
+    switch (type) {
+        case GameTypes.HYBRID:
+            return 'Hybrid';
+        case GameTypes.TOP_FINISHER:
+            return 'Top Finisher';
+        case GameTypes.HARD_CHARGER:
+            return 'Hard Charger';
+        case GameTypes.CLASSIC_DRAW:
+            return 'Classic Draw';
+        default:
+            return 'Unknown Type';
+    }
+}
+
 export enum RaceStates {
     LINEUP = 'lineup',
     RACING = 'racing',

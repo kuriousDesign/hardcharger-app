@@ -13,7 +13,7 @@ const gameSchema = new mongoose.Schema({
   house_cut: { type: Number, required: true },
   purse_amount: { type: Number, required: true },
   num_picks: { type: Number, required: true }, //update whenver a new pick is made and verified
-  type: { type: String, required: true }, // e.g., 'hard_charger', 'hybrid', 'top_finisher', 'classic_draw'
+  type: { type: String, required: true }, // e.g., GameTypes enum
   num_hard_chargers: { type: Number, required: true, default: 0 }, // number of hard chargers
   num_hard_chargers_predictions: { type: Number, required: true, default: 0 }, // number of hard chargers predictions
   hard_charger_prediction_scale: { type: Number, required: true, default: 0 }, // penalty for not wrong prediction, point per car
