@@ -13,7 +13,7 @@ import { LinkButton } from "@/components/LinkButton"
 import { getLinks } from "@/lib/link-urls"
 import ButtonUpdateGame from '../../../components/button-update-game';
 import { getIsAdmin } from '@/utils/roles';
-import { TableHardChargerLeaderboard } from '@/components/tables/hard-charger-leaderboard';
+import TableHardChargerLeaderboard from '@/components/tables/hard-charger-leaderboard';
 //import { CardPicksGame } from '@/components/cards/picks-game';
 import { PlayerClientType } from '@/models/Player';
 import { getPlayer } from '@/actions/getActions';
@@ -24,6 +24,7 @@ import { GameStates, gameStatesToString } from '@/types/enums';
 import { GameClientType } from '@/models/Game';
 import BtnChangeGameState from '../../../components/button-change-game-state';
 import { RaceClientType } from '@/models/Race';
+import TablePickLeaderboard from '@/components/tables/pick-leaderboard';
 
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
@@ -83,7 +84,8 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 							Make a Pick
 						</LinkButton>
 					}
-					{game.status === GameStates.IN_PLAY && isAdmin && <ButtonUpdateGame gameId={gameId} />}
+					{(true || game.status === GameStates.IN_PLAY) && isAdmin && <ButtonUpdateGame gameId={gameId} />}
+					{isAdmin && <BtnChangeGameState state={GameStates.OPEN} game={game as GameClientType} />}
 					{isAdmin && <BtnChangeGameState game={game as GameClientType} />}
 					{isAdmin && races.map((race: RaceClientType) => (
 						<LinkButton
@@ -104,7 +106,22 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 						filterableOptions={filterableOptions}
 						ComponentDiv={PeekDiv}
 					/>
-					{(game.status === GameStates.IN_PLAY || game.status === GameStates.FINISHED) &&
+					{(true || game.status === GameStates.IN_PLAY || game.status === GameStates.FINISHED) &&
+						<Card>
+							<CardHeader >
+								Leaderboard
+							</CardHeader>
+							<CardDescription >
+								See how each pick is doing in this game.
+							</CardDescription>
+							<CardContent>
+								{picks &&
+									<TablePickLeaderboard game={game as GameClientType} picks={picks} />
+								}
+							</CardContent>
+						</Card>
+					}
+					{(true || game.status === GameStates.IN_PLAY || game.status === GameStates.FINISHED) &&
 						<Card>
 							<CardHeader >
 								Hard Chargers

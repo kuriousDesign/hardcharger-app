@@ -36,8 +36,11 @@ export default function BtnChangeGameState({ game, state }: ActivateGameButtonPr
                 buttonLabel = "Unknown State";
         }
     } else {
-        game.status = state;
-        hideButton = true;
+        if(game.status === state){
+            // If the game is already in the requested state, hide the button
+            hideButton = true;
+            return null; // No button to render
+        }
     }
     switch (state) {
         case GameStates.UPCOMING:

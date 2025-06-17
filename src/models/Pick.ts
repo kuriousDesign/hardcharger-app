@@ -25,7 +25,7 @@ const schema = new mongoose.Schema(
     outcome: { type: Object, default: {} }, // Outcome of the pick, e.g., 'won', 'lost', 'pending'
     is_paid: { type: Boolean, default: false }, // Indicates if the pick has been paid out (not in form)
     status: { type: String, default: 'pending' }, // Status of the pick, e.g., 'pending', 'scored', 'won'
-    placed: { type: Number, default: 0, required: true }, // where the placed in the game
+    rank: { type: Number, default: 0, required: true }, // where the placed in the game
     payout: { type: Number, default: 0 }, // Payout amount for the pick, if applicable (not in form)
     message: { type: String, default: '', required: false }, // Optional message for additional context (not in form)
 

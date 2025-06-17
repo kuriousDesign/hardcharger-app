@@ -8,7 +8,7 @@ import { RacerClientType } from "@/models/Racer";
 
 import { DriverClientType } from "@/models/Driver";
 import { getDriverFullName } from "@/types/helpers";
-import { postGame, postPick } from "@/actions/postActions";
+import { postGame, postHardChargerTable, postPick } from "@/actions/postActions";
 import { GameStates } from "@/types/enums";
 import { HardChargerEntryClientType, HardChargerTableClientType } from "@/models/HardChargerTable";
 
@@ -184,6 +184,9 @@ export async function calculateTopFinishersScoreForPicks(picks: PickClientType[]
                 const score = await calculateTopFinishersScoreForDriver(racer.current_position, topFinisher.prediction, game);
                 topFinisher.score = score;
                 totalScore += score;
+            } else {
+                console.warn(`Racer not found for driver_id: ${topFinisher.driver_id}`);
+                topFinisher.score = 0; // Set score to 0 if racer not found
             }
         }
         pick.score_top_finishers = totalScore;
@@ -192,22 +195,41 @@ export async function calculateTopFinishersScoreForPicks(picks: PickClientType[]
 // Update picks scores by game
 export async function updatePicksScoresByGame(gameId: string) {
     try {
+        // 1. fetch game and picks for that game
         const game = await getGame(gameId) as GameClientType;
         const picks = await getPicksByGameId(gameId) as PickClientType[];
         if (!picks || picks.length === 0) {
             console.log("No picks found for the game");
             return picks;
         }
+
+        // 2. calculate hard chargers leaderboard and store it in the database
         const { hardChargerTable, raceAmainRacers } = await calculateHardChargersLeaderboardByGameId(gameId);
-        console.log("2. Hard charger leaderboard calculated", hardChargerTable);
-        await calculateHardChargerScoreForPicks(picks, hardChargerTable, game);
-        await calculateTopFinishersScoreForPicks(picks, raceAmainRacers, game);
+        postHardChargerTable(hardChargerTable);
+
+        // 3. calculate scores for picks, starting with hard chargers then top finishers
+        await calculateHardChargerScoreForPicks(picks, hardChargerTable, game); //this will modify picks passed in by reference
+        await calculateTopFinishersScoreForPicks(picks, raceAmainRacers, game); // this will modify picks passed in by reference
+
+        // 4. update score totals for picks and update the pick status
         picks.map((pick: PickClientType) => {
             pick.score_total = pick.score_top_finishers + pick.score_hard_chargers;
             pick.status = 'score_updated';
         });
-        await Promise.all(picks.map((pick) => postPick(pick)));
+        
         picks.sort((a, b) => b.score_total - a.score_total);
+        // 5. calculate ranks for picks, equal scores get same rank
+        picks.forEach((pick:PickClientType, index:number) => {
+            if (index === 0) {
+                pick.rank = 1;
+            } else if (pick.score_total === picks[index - 1].score_total) {
+                pick.rank = picks[index - 1].rank;
+            } else {
+                pick.rank = index + 1;
+            }
+        });
+
+        await Promise.all(picks.map((pick) => postPick(pick)));
         return picks;
     } catch (error) {
         console.error("Error calculating scores for picks:", error);

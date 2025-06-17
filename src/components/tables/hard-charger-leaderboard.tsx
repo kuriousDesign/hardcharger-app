@@ -15,7 +15,7 @@ function convertIndexToLetter(index: number): string {
     return letters[index % letters.length];
 }
 
-export function TableHardChargerLeaderboard({ table }: { table?: HardChargerTableClientType }) {
+export default function TableHardChargerLeaderboard({ table }: { table?: HardChargerTableClientType }) {
     if (!table || table.entries.length === 0) {
         return <div className="text-center text-gray-500">No entries available.</div>;
     }
@@ -44,19 +44,19 @@ export function TableHardChargerLeaderboard({ table }: { table?: HardChargerTabl
 
     // Create an array of table headers
     const tableHeads = [
-        { label: "Rank", className: "text-center" },
+        //{ label: "Rank", className: "text-center" },
         { label: "Driver", className: "text-left" },
-        { label: "Total", className: "text-center font-bold" },
+        { label: "Total", className: "text-center font-bold " },
     ];
     // Dynamically add table headers based on the array of cars passed
     entries[0].cars_passed_by_race.forEach((_, index: number) => {
-        tableHeads.push({ label: `${convertIndexToLetter(index)}`, className: "text-center text-secondary-foreground font-light" });
+        tableHeads.push({ label: `${convertIndexToLetter(index)}`, className: "w-2 text-center text-secondary-foreground font-light" });
     });
 
     return (
-        <Table>
+        <Table className=''>
             <TableCaption>leaderboard of hard chargers</TableCaption>
-            <TableHeader>
+            <TableHeader className="bg-secondary/90">
                 <TableRow>
                     {tableHeads.map((head, index) => (
                         <TableHead key={index} className={head.className}>
@@ -68,7 +68,7 @@ export function TableHardChargerLeaderboard({ table }: { table?: HardChargerTabl
             <TableBody>
                 {entries.map((entry: HardChargerEntryClientType, index: number) => (
                     <TableRow key={index}>
-                        <TableCell className="text-center">{entry.rank}</TableCell>
+                        {/* <TableCell className="text-center">{entry.rank}</TableCell> */}
                         <TableCell className="text-left">{entry.driver_name}</TableCell>
                         <TableCell className="text-center text-primary font-bold">{entry.total_cars_passed}</TableCell>
                         {entry.cars_passed_by_race.map((carsPassed, raceIndex) => (

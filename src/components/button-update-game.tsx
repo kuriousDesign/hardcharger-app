@@ -1,7 +1,6 @@
 'use client';
 
-import { calculateHardChargersLeaderboardByGameId } from "@/actions/calc-score";
-import { postHardChargerTable } from "@/actions/postActions";
+import { updatePicksScoresByGame } from "@/actions/calc-score";
 import { Button } from "@/components/ui/button";
 
 export default function ButtonUpdateGame({gameId}: { gameId: string }) {
@@ -10,15 +9,12 @@ export default function ButtonUpdateGame({gameId}: { gameId: string }) {
      <Button
      variant='outline'
       onClick={async() => {
-        const {hardChargerTable, raceAmainRacers} = await calculateHardChargersLeaderboardByGameId(gameId);
-        console.log('hardChargerTable', hardChargerTable);
-        await postHardChargerTable(hardChargerTable);
+        await updatePicksScoresByGame(gameId);
         // reload the page to reflect changes
         window.location.reload();
-        console.log('raceAmainRacers', raceAmainRacers);
       }}
      >
-      Update Scores
+      Update Score
      </Button>
 
   );

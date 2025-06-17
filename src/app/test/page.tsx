@@ -1,6 +1,6 @@
 'use client'
 
-import { TableHardChargerLeaderboard } from "@/components/tables/hard-charger-leaderboard";
+import TableHardChargerLeaderboard from "@/components/tables/hard-charger-leaderboard";
 import React from "react";
 
 export default function TestPage() {
