@@ -1,3 +1,5 @@
+'use server';
+
 import { Roles } from '@/types/globals'
 import { auth } from '@clerk/nextjs/server'
 
@@ -12,7 +14,7 @@ export const getRole = async (requiredRole: Roles) => {
  * Checks if the current user has the 'admin' role.
  * @returns {Promise<boolean>} True if the user is an admin, false otherwise.
  */
-export const getIsAdmin = async () => {
+export const getIsAdmin = async (): Promise<boolean> => {
   const { sessionClaims } = await auth();
   return sessionClaims?.metadata?.role === 'admin';
 }

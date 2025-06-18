@@ -1,6 +1,6 @@
 import Link from 'next/link';
 //import { currentUser } from '@clerk/nextjs/server';
-import { getRole } from '@/utils/roles';
+import { getRole } from '@/actions/userActions';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IoMdAddCircle } from 'react-icons/io';

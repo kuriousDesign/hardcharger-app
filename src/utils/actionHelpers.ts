@@ -3,7 +3,9 @@ import connectToDb from '@/lib/db';
 import { toClientObject } from '@/utils/mongooseHelpers';
 
 import { Roles } from '@/types/globals';
-import { getRole } from './roles';
+import { getRole } from '../actions/userActions';
+import { revalidateTag, unstable_cacheTag as cacheTag } from 'next/cache';
+import { CacheTags } from '@/lib/cache-tags';
 
 
 type HandlerOptions = {
@@ -34,6 +36,13 @@ export const createClientSafeGetHandler = <ServerType, ClientType>(
   options?: HandlerOptions
 ) => {
   return async (id: string): Promise<ClientType> => {
+ 
+    const thisCacheTag = `${model.modelName.toLowerCase()}s`;
+    //if thisCacheTag exists in CacheTags enum, revalidate it
+    if (thisCacheTag in CacheTags) {
+      cacheTag(thisCacheTag);
+    }
+
     await checkRoleProtected(options)();
     await connectToDb();
     const doc = await model.findById(new Types.ObjectId(id));
@@ -48,6 +57,12 @@ export const createDocumentGetHandler = <ServerType>(
   options?: HandlerOptions
 ) => {
   return async (id: string): Promise<ServerType> => {
+  
+    const thisCacheTag = `${model.modelName.toLowerCase()}s`;
+    //if thisCacheTag exists in CacheTags enum, revalidate it
+    if (thisCacheTag in CacheTags) {
+      cacheTag(thisCacheTag);
+    }
     await checkRoleProtected(options)();
     await connectToDb();
     const doc = await model.findById(new Types.ObjectId(id));
@@ -62,11 +77,17 @@ export const createClientSafeGetAllHandler = <ServerType, ClientType>(
   options?: HandlerOptions
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return async (filter?:FilterQuery<any>): Promise<ClientType[]> => {
+  return async (filter?: FilterQuery<any>): Promise<ClientType[]> => {
+
+    const thisCacheTag = `${model.modelName.toLowerCase()}s`;
+    //if thisCacheTag exists in CacheTags enum, revalidate it
+    if (thisCacheTag in CacheTags) {
+      cacheTag(thisCacheTag);
+    }
     await checkRoleProtected(options)();
     await connectToDb();
     let docs;
-    if(filter) {
+    if (filter) {
       docs = await model.find(filter);
     }
     else {
@@ -83,11 +104,17 @@ export const createDocumentGetAllHandler = <ServerType>(
   options?: HandlerOptions
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return async (filter:FilterQuery<any>): Promise<ServerType[]> => {
+  return async (filter: FilterQuery<any>): Promise<ServerType[]> => {
+ 
+    const thisCacheTag = `${model.modelName.toLowerCase()}s`;
+    //if thisCacheTag exists in CacheTags enum, revalidate it
+    if (thisCacheTag in CacheTags) {
+      cacheTag(thisCacheTag);
+    }
     await checkRoleProtected(options)();
     await connectToDb();
     let docs;
-    if(filter) {
+    if (filter) {
       docs = await model.find(filter);
     }
     else {
@@ -128,11 +155,24 @@ export const createClientSafePostHandler = <T extends { _id?: string }>(
     if (_id && _id !== '') {
       const updated = await model.findByIdAndUpdate(_id, { $set: serverData }, { new: true });
       if (!updated) throw new Error(`Document with ID ${_id} not found`);
+      const thisCacheTag = `${model.modelName.toLowerCase()}s`;
+      //if thisCacheTag exists in CacheTags enum, revalidate it
+      if (thisCacheTag in CacheTags) {
+        console.log(`Revalidating tag: ${thisCacheTag}`);
+        revalidateTag(thisCacheTag);
+      }
+
       //return { message: 'Updated successfully' };
       return toClientObject(updated);
     } else {
       const created = new model(serverData);
       await created.save();
+      const thisCacheTag = `${model.modelName.toLowerCase()}s`;
+      //if thisCacheTag exists in CacheTags enum, revalidate it
+      if (thisCacheTag in CacheTags) {
+        console.log(`Revalidating tag: ${thisCacheTag}`);
+        revalidateTag(thisCacheTag);
+      }
       return toClientObject(created);
     }
   };
@@ -148,7 +188,12 @@ export const createDeleteHandler = <T extends { _id?: string }>(
     await connectToDb();
     const deleted = await model.findByIdAndDelete(new Types.ObjectId(id));
     if (!deleted) throw new Error(`Document with ID ${id} not found`);
-
+    const thisCacheTag = `${model.modelName.toLowerCase()}s`;
+    //if thisCacheTag exists in CacheTags enum, revalidate it
+    if (thisCacheTag in CacheTags) {
+      console.log(`Revalidating tag: ${thisCacheTag}`);
+      revalidateTag(thisCacheTag);
+    }
     return { message: 'Deleted successfully' };
   };
 };

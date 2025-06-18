@@ -1,5 +1,3 @@
-//export const dynamic = 'force-dynamic';
-
 import CardDrivers from '@/components/cards/drivers';
 import Link from 'next/link';
 

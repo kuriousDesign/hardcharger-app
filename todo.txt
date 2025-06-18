@@ -1,4 +1,5 @@
 TODO:
+[ ] Bug: don't allow user to select same driver in top finishers, probably need to check hard chargers too.
 [x] Feature: be able to create driver from starting lineup form --> tested and working
 [x] HardChargerTable Calculations
 [ ] Need to test and debug score calculation

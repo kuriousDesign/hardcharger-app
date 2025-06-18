@@ -9,7 +9,7 @@ import {
 
 
 import { CardsGames } from '@/components/cards/games';
-import { getIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/actions/userActions";
 import { Metadata } from "next";
 import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";

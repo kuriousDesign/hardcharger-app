@@ -1,21 +1,38 @@
 'use client';
 
-import { updatePicksScoresByGame } from "@/actions/calc-score";
-import { Button } from "@/components/ui/button";
+import { useTransition } from 'react';
+import { updatePicksScoresByGame } from '@/actions/calc-score';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
-export default function ButtonUpdateGame({gameId}: { gameId: string }) {
-  return (
- 
-     <Button
-     variant='outline'
-      onClick={async() => {
+
+interface ButtonUpdateGameProps {
+  gameId: string;
+}
+
+export default function ButtonUpdateGame({ gameId }: ButtonUpdateGameProps) {
+
+  const [isPending, startTransition] = useTransition();
+
+  const handleUpdateScores = () => {
+    startTransition(async () => {
+      try {
         await updatePicksScoresByGame(gameId);
-        // reload the page to reflect changes
-        window.location.reload();
-      }}
-     >
-      Update Score
-     </Button>
+        toast.success('Scores updated successfully!');
+      } catch (error) {
+        console.error('Error updating scores:', error);
+        toast.error('Failed to update scores.');
+      }
+    });
+  };
 
+  return (
+    <Button
+      variant="outline"
+      onClick={handleUpdateScores}
+      disabled={isPending}
+    >
+      {isPending ? 'Updating...' : 'Update Score'}
+    </Button>
   );
 }

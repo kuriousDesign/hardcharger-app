@@ -1,9 +1,5 @@
-"use client"
-
-import { getCurrentPlayer, getGamePicksByPlayerId, getGames } from "@/actions/getActions"
+import { getGames } from "@/actions/getActions"
 import { getLinks } from "@/lib/link-urls"
-import { GameClientType, GamePicksClientType } from "@/models/Game"
-import { PlayerClientType } from "@/models/Player"
 import {
   PageActions,
   PageHeader,
@@ -11,38 +7,20 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import GameDiv from "@/components/cards/game-div"
-import { useEffect, useState } from "react";
-import { useIsAdmin } from "@/hooks/use-is-admin"
-import Loading from "./loading"
 import { LinkButton } from "@/components/LinkButton"
-import TabsCard, { FilterOption } from "@/components/cards/tabs-card"
+import TabCard, { FilterOption } from "@/components/cards/tab-card"
+import { getIsAdmin } from "@/actions/userActions"
 const title = "Games"
 const description = "Browse these games."
 
-export default function GamesPage() {
-  const isAdmin = useIsAdmin();
-  const [games, setGames] = useState<GameClientType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+export const metadata = {
+  title,
+  description,
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const player = await getCurrentPlayer() as PlayerClientType;
-      if (!player) {
-        return <div className="p-6">loading</div>;
-      }
-      const gamePicks = await getGamePicksByPlayerId(player._id as string) as GamePicksClientType[];
-      const openGameData = await getGames({ status: 'open' }) as GameClientType[];
-      const playerGames = gamePicks.map((gamePick) => gamePick.game as GameClientType) as GameClientType[];
-      const gamesData = [...new Set([...openGameData, ...playerGames])];
-      setGames(gamesData);
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return <Loading />
-  }
+export default async function GamesPage() {
+  const isAdminPromise = getIsAdmin();
+  const gamesPromise = getGames();
 
   // Define filterable options for displaying games
   const filterableOptionsGames = [
@@ -51,6 +29,8 @@ export default function GamesPage() {
     { key: "status", value: "created", tabLabel: 'Upcoming' },
     { key: "status", value: null, tabLabel: 'All' }, // "All" tab
   ] as FilterOption[];
+
+  const [games, isAdmin] = await Promise.all([gamesPromise, isAdminPromise]);
 
   return (
     <div>
@@ -67,7 +47,7 @@ export default function GamesPage() {
       </PageHeader>
       <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
         <div className="theme-container container flex flex-1 flex-col gap-4">
-          <TabsCard
+          <TabCard
             cardTitle="Games"
             cardDescription="Explore and play."
             items={games}

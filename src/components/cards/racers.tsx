@@ -7,7 +7,7 @@ import { DriverClientType } from "@/models/Driver";
 import { getLinks } from "@/lib/link-urls";
 import { LinkButton } from "@/components/LinkButton";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
-import { getIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/actions/userActions";
 
 export default async function CardRacers({ eventId, raceId }: { eventId: string, raceId: string }) {
 

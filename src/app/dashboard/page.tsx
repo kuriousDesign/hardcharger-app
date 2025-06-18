@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const experimental_ppr = true;
 
 import {
     PageActions,
@@ -6,46 +6,39 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { getGames, getPlayersByUserId } from '@/actions/getActions';
+import { getPlayersByUserId as getPlayerByUserId } from '@/actions/getActions';
 import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation';
+
 import { Metadata } from "next";
 import { LinkButton } from "@/components/LinkButton";
 import { getLinks } from "@/lib/link-urls";
-import TabsCard, { FilterOption } from "@/components/cards/tabs-card";
-import { getIsAdmin } from "@/utils/roles";
-import GameDiv from "@/components/cards/game-div";
-import { GameClientType } from "@/models/Game";
+import { TabCardSkeleton } from "@/components/cards/tab-card";
+import { getIsAdmin } from "@/actions/userActions";
+
+import TabCardGames from "@/components/tab-cards/games";
+import { Suspense } from "react";
 
 const title = "Pick your drivers. Win the pot."
 const description = "Find a game and create a pick. Look at your current picks too."
 
 export const metadata: Metadata = {
-    title,
+    title: 'dashboard',
     description,
 }
 export default async function DashboardPage() {
+    const isAdminPromise = getIsAdmin();
     const { userId } = await auth();
     if (!userId) {
-        // redirect to login if userId is not available
-        redirect('/'); //unnecessary, but just in case
+        return null;
     }
-    const isAdmin = await getIsAdmin();
-    const player = await getPlayersByUserId(userId);
+    const playerPromise = getPlayerByUserId(userId); // this will create a player if it does not exist
 
+
+
+    const [player, isAdmin] = await Promise.all([playerPromise, isAdminPromise]);
     if (!player) {
-        return <div className="p-6">loading</div>;
+        return null;
     }
-
-    const games = await getGames() as GameClientType[];
-
-    // Define filterable options for displaying games
-    const filterableOptionsGames = [
-        { key: "status", value: "open", tabLabel: 'Open' }, // "
-        { key: "status", value: "in_play", tabLabel: 'InPlay' }, // "
-        { key: "status", value: "created", tabLabel: 'Upcoming' },
-        { key: "status", value: null, tabLabel: 'All' }, // "All" tab
-    ] as FilterOption[];
 
     return (
         <div>
@@ -63,14 +56,9 @@ export default async function DashboardPage() {
             </PageHeader>
             <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
                 <div className="theme-container container flex flex-1 flex-col gap-4">
-                    <TabsCard
-                        cardTitle="Games"
-                        cardDescription="Explore and play."
-                        items={games}
-                        filterableOptions={filterableOptionsGames}
-                        ComponentDiv={GameDiv}
-                    />
-                    {/* <CardDashboardLinks /> */}
+                    <Suspense fallback={<TabCardSkeleton />}>
+                        <TabCardGames />
+                    </Suspense>
                 </div>
             </div>
         </div>

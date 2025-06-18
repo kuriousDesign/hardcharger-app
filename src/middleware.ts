@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import { getIsAdmin } from './utils/roles';
+import { getIsAdmin } from './actions/userActions';
 import { getLinks } from './lib/link-urls';
 
 // Define public routes (accessible without authentication)

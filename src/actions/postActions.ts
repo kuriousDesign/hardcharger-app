@@ -17,41 +17,10 @@ import parseDriverData from '@/data/parseDriverData';
 import { drivers as driversData } from '@/data/drivers';
 import { HardChargerTableClientType, HardChargerTableDoc, HardChargerTableModel } from '@/models/HardChargerTable';
 
-// export const getDrivers = async () => {
-//   await dbConnect();
-//   const data = await DriverModel.find();
-//   return data as DriverClientType[];
-// }
-
 // admin role protected
 export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel, adminRoleProtectedOptions);
 export const deleteDriver = createDeleteHandler<DriverDoc>(DriverModel, adminRoleProtectedOptions);
-//export const postGame = createClientSafePostHandler<GameClientType>(GameModel, adminRoleProtectedOptions);
 export const deleteGame = createDeleteHandler<GameDoc>(GameModel, adminRoleProtectedOptions);
-
-export const postDriverLongForm = async (clientData: Partial<DriverClientType>) => {
-  await connectToDb();
-
-  try {
-    if (clientData._id && clientData?._id !== '') {
-      //update existing driver
-      const result = await DriverModel.findByIdAndUpdate(clientData._id, clientData, { new: true });
-      if (!result) {
-        console.error(`Driver with ID ${clientData._id} not found`);
-        throw new Error(`Driver with ID ${clientData._id} not found`);
-      }
-      return { message: 'Driver updated successfully' };
-    } else {
-      //create new driver
-      const newDriver = new DriverModel(clientData);
-      await newDriver.save();
-      return { message: 'Driver created successfully' };
-    }
-  } catch (error) {
-    console.error('Driver save error:', error);
-    throw new Error('Failed to save driver');
-  }
-};
 
 
 export const postEvent = async (event: Partial<EventClientType> & { _id?: string }) => {
@@ -77,7 +46,6 @@ export const postEvent = async (event: Partial<EventClientType> & { _id?: string
     throw new Error('Failed to save event');
   }
 }
-
 
 export const postPayment = async (payment: Partial<PaymentClientType> & { _id?: string }) => {
   await connectToDb();
@@ -127,7 +95,6 @@ export const postPayment = async (payment: Partial<PaymentClientType> & { _id?: 
   }
 };
 
-
 export const postRace = async (race: Partial<RaceDoc | RaceClientType> & { _id?: string }) => {
   await connectToDb();
 
@@ -162,8 +129,6 @@ export const postRace = async (race: Partial<RaceDoc | RaceClientType> & { _id?:
     throw new Error('Failed to save race');
   }
 }
-
-//follow similar patter as postRace
 
 export const postGame = async (game: Partial<GameDoc | GameClientType> & { _id?: string }) => {
   await connectToDb();
@@ -215,7 +180,7 @@ export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?:
     return { message: 'Pick created successfully' };
   }
 }
-// 
+
 export const postHardChargerTable = async (hardChargerTable: Partial<HardChargerTableDoc | HardChargerTableClientType> & { _id?: string }) => {
   await connectToDb();
   // Convert game_id to ObjectId if it's a string
@@ -243,7 +208,6 @@ export const postHardChargerTable = async (hardChargerTable: Partial<HardCharger
     throw new Error('Failed to save Hard Charger Table');
   }
 };
-
 
 export const postRacer = async (racer: Partial<RacerDoc | RacerClientType> & { _id?: string }) => {
   await connectToDb();

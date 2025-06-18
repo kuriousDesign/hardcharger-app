@@ -11,6 +11,8 @@ import { getDriverFullName } from "@/types/helpers";
 import { postGame, postHardChargerTable, postPick } from "@/actions/postActions";
 import { GameStates } from "@/types/enums";
 import { HardChargerEntryClientType, HardChargerTableClientType } from "@/models/HardChargerTable";
+import { getLinks } from "@/lib/link-urls";
+import { revalidatePath } from "next/cache";
 
 // Convert letter to ASCII index
 function convertLetterToAscii(letter: string): number {
@@ -93,7 +95,6 @@ export async function calculateHardChargersLeaderboardByGameId(gameId: string) {
     });
 
     // Calculate pick ranks
-    console.log('4. Assign ranks');
     entries.sort((a, b) => b.total_cars_passed - a.total_cars_passed);
     entries.forEach((entry, index) => {
         if (index === 0) {
@@ -106,13 +107,12 @@ export async function calculateHardChargersLeaderboardByGameId(gameId: string) {
     });
 
     // Check if all races are finished
-    console.log('5. Update game status');
     const allFinished = races.every((race) => race.status === 'finished');
     if (allFinished) {
         game.status = GameStates.FINISHED;
-        console.log('All races finished, setting game status to FINISHED');
+        //console.log('All races finished, setting game status to FINISHED');
     } else {
-        console.log('Not all races finished, game status unchanged');
+        //console.log('Not all races finished, game status unchanged');
     }
     await postGame(game);
 
@@ -193,14 +193,16 @@ export async function calculateTopFinishersScoreForPicks(picks: PickClientType[]
     }
 }
 // Update picks scores by game
-export async function updatePicksScoresByGame(gameId: string) {
+export async function updatePicksScoresByGame(gameId: string, skipRevalidate?: boolean) {
+    console.log(`Updating scores for picks in game: ${gameId}`);
     try {
         // 1. fetch game and picks for that game
         const game = await getGame(gameId) as GameClientType;
         const picks = await getPicksByGameId(gameId) as PickClientType[];
         if (!picks || picks.length === 0) {
             console.log("No picks found for the game");
-            return picks;
+            return;
+            //return picks;
         }
 
         // 2. calculate hard chargers leaderboard and store it in the database
@@ -216,10 +218,10 @@ export async function updatePicksScoresByGame(gameId: string) {
             pick.score_total = pick.score_top_finishers + pick.score_hard_chargers;
             pick.status = 'score_updated';
         });
-        
+
         picks.sort((a, b) => b.score_total - a.score_total);
         // 5. calculate ranks for picks, equal scores get same rank
-        picks.forEach((pick:PickClientType, index:number) => {
+        picks.forEach((pick: PickClientType, index: number) => {
             if (index === 0) {
                 pick.rank = 1;
             } else if (pick.score_total === picks[index - 1].score_total) {
@@ -230,7 +232,12 @@ export async function updatePicksScoresByGame(gameId: string) {
         });
 
         await Promise.all(picks.map((pick) => postPick(pick)));
-        return picks;
+        //refresh the current window
+        if (!skipRevalidate) {
+            revalidatePath(getLinks().getGameUrl(gameId));
+        }
+
+        //return picks;
     } catch (error) {
         console.error("Error calculating scores for picks:", error);
     }

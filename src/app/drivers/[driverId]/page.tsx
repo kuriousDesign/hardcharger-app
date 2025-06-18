@@ -2,7 +2,7 @@ import { getDriver } from "@/actions/getActions";
 import { LinkButton } from "@/components/LinkButton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getLinks } from "@/lib/link-urls";
-import { getIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/actions/userActions";
 import { SquarePen } from "lucide-react";
 import { getDriverFullName } from "@/types/helpers";
 

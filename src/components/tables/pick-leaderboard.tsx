@@ -11,13 +11,14 @@ import {
 import { GameClientType } from "@/models/Game";
 
 import { PickClientType } from "@/models/Pick";
+import { Separator } from "../ui/separator";
 
 export function convertIndexToLetter(index: number): string {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     return letters[index % letters.length];
 }
 
-export default function TablePickLeaderboard({ game, picks }: { game: GameClientType; picks: PickClientType[] }) {
+export default async function TablePickLeaderboard({ game, picks }: { game: GameClientType; picks: PickClientType[] }) {
     if (!picks || picks.length === 0) {
         return <div className="text-center text-gray-500">No picks available.</div>;
     }
@@ -37,7 +38,6 @@ export default function TablePickLeaderboard({ game, picks }: { game: GameClient
         tableHeads.push({ label: 'HardCh', className: "text-center text-secondary-foreground font-light" });
         tableHeads.push({ label: 'TopFin', className: "text-center text-secondary-foreground font-light" });
     }
-
 
     return (
         <Table>
@@ -73,4 +73,26 @@ export default function TablePickLeaderboard({ game, picks }: { game: GameClient
             </TableBody>
         </Table>
     )
+}
+
+
+// create a skeleton for the pick leaderboard table that shows same number of columns as the actual table, and a few rows of skeleton blocks
+export function PickLeaderboardSkeleton() {
+    // use rounded rectangles to simulate table cells, no text at all, just a few rows. use grid instead of table for skeleton. one header row that is slightly darker and then 5 rows that are less opaque
+    return (
+        <div className="animate-pulse">
+            <div className="grid grid-cols-4 gap-4 mb-4">
+                <div className="bg-secondary h-8 rounded-md col-span-4"></div>
+
+                {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="col-span-4 grid grid-cols-4 gap-2"> 
+                        <Separator className="col-span-4"/>
+                        <div className="bg-muted/80 h-6 rounded-md"/>
+                        <div className="bg-muted/80 h-6 rounded-md col-span-2"/>
+                        <div className="bg-muted/80 h-6 rounded-md"/>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );       
 }

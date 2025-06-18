@@ -18,7 +18,8 @@ import { toClientObject } from '@/utils/mongooseHelpers';
 import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { HardChargerTableModel, HardChargerTableClientType } from '@/models/HardChargerTable';
-
+import { unstable_cacheTag as cacheTag } from 'next/cache';
+import { CacheTags } from '@/lib/cache-tags';
 
 export const getConnectToDb = async () => {await connectToDb();}
 
@@ -43,6 +44,9 @@ export const getRacers = createClientSafeGetAllHandler<RacerDoc, RacerClientType
 
 // this will retrieve the game info from mongoDB and return the game object with the event info 
 export const getGameWithEvent = async (gameId: string) => {
+  "use cache";
+  cacheTag(CacheTags.GAMES, CacheTags.EVENTS);
+  
   await connectToDb();
   const game = await getGame(gameId);
   const event = await getEvent(game.event_id);

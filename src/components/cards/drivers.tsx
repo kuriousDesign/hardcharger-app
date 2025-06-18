@@ -18,7 +18,7 @@ import { getLinks } from "@/lib/link-urls";
 
 import { Separator } from "../ui/separator";
 import { IoMdAddCircle } from "react-icons/io";
-import { getIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/actions/userActions";
 
 import { SquarePen } from "lucide-react";
 import { getDriverFullName } from "@/types/helpers";

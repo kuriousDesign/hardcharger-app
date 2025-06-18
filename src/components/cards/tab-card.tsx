@@ -26,7 +26,7 @@ export interface FilterOption {
   tabLabel: string; // Optional label for the tab
 }
 
-interface TabsCardProps {
+interface TabCardProps {
   items: any[]; // Array of data objects
   cardTitle?: string; // Optional title for the card
   hasSeparators?: boolean; // Optional prop to add separators between picks
@@ -35,7 +35,7 @@ interface TabsCardProps {
   ComponentDiv: React.ComponentType<{ data: any }>; // Component to render picks
 }
 
-export default function TabsCard({
+export default function TabCard({
   items,
   //tabLabels,
   hasSeparators = false,
@@ -43,12 +43,26 @@ export default function TabsCard({
   cardDescription,
   filterableOptions,
   ComponentDiv,
-}: TabsCardProps) {
+}: TabCardProps) {
   const tabLabels = filterableOptions.map(opt => opt.tabLabel || opt.key);
-  const [activeTab, setActiveTab] = useState(tabLabels[0]?.toLowerCase() || "all");
-
-  // Map tab labels to lowercase values
   const tabValues = tabLabels.map((label: string) => label.toLowerCase());
+    const findFirstTabWithItems = () => {
+    for (let i = 0; i < tabValues.length; i++) {
+      const filterOption = filterableOptions[i];
+      const hasItems = items.some(item => 
+        filterOption.value === null || item[filterOption.key] === filterOption.value
+      );
+      if (hasItems) {
+        return tabValues[i];
+      }
+    }
+    // If no tabs have items, return the last tab value
+    return tabValues[tabValues.length - 1] || "all";
+  };
+
+  const initialTab = findFirstTabWithItems();
+  const [activeTab, setActiveTab] = useState(initialTab || "all");
+ 
 
   // Filter picks for the active tab
   const filteredPicks = items.filter((pick) => {
@@ -106,4 +120,25 @@ export default function TabsCard({
       </Tabs>
     </div>
   );
+}
+
+export function TabCardSkeleton() {
+  // create 
+  return(
+    <div className="animate-pulse flex flex-col gap-4 w-full">
+      <Card className="w-full">
+        <CardHeader className="mb-0 pb-0">
+          <div className="h-6 bg-muted rounded w-1/2 mb-2"></div>
+          <div className="h-4 bg-muted rounded w-3/4"></div>
+        </CardHeader>
+        <CardContent className="grid gap-4 mt-0 pt-0">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="flex flex-col gap-2">
+              <div className="h-10 bg-muted rounded w-full"></div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  )
 }

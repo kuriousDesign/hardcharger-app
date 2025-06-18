@@ -1,4 +1,4 @@
-import FormPick from '../../../../components/forms/pick-form/pick-form';
+import FormPick from '@/components/forms/pick-form/pick-form';
 import { PlayerClientType } from '@/models/Player';
 import { auth } from '@clerk/nextjs/server'
 import { getPlayersByUserId, getUserFullName} from '@/actions/getActions';

@@ -2,7 +2,7 @@ import { getRaces, getRacesByEventId } from "@/actions/getActions";
 import { getLinks } from "@/lib/link-urls";
 import { RaceClientType } from "@/models/Race";
 import Link from "next/link";
-import { getIsAdmin } from "@/utils/roles";
+import { getIsAdmin } from "@/actions/userActions";
 import { Button } from "@/components/ui/button";
 import {
     Card,
