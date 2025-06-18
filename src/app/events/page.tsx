@@ -1,4 +1,3 @@
-export const dynamic = 'force-dynamic';
 import CardEvents from '@/components/cards/events';
 import { getLinks } from '@/lib/link-urls';
 import { LinkButton } from '@/components/LinkButton';

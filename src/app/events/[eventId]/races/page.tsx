@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import RacesCard from '@/components/cards/races';
 import Link from 'next/link';
 

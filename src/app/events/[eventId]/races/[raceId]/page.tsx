@@ -1,4 +1,3 @@
-export const dynamic = 'force-dynamic';
 
 import { getEvent, getRace, getRacersByRaceId } from '@/actions/getActions';
 import CardRacers from '@/components/cards/racers';

@@ -1,4 +1,4 @@
-import { CardsActivityGoal } from "@/components/cards/activity-goal"
+import { CardsActivityGoal } from "@/components/cards/examples/activity-goal"
 // import { CardsCalendar } from "@/components/cards/calendar"
 // import { CardsChat } from "@/components/cards/chat"
 // import { CardsCookieSettings } from "@/components/cards/cookie-settings"

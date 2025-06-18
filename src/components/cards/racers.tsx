@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { RaceClientType } from "@/models/Race";
 import { RacerClientType } from "@/models/Racer";
 import { getRace, getRacersWithDriversByRaceId } from "@/actions/getActions";
