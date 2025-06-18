@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { getGamesByEventId, getRacersWithDriversByRaceId } from '@/actions/getActions';
 import { AlertCircle } from 'lucide-react';
 import { GameClientType } from '@/models/Game';
-import { calculateHardChargersLeaderboardByGameId } from '@/actions/calc-score';
+import { calculateHardChargersLeaderboardByGameId } from '@/actions/scoreActions';
 
 // Props interface for the form
 interface UpdateRacersCurrentPositionFormProps {

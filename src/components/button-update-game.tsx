@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
-import { updatePicksScoresByGame } from '@/actions/calc-score';
+import { updatePicksScoresByGame } from '@/actions/scoreActions';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 

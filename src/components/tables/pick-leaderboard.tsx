@@ -57,15 +57,15 @@ export default async function TablePickLeaderboard({ game, picks }: { game: Game
                         <TableCell className="text-center">{pick.rank}</TableCell>
                         <TableCell className="text-left">{pick.nickname}</TableCell>
                         <TableCell className="text-center font-bold">{pick.name}</TableCell>
-                        <TableCell className="text-center text-primary font-bold">{pick.score_total}</TableCell>
+                        <TableCell className="text-center text-primary font-bold">{Number(pick.score_total.toFixed(3)).toString()}</TableCell>
                         {game.type === 'hybrid' &&
                             <TableCell className="text-center text-muted-foreground">
-                                {pick.score_hard_chargers}
+                                {Number(pick.score_hard_chargers.toFixed(2)).toString()}
                             </TableCell>
                         }
                         {game.type === 'hybrid' &&
                             <TableCell className="text-center text-muted-foreground">
-                                {pick.score_top_finishers}
+                                {Number(pick.score_top_finishers.toFixed(2)).toString()}
                             </TableCell>
                         }
                     </TableRow>

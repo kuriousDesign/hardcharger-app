@@ -25,7 +25,7 @@ import { GameClientType } from '@/models/Game';
 import BtnChangeGameState from '../../../components/button-change-game-state';
 import { RaceClientType } from '@/models/Race';
 import TablePickLeaderboard, { PickLeaderboardSkeleton } from '@/components/tables/pick-leaderboard';
-import { updatePicksScoresByGame } from '@/actions/calc-score';
+import { updatePicksScoresByGame } from '@/actions/scoreActions';
 
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {

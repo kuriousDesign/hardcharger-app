@@ -153,7 +153,7 @@ export async function calculateHardChargerScoreForDriver(carsPassed: number, pre
     } else {
         const diff = Math.abs(carsPassed - prediction);
         const penalty = prediction * game.hard_charger_prediction_scale * diff;
-        return Math.max(0, prediction - penalty);
+        return Math.max(0, carsPassed - penalty);
     }
 }
 
@@ -164,10 +164,12 @@ export async function calculateTopFinishersScoreForDriver(finishPosition: number
     } else if (finishPosition <= 0) {
         return 0;
     } else if (finishPosition > prediction) {
+        // penalize
         const diff = Math.abs(finishPosition - prediction);
         const penalty = game.top_finisher_prediction_penalty * diff;
-        return Math.max(0, 10 - penalty);
+        return Math.max(0, game.top_finisher_baseline_points - penalty);
     } else {
+        // award small bonus for outperforming
         const diff = Math.abs(finishPosition - prediction);
         const outperformBonus = game.top_finisher_prediction_penalty / 2.0 * diff;
         return game.top_finisher_baseline_points + outperformBonus;

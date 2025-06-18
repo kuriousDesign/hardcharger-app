@@ -4,7 +4,7 @@ import { Button } from '@/components/ui';
 import { postGame } from '@/actions/postActions';
 import { GameClientType } from '@/models/Game';
 import { GameStates } from '@/types/enums';
-import { calculateHardChargersLeaderboardByGameId } from '@/actions/calc-score';
+import { calculateHardChargersLeaderboardByGameId } from '@/actions/scoreActions';
 
 export interface ActivateGameButtonProps {
     game: GameClientType;
