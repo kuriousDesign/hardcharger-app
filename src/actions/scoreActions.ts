@@ -157,10 +157,30 @@ export async function calculateHardChargerScoreForDriver(carsPassed: number, pre
     }
 }
 
+
+export async function calculateTopFinishersScoreForDriverComplex(finishPosition: number, prediction: number, game: GameClientType): Promise<number> {
+    const invertedPrediction = game.num_top_finishers - prediction + 1;
+    const baselinePoints = invertedPrediction * game.top_finisher_prediction_penalty;
+    const penaltyScale = invertedPrediction * game.top_finisher_prediction_penalty / game.num_top_finishers;
+    const diffAbs = Math.abs(finishPosition - prediction);
+
+    if (finishPosition === prediction) { // PERFECT PREDICTION - award bonus
+        return baselinePoints + invertedPrediction  //game.top_finisher_prediction_bonus;
+    } else if (finishPosition <= 0) {
+        return 0;
+    } else if (finishPosition > prediction) { // DRIVER FINISHED WORSE THAN PREDICTED - penalize
+        const penalty = penaltyScale * diffAbs;
+        return Math.max(0, baselinePoints - penalty);
+    } else { // DRIVER FINISHED BETTER THAN PREDICTED - award partial bonus
+        const outperformBonus = penaltyScale / 2.0 * diffAbs;
+        return baselinePoints + outperformBonus;
+    }
+}
 // Calculate top finishers score for a driver
 export async function calculateTopFinishersScoreForDriver(finishPosition: number, prediction: number, game: GameClientType): Promise<number> {
+
     if (finishPosition === prediction) {
-        return game.top_finisher_baseline_points + game.top_finisher_prediction_bonus;
+        return game.top_finisher_baseline_points + (game.num_top_finishers - prediction + 1)  //game.top_finisher_prediction_bonus;
     } else if (finishPosition <= 0) {
         return 0;
     } else if (finishPosition > prediction) {
