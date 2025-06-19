@@ -74,10 +74,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
         setLoading(false);
       }
     };
- 
       fetchRacers();
-  
-
   }, [gameId]);
 
   interface StepFunction {
