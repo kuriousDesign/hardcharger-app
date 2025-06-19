@@ -76,10 +76,10 @@ export const postPayment = async (payment: Partial<PaymentClientType> & { _id?: 
 
   try {
     if (payment._id && payment._id !== '') {
-      if(Types.ObjectId.isValid(payment._id)) {
+      if (Types.ObjectId.isValid(payment._id)) {
         await PaymentModel.findByIdAndUpdate(payment._id, paymentData, { new: true });
         console.log('Payment updated successfully');
-      return { message: 'Payment updated successfully' };
+        return { message: 'Payment updated successfully' };
       } else {
         console.error('paymentId is not a valid mongodb objectId:', payment._id);
         return { success: false, error: 'Invalid payment ID' };
@@ -101,9 +101,9 @@ export const postRace = async (race: Partial<RaceDoc | RaceClientType> & { _id?:
   await connectToDb();
 
   // check if event_id is a valid ObjectId, if its a string then convert it
-  if (typeof(race.event_id) === 'string') {
+  if (typeof (race.event_id) === 'string') {
     race.event_id = new Types.ObjectId(race.event_id as string);
-  } 
+  }
 
   const raceData = {
     letter: race.letter?.trim() || '',
@@ -170,22 +170,29 @@ export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?:
   }
 
   const { _id, ...rest } = pick;
-
-  if (_id && _id !== '') {
-    // Update existing pick
-    await PickModel.findByIdAndUpdate(_id, rest, { new: true });
-    return { message: 'Pick updated successfully' };
-  } else {
-    // Strip _id when creating a new document
-    const newPick = new PickModel(rest);
-    await newPick.save();
-    return { message: 'Pick created successfully' };
+  try {
+    if (_id && _id !== '') {
+      // Update existing pick
+      await PickModel.findByIdAndUpdate(_id, rest, { new: true });
+      return { message: 'Pick updated successfully' };
+    } else {
+      // Strip _id when creating a new document
+      const newPick = new PickModel(rest);
+      await newPick.save();
+      return { message: 'Pick created successfully' };
+    }
+  }
+  catch (error) {
+    console.error('Pick save error:', error);
+    throw new Error('Failed to save pick');
   }
 }
 
 export const handlePickFormSubmit = async (pick: PickClientType, gameId: string) => {
   try {
+    console.log('posting pick:', pick);
     await postPick(pick);
+    console.log('Pick posted to DB successfully');
   } catch (err) {
     console.error('Error posting pick:', err);
     throw new Error('Failed to submit pick');
@@ -202,7 +209,7 @@ export const postHardChargerTable = async (hardChargerTable: Partial<HardCharger
 
   try {
     const existingTable = await HardChargerTableModel.findOne({ game_id: hardChargerTable.game_id });
-    
+
     if (existingTable) {
       // Update existing table
       await HardChargerTableModel.findByIdAndUpdate(existingTable._id, hardChargerTable, { new: true });
@@ -233,7 +240,7 @@ export const postRacer = async (racer: Partial<RacerDoc | RacerClientType> & { _
     // Update existing racer
     await RacerModel.findByIdAndUpdate(_id, rest, { new: true });
     return { message: 'Racer updated successfully' };
-  } else {  
+  } else {
     // Strip _id when creating a new document
     const newRacer = new RacerModel(rest);
     await newRacer.save();
@@ -268,20 +275,20 @@ export const postNewPlayerByUserId = async (userId: string) => {
 
   // Create new player
 
-  const newPlayer = new PlayerModel({ 
+  const newPlayer = new PlayerModel({
     user_id: userId,
     phone_number: 0, // Default number, can be updated later
     private_games: [] // Initialize with an empty array
 
   });
   await newPlayer.save();
-  
+
   return { message: 'New player created successfully', player: newPlayer };
 }
 
 
 export const postDriversFromDataFolder = async () => {
-    //using driversData, insert drivers into the database, skipping duplicates
+  //using driversData, insert drivers into the database, skipping duplicates
   await connectToDb();
   if (driversData.length === 0) {
     return { success: false, message: 'No valid drivers found in the data' };
@@ -289,7 +296,7 @@ export const postDriversFromDataFolder = async () => {
     //const result = await DriverModel.insertMany(driversData);
     // insert the drivers, but skip duplicates
     const result = await DriverModel.bulkWrite(
-      driversData.map(driver => ({    
+      driversData.map(driver => ({
         updateOne: {
           filter: { car_number: driver.car_number },
           update: { $setOnInsert: driver },
@@ -330,18 +337,18 @@ export const postDriversFromTextFile = async (filePath: string) => {
   await connectToDb();
   // read the file that is in src/data/drivers_2025.txt
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const fs = require('fs'); 
+  const fs = require('fs');
   const fileContent = fs.readFileSync(filePath, 'utf8');
 
 
   const drivers = parseDriverData(fileContent);
   if (drivers.length === 0) {
     return { success: false, message: 'No valid drivers found in the file' };
-  } else {  
+  } else {
     //const result = await DriverModel.insertMany(drivers);
     // insert the drivers, but skip duplicates
     const result = await DriverModel.bulkWrite(
-      drivers.map(driver => ({    
+      drivers.map(driver => ({
         updateOne: {
           filter: { car_number: driver.car_number },
           update: { $setOnInsert: driver },

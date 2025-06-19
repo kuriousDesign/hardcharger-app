@@ -50,12 +50,14 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
   // can i use a server action here to getRacersByGameId?
   const [racerDrivers, setRacerDrivers] = useState<RacerDriverClientType[]>([]);
   const [remainingTopFinisherRacerDrivers, setRemainingTopFinisherRacerDrivers] = useState<RacerDriverClientType[]>([]);
+  const [remainingHardChargerRacerDrivers, setRemainingHardChargerRacerDrivers] = useState<RacerDriverClientType[]>([]);
   const [game, setGame] = useState<GameClientType>({} as GameClientType);
   const [races, setRaces] = useState<RaceClientType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   // This should be replaced with a server action to fetch racers based on gameId
   useEffect(() => {
     const fetchRacers = async () => {
+      //console.log('Fetching racers for gameId:', gameId);
       try {
         const dataP = getRacersWithDriversForPickCreation(gameId);
         const gameDataP = getGame(gameId);
@@ -63,6 +65,7 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
         const [data, gameData, raceData] = await Promise.all([dataP, gameDataP, raceDataP]);
         setRacerDrivers(data);
         setRemainingTopFinisherRacerDrivers(data);
+        setRemainingHardChargerRacerDrivers(data);
         setGame(gameData);
         setRaces(raceData);
       } catch (error) {
@@ -71,23 +74,55 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
         setLoading(false);
       }
     };
+ 
+      fetchRacers();
+  
 
-    fetchRacers();
   }, [gameId]);
 
   interface StepFunction {
     (): JSX.Element;
   }
 
+  // filter out any racerDrivers that have already been selected in the pickForm for top finishers
+  useEffect(() => {
+    //console.log('Filtering remainingTopFinisherRacerDrivers based on pickForm.top_finishers:', pickForm.top_finishers);
+    if (pickForm.top_finishers.length > 0) {
+      const selectedTopFinisherIds = pickForm.top_finishers.map(
+        (tp: DriverPredictionClientType) => tp.driver_id
+      );
+      const filteredTopFinishers = racerDrivers.filter(
+        (rd) => !selectedTopFinisherIds.includes(rd.driver._id as string)
+      );
+      setRemainingTopFinisherRacerDrivers(filteredTopFinishers);
+      //console.log('length of filteredTopFinishers:', filteredTopFinishers.length);
+    }
+  }, [pickForm.top_finishers, racerDrivers]);
+
+  // filter out any racerDrivers that have already been selected in the pickForm for hard chargers
+  useEffect(() => {
+    //console.log('Filtering remainingHardChargerRacerDrivers based on pickForm.hard_chargers:', pickForm.hard_chargers);
+    if (pickForm.hard_chargers.length > 0) {
+      const selectedHardChargerIds = pickForm.hard_chargers.map(
+        (hc: DriverPredictionClientType) => hc.driver_id
+      );
+      const filteredHardChargers = racerDrivers.filter(
+        (rd) => !selectedHardChargerIds.includes(rd.driver._id as string)
+      );
+      setRemainingHardChargerRacerDrivers(filteredHardChargers);
+      //console.log('length of filteredHardChargers:', filteredHardChargers.length);
+    }
+  }, [pickForm.hard_chargers, racerDrivers]);
+
   let steps = [] as StepFunction[];
-    const CardLoading = () => (
+  const CardLoading = () => (
     <Card className="w-full h-full">
       <CardContent className="flex flex-col items-center justify-center h-full gap-4">
         <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
         <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
         <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
         <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
-      </CardContent>    
+      </CardContent>
     </Card>
   );
 
@@ -96,13 +131,13 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
     steps = [
       () => <StepGameOverview game={game} races={races} />,
       () => <StepNamePick pickForm={pickForm} setPickForm={setPickForm} />,
-      () => <StepRacerPredictions type={'hardcharger'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
-      () => <StepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
+      () => <StepRacerPredictions type={'hardcharger'} races={races} racerDrivers={remainingHardChargerRacerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
+      () => <StepRacerPredictions type={'topfinisher'} races={races} racerDrivers={remainingTopFinisherRacerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
       () => <StepSubmit game={game} pickForm={pickForm} />
     ];
-} else {
+  } else {
     steps = [() => <CardLoading />];
-}
+  }
 
   const buttonSize = "w-[10vh] h-[10vh]";
 

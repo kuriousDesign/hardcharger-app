@@ -85,10 +85,6 @@ export default function RacerPredictionSelectionDiv({
     const predictions = pickForm[update_key] as DriverPredictionClientType[];
     const prediction = predictions[index];
     if (prediction && prediction.driver_id) {
-      const driver = racerDrivers.find(
-        (rd) => rd.driver._id === prediction.driver_id
-      );
-      setRacerDr(driver);
       if (type === 'hardcharger') {
         setGuess(prediction.prediction || defaultGuess);
       }

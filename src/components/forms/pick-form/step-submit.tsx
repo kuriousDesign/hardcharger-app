@@ -22,7 +22,7 @@ export default function StepSubmit({
           className="mt-4 px-6 py-2 bg-secondary text-secondary-foreground"
           onClick={async () => {
             try {
-              await handlePickFormSubmit(pickForm, game._id as string);
+              handlePickFormSubmit(pickForm, game._id as string);
               toast.success("Pick submitted successfully!");
               //router.push(`/games/${gameId}`);
             } catch (error) {
