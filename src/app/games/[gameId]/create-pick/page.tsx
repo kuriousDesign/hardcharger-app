@@ -26,8 +26,8 @@ export default async function CreatePickPage({
     </div>;
   }
   return (
-    <div className="absolute top-0 left-0 flex flex-col gap-y-4 justify-start items-center w-full h-full py-4">
-      <h1 className="text-2xl font-bold ">Create Pick</h1>
+    <div className="absolute top-0 left-0 flex flex-col justify-start items-center w-full h-screen py-0 bg-primary z-100">
+      {/* <h1 className="text-2xl font-bold ">Create Pick</h1> */}
       <FormPick gameId={gameId} playerId={player._id} defaultName={userFullName || ''}/>
     </div>
   );

@@ -1,7 +1,7 @@
 // MultiStepPickForm.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 
 import {
   Carousel,
@@ -14,16 +14,17 @@ import StepNamePick from './step-name-pick';
 //import StepTopFinishers from './StepTopFinishers';
 //import StepHardChargers from './StepHardChargers';
 //import StepTieBreaker from './StepTieBreaker';
-import { postPick } from '@/actions/postActions';
+
 import { DriverPredictionClientType, PickClientType } from '@/models/Pick';
-import { useRouter } from 'next/navigation';
 import { getGame, getRacersWithDriversForPickCreation, getRacesByGameId } from '@/actions/getActions';
 import { RacerDriverClientType } from '@/models/Racer';
-import StepGameOverview from './StepGameOverview';
+import StepGameOverview from './step-game-overview';
 import { GameClientType } from '@/models/Game';
 import { RaceClientType } from '@/models/Race';
-import CardStepRacerPredictions from '@/components/forms/pick-form/card-step-racer-predictions';
-import { getLinks } from '@/lib/link-urls';
+import StepRacerPredictions from '@/components/forms/pick-form/step-racer-predictions';
+import StepSubmit from './step-submit';
+import { Card, CardContent } from '@/components/ui';
+
 
 
 export default function FormPick({ gameId, playerId, defaultName }: { gameId: string, playerId: string, defaultName?: string }) {
@@ -44,78 +45,78 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
 
   } as PickClientType);
 
-  const router = useRouter();
+  //const router = useRouter();
 
   // can i use a server action here to getRacersByGameId?
   const [racerDrivers, setRacerDrivers] = useState<RacerDriverClientType[]>([]);
+  const [remainingTopFinisherRacerDrivers, setRemainingTopFinisherRacerDrivers] = useState<RacerDriverClientType[]>([]);
   const [game, setGame] = useState<GameClientType>({} as GameClientType);
   const [races, setRaces] = useState<RaceClientType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   // This should be replaced with a server action to fetch racers based on gameId
   useEffect(() => {
     const fetchRacers = async () => {
       try {
-        const data = await getRacersWithDriversForPickCreation(gameId);
+        const dataP = getRacersWithDriversForPickCreation(gameId);
+        const gameDataP = getGame(gameId);
+        const raceDataP = getRacesByGameId(gameId);
+        const [data, gameData, raceData] = await Promise.all([dataP, gameDataP, raceDataP]);
         setRacerDrivers(data);
-        const gameData = await getGame(gameId);
+        setRemainingTopFinisherRacerDrivers(data);
         setGame(gameData);
-        const raceData = await getRacesByGameId(gameId);
         setRaces(raceData);
       } catch (error) {
         console.error('Error fetching racerDrivers:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchRacers();
   }, [gameId]);
 
-
-  const handleSubmit = async () => {
-    try {
-      await postPick(pickForm);
-      router.push(getLinks().getGameUrl(gameId));
-    } catch (err) {
-      console.error('Error submitting pick:', err);
-    }
-  };
-
-  const stepSubmitPick = () => {
-    return (
-      <div className="text-center">
-        <h2 className="text-xl font-bold mb-4">Review & Submit</h2>
-        <button
-          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={handleSubmit}
-        >
-          Submit Pick
-        </button>
-        <pre className="p-4 rounded text-left text-xs overflow-auto">
-          {JSON.stringify(pickForm, null, 2)}
-        </pre>
-
-      </div>
-    );
+  interface StepFunction {
+    (): JSX.Element;
   }
 
-  const steps = [
-    () => <StepGameOverview game={game} races={races} />,
-    () => <StepNamePick pickForm={pickForm} setPickForm={setPickForm} />,
-    // () => <StepHardChargers pickForm={pickForm} setPickForm={setPickForm} racerDrivers={racerDrivers} />,
-    () => <CardStepRacerPredictions type={'hardcharger'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
+  let steps = [] as StepFunction[];
+    const CardLoading = () => (
+    <Card className="w-full h-full">
+      <CardContent className="flex flex-col items-center justify-center h-full gap-4">
+        <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
+        <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
+        <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
+        <div className="animate-pulse w-full h-1/4 bg-muted rounded-md"></div>
+      </CardContent>    
+    </Card>
+  );
 
-    () => <CardStepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
-    stepSubmitPick,
-  ];
+  if (!loading) {
+
+    steps = [
+      () => <StepGameOverview game={game} races={races} />,
+      () => <StepNamePick pickForm={pickForm} setPickForm={setPickForm} />,
+      () => <StepRacerPredictions type={'hardcharger'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
+      () => <StepRacerPredictions type={'topfinisher'} races={races} racerDrivers={racerDrivers} game={game} pickForm={pickForm} setPickForm={setPickForm} />,
+      () => <StepSubmit game={game} pickForm={pickForm} />
+    ];
+} else {
+    steps = [() => <CardLoading />];
+}
 
   const buttonSize = "w-[10vh] h-[10vh]";
 
   //const carouselHeight = 'h-[90vh]';
 
+
+
   return (
-    <Carousel className="w-full h-[80vh]">
+    <Carousel className="w-full h-[98vh]">
       <CarouselContent className=' '>
+
         {steps.map((step, index) => (
           <CarouselItem key={index} >
-            <div className=" h-[70vh] p-4">
+            <div className=" h-[87vh] w-full bg-blue-500 p-2">
               {step()}
             </div>
           </CarouselItem>

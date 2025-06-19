@@ -74,7 +74,7 @@ export default function RacerPredictionSelectionDiv({
   } else if (type === 'topfinisher') {
     update_key = 'top_finishers';
     userHint = ''; //`Who you think will finish in ${convertNumberToStNdRdTh(racerPredictionDisplayProps.number)}`;
-    console.log('Updating top finishers');
+    //console.log('Updating top finishers');
   } else {
     console.error('Invalid type provided for predictions:', type);
     //return null;

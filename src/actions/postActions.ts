@@ -16,6 +16,8 @@ import parseDriverData from '@/data/parseDriverData';
 
 import { drivers as driversData } from '@/data/drivers';
 import { HardChargerTableClientType, HardChargerTableDoc, HardChargerTableModel } from '@/models/HardChargerTable';
+import { redirect } from 'next/navigation';
+import { getLinks } from '@/lib/link-urls';
 
 // admin role protected
 export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel, adminRoleProtectedOptions);
@@ -180,6 +182,16 @@ export const postPick = async (pick: Partial<PickDoc | PickClientType> & { _id?:
     return { message: 'Pick created successfully' };
   }
 }
+
+export const handlePickFormSubmit = async (pick: PickClientType, gameId: string) => {
+  try {
+    await postPick(pick);
+  } catch (err) {
+    console.error('Error posting pick:', err);
+    throw new Error('Failed to submit pick');
+  }
+  redirect(getLinks().getGameUrl(gameId)); // Let NEXT_REDIRECT propagate
+};
 
 export const postHardChargerTable = async (hardChargerTable: Partial<HardChargerTableDoc | HardChargerTableClientType> & { _id?: string }) => {
   await connectToDb();

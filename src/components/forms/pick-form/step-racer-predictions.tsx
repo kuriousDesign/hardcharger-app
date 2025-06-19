@@ -29,7 +29,7 @@ export function getRaceNameWithRaceId(raceId: string, races: RaceClientType[]): 
   return race ? `${race.letter} ${race.type}` : `Debug: Matching race not found for raceId: ${raceId}`;
 }
 
-export default function CardStepRacerPredictions({
+export default function StepRacerPredictions({
 
   type,
   game,
@@ -51,7 +51,7 @@ export default function CardStepRacerPredictions({
   let predictions: RacerPredictionDisplayProps[] = [];
 
   if (type === 'hardcharger') {
-    cardTitle = 'Choose Hard Chargers';
+    cardTitle = 'Hard Chargers';
     cardDescription = 'Pick who you think will pass the most cars!';
     predictions = Array.from({ length: game.num_hard_chargers }, (_, i) => ({
       name: `Hard Charger ${i + 1}`,
@@ -61,7 +61,7 @@ export default function CardStepRacerPredictions({
       number: i + 1,
     } as RacerPredictionDisplayProps));
   } else if (type === 'topfinisher') {
-    cardTitle = 'Choose Top Finishers';
+    cardTitle = 'Top Finishers';
     cardDescription = `Pick who you think will finish in the top ${game.num_top_finishers}!`;
     predictions = Array.from({ length: game.num_top_finishers }, (_, i) => ({
       name: `Top Finisher - ${convertNumberToStNdRdTh(i + 1)} Place`,

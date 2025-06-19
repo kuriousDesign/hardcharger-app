@@ -11,9 +11,9 @@ import { GameTypes, gameTypesToString } from "@/types/enums";
 export function GameDetails({ game, races }: { game: GameClientType, races: RaceClientType[] }) {
 
     if (!game || Object.keys(game).length === 0 || !races || races.length === 0) {
-        return <div className="text-red-500">loading...</div>
+        //return <div className="text-red-500">loading...</div>
     }
-    console.log('gametype', game.type);
+    //console.log('gametype', game.type);
 
     const tieBreakerString = game.tie_breaker ? `The tie breaker is ${game.tie_breaker.type}` : 'There is no tie breaker for this game';
 
@@ -42,7 +42,7 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
         <Accordion
             type="single"
             collapsible
-            className="w-full h-full overflow-hidden"
+            className="w-full h-full"
             defaultValue="item-1"
         >
             <AccordionItem value="item-1">
@@ -103,13 +103,13 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
                             <br />
 
 
-                            <p>If they pass more cars than pass them, you will receive points as follows:
+                            <div>If they pass more cars than pass them, you will receive points as follows:
                                 <ul className="pl-6 space-y-1 list-disc">
                                     <li>they outperformed your prediction, you will only be credited with your prediction!</li>
                                     <li>your prediction was spot-on: you will receive a {game.hard_charger_prediction_bonus} bonus points in addition to the points you predicted</li>
                                     <li>they passed less than you predicted, penalty points will be removed from how many they actually passed! (see below)</li>
                                 </ul>
-                            </p>
+                            </div>
 
 
                         </div>
