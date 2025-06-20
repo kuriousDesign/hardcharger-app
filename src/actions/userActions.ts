@@ -48,8 +48,15 @@ export const postSignIn = async (provider: string): Promise<void> => {
 }
 
 export const postSignOut = async (): Promise<void> => {
+  const cookieStore = await cookies()
+  cookieStore.getAll().map((cookie) => (
+    cookieStore.delete(cookie.name)
+  )); 
   await signOut();
-  const cookieStore = await cookies();
+    cookieStore.getAll().map((cookie) => (
+    cookieStore.delete(cookie.name)
+  )); 
+
   cookieStore.delete('authjs.session-token');
   const netlifySessionToken = '__Secure-authjs.session-token';
   cookieStore.delete(netlifySessionToken);
