@@ -9,6 +9,7 @@ import { PlayerClientType } from '@/models/Player';
 import { toast } from 'sonner';
 import { getLinks } from '@/lib/link-urls';
 import { cn } from '@/lib/utils';
+import { SignOut } from './login';
 
 interface UserButtonProps {
   player: PlayerClientType;
@@ -81,6 +82,7 @@ export function UserButton({ player }: UserButtonProps) {
             </li>
           ))}
         </ul>
+        <SignOut>{''}</SignOut>
       </PopoverContent>
     </Popover>
   );
