@@ -30,10 +30,10 @@ export function UserButton({ player }: UserButtonProps) {
   // Handle sign out
   const handleSignOut = async () => {
     try {
-      await signOut({ callbackUrl: '/' });
+      await signOut();
       toast.success('Signed out successfully');
       // force reload to ensure session is cleared
-      router.refresh();
+      //router.refresh();
     } catch (error) {
       console.error('Sign out error:', error);
       toast.error('Failed to sign out');
