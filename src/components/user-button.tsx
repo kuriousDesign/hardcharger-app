@@ -1,22 +1,22 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { PlayerClientType } from '@/models/Player';
 import { toast } from 'sonner';
-import { getLinks } from '@/lib/link-urls';
+//import { getLinks } from '@/lib/link-urls';
 import { cn } from '@/lib/utils';
-import { SignOut } from './login';
+
 
 interface UserButtonProps {
   player: PlayerClientType;
 }
 
 export function UserButton({ player }: UserButtonProps) {
-  const router = useRouter();
+  //const router = useRouter();
   const isAdmin = player.role === 'ADMIN';
 
   // Get initials for avatar fallback
@@ -32,7 +32,7 @@ export function UserButton({ player }: UserButtonProps) {
   const handleSignOut = async () => {
     try {
       await signOut();
-      toast.success('Signed out successfully');
+      //toast.success('Signed out successfully');
       // force reload to ensure session is cleared
       //router.refresh();
     } catch (error) {
@@ -43,8 +43,8 @@ export function UserButton({ player }: UserButtonProps) {
 
   // Menu items
   const menuItems = [
-    { label: 'Dashboard', href: getLinks().getDashboardUrl(), action: () => router.push(getLinks().getDashboardUrl()) },
-    ...(isAdmin ? [{ label: 'Admin', href: getLinks().getAdminUrl(), action: () => router.push(getLinks().getAdminUrl()) }] : []),
+    //{ label: 'Dashboard', href: getLinks().getDashboardUrl(), action: () => router.push(getLinks().getDashboardUrl()) },
+    //...(isAdmin ? [{ label: 'Admin', href: getLinks().getAdminUrl(), action: () => router.push(getLinks().getAdminUrl()) }] : []),
     { label: 'Sign out', href: null, action: handleSignOut },
   ];
 
@@ -82,7 +82,7 @@ export function UserButton({ player }: UserButtonProps) {
             </li>
           ))}
         </ul>
-        <SignOut>{''}</SignOut>
+
       </PopoverContent>
     </Popover>
   );
