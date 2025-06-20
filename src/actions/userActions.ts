@@ -1,9 +1,11 @@
 'use server';
 
-import { auth } from '@/auth';
+import { signIn, signOut, auth } from "@/auth";
 import { checkIsAdminByEmail, checkIsAdminByRole } from '@/lib/utils';
 import { getCurrentPlayer } from './getActions';
 import { Roles } from '@/types/enums';
+import { revalidateTag } from 'next/cache';
+import { CacheTags } from "@/lib/cache-tags";
 
 
 
@@ -34,4 +36,17 @@ export const getIsAdminByUserEmail = async (): Promise<boolean> => {
     return false; // No user is logged in
 
   return checkIsAdminByEmail(email);
+}
+
+export const postSignIn = async (provider: string): Promise<void> => {
+
+  await signIn(provider);
+  //revalidateTag(CacheTags.USERS);
+  revalidateTag(CacheTags.PLAYERS);
+}
+
+export const postSignOut = async (): Promise<void> => {
+  await signOut();
+  //revalidateTag(CacheTags.USERS);
+  revalidateTag(CacheTags.PLAYERS);
 }

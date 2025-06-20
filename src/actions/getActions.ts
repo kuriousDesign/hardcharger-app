@@ -75,6 +75,8 @@ export const getGamesByEventId = async (eventId: string): Promise<GameClientType
 
 export const getGamePicksByPlayerId = async (playerId: string): Promise<GamePicksClientType[]> => {
   await connectToDb();
+  cacheTag(CacheTags.PLAYERS);
+  cacheTag(CacheTags.PICKS);
   const gamePicks = [] as GamePicksClientType[];
   const filter = { player_id: new Types.ObjectId(playerId) };
   const picks = await getPicks(filter);
@@ -228,6 +230,7 @@ export const getRacersWithDriversForPickCreation = async (gameId: string) => {
 
 
 export const getPlayerByUserId = async (userId: string): Promise<PlayerClientType> => {
+  cacheTag(CacheTags.PLAYERS);
   const filter = { user_id: userId }; //in this case userId is saved as a string in the database
   let players = await getPlayers(filter);
   if (players.length === 0) {
@@ -247,6 +250,7 @@ export const getPlayerByUserId = async (userId: string): Promise<PlayerClientTyp
 };
 
 export const getUser = async () => {
+  cacheTag(CacheTags.PLAYERS);
   const session = await auth();
   if (!session || !session.user) {
     console.log('No user found in auth session');
@@ -263,6 +267,7 @@ export const getUser = async () => {
 };
 
 export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
+  cacheTag(CacheTags.PLAYERS);
   const user = await getUser();
   if (!user) {
     console.warn('No user found in session, waiting for middleware to redirect');
