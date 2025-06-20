@@ -4,7 +4,7 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { getUser, getPlayersByUserId } from '@/actions/getActions';
+import { getUser, getPlayerByUserId } from '@/actions/getActions';
 
 import CardDashboardLinks from '../../components/cards/card-dashboard-links';
 
@@ -27,7 +27,7 @@ export default async function AdminPage() {
     }
     // const user = await currentUser();
     //console.log('Dashboard userId', userId);
-    const player = await getPlayersByUserId(user.id);
+    const player = await getPlayerByUserId(user.id);
 
     if (!player) {
         return <div className="p-6">waiting for player data</div>;

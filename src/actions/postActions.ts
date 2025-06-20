@@ -19,6 +19,8 @@ import { HardChargerTableClientType, HardChargerTableDoc, HardChargerTableModel 
 import { redirect } from 'next/navigation';
 import { getLinks } from '@/lib/link-urls';
 import { getUser } from './getActions';
+import { getIsAdmin } from './userActions';
+import { Roles } from '@/types/enums';
 
 // admin role protected
 export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel, adminRoleProtectedOptions);
@@ -268,6 +270,7 @@ export const postPlayer = async (player: Partial<PlayerDoc | PlayerClientType> &
 export const postNewPlayerByUserId = async (userId: string) => {
   await connectToDb();
   const user = await getUser();
+  
   if (!user || !userId) {
     throw new Error('User not found or userId is invalid');
   }
@@ -279,14 +282,20 @@ export const postNewPlayerByUserId = async (userId: string) => {
 
   // Create new player
 
+  const isAdmin = await getIsAdmin();
+  const role = isAdmin ? Roles.ADMIN : Roles.USER;
+
   const newPlayer = new PlayerModel({
-    user_id: userId,
-    name: user?.name || user.email? user.email : 'Unknown Player', // Use email if name is not available
+    user_id: user.email,
+    email: user.email,
+    image: user.image || '', // Use image_url from user if available
+    role: role,
+    name: user?.name,
     phone_number: 0, // Default number, can be updated later
     private_games: [] // Initialize with an empty array
-
   });
   await newPlayer.save();
+  console.log('Creating new player for user_id:', userId, newPlayer);
 
   return { message: 'New player created successfully', player: newPlayer };
 }

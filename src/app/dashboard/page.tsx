@@ -6,7 +6,7 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { getPlayersByUserId as getPlayerByUserId, getUser } from '@/actions/getActions';
+import { getPlayerByUserId as getPlayerByUserId, getUser } from '@/actions/getActions';
 
 import { Metadata } from "next";
 import { LinkButton } from "@/components/LinkButton";

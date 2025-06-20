@@ -15,7 +15,7 @@ import { RacerModel, RacerDoc, RacerClientType, RacerDriverClientType } from '@/
 import { createClientSafeGetAllHandler, createClientSafeGetHandler, createDocumentGetHandler } from '@/utils/actionHelpers';
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
-import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
+import { postNewPlayerByUserId } from './postActions';
 import { auth } from '@/auth';
 import { HardChargerTableModel, HardChargerTableClientType } from '@/models/HardChargerTable';
 import { unstable_cacheTag as cacheTag } from 'next/cache';
@@ -227,18 +227,19 @@ export const getRacersWithDriversForPickCreation = async (gameId: string) => {
 };
 
 
-export const getPlayersByUserId = async (userId: string): Promise<PlayerClientType> => {
+export const getPlayerByUserId = async (userId: string): Promise<PlayerClientType> => {
   const filter = { user_id: userId }; //in this case userId is saved as a string in the database
   let players = await getPlayers(filter);
   if (players.length === 0) {
-    //throw new Error(`No player found with user_id: ${userId}`);
-    console.warn(`No player found with user_id: ${userId}, creating a new player`);
+    console.log(`No player found with user_id: ${userId}, creating a new player`);
     // If no player is found, create a new player
-    await createPlayerByUserId(userId);
+    await postNewPlayerByUserId(userId);
     players = await getPlayers(filter);
     if (players.length === 0) {
       throw new Error(`Failed to create player with user_id: ${userId}`);
     }
+  } else if (players.length > 1) {
+    console.warn(`Multiple players found with user_id: ${userId}, returning the first one`);
   }
   // Assuming user_id is unique, we take the first player
   const player = players[0]; // Assuming user_id is unique, we take the first player
@@ -266,7 +267,7 @@ export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
   if (!user || !user.id) {
     throw new Error(`No user found with user_id`);
   }
-  const player = await getPlayersByUserId(user.id);
+  const player = await getPlayerByUserId(user.id);
   if (!player) {
     throw new Error(`No player found for user_id: ${user.id}`);
   }

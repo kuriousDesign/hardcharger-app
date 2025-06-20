@@ -4,9 +4,11 @@ import { createModel } from '@/lib/createModel';
 const schema = new mongoose.Schema(
   {
     name: { type: String, required: true }, // player name
-    user_id : { type: String, required: true }, // user id from the users collection from clerk
+    user_id : { type: String, required: true }, // user id from the users collection from clerk (this is typically the email)
     phone_number: { type: Number, required: false }, // 
-    //role: { type: String, required: true }, // e.g., 'admin', 'user', 'robot'
+    image: { type: String, required: false }, // player image URL
+    email: { type: String, required: true }, // player email
+    role: { type: String, required: true }, // e.g., Roles enum
     private_games: { type: [mongoose.Schema.Types.ObjectId], required: true }, // array of private game ids the user can access
 
   },

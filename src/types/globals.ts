@@ -1,7 +1,4 @@
-export {}
-
-// Create a type for the roles
-export type Roles = 'admin' | 'user'
+import { Roles } from "./enums";
 
 declare global {
   interface CustomJwtSessionClaims {
@@ -11,9 +8,7 @@ declare global {
   }
 }
 
-
 export interface Hometown {
   city: string;
   region: string;
 }
-

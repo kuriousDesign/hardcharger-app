@@ -61,3 +61,8 @@ export function raceStatesToString(state: RaceStates): string {
             return 'Unknown State';
     }
 }
+
+export enum Roles {
+    USER = 'user',
+    ADMIN = 'admin',
+}
