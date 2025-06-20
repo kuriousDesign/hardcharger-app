@@ -1,7 +1,6 @@
 "use server";
 
 import connectToDb from '@/lib/db';
-
 import { EventModel, EventDoc, EventClientType } from '@/models/Event';
 import { GameModel, GameDoc, GameClientType, GamePicksClientType } from '@/models/Game';
 import { PaymentModel, PaymentDoc, PaymentClientType } from '@/models/Payment';
@@ -10,8 +9,6 @@ import { PlayerModel, PlayerDoc, PlayerClientType } from '@/models/Player';
 import { RaceModel, RaceDoc, RaceClientType } from '@/models/Race';
 import { DriverModel, DriverDoc, DriverClientType } from '@/models/Driver';
 import { RacerModel, RacerDoc, RacerClientType, RacerDriverClientType } from '@/models/Racer';
-
-
 import { createClientSafeGetAllHandler, createClientSafeGetHandler, createDocumentGetHandler } from '@/utils/actionHelpers';
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
@@ -21,8 +18,9 @@ import { HardChargerTableModel, HardChargerTableClientType } from '@/models/Hard
 import { unstable_cacheTag as cacheTag } from 'next/cache';
 import { CacheTags } from '@/lib/cache-tags';
 
-export const getConnectToDb = async () => {await connectToDb();}
 
+
+export const getConnectToDb = async () => {await connectToDb();}
 export const getDriver = createClientSafeGetHandler<DriverDoc,DriverClientType>(DriverModel);
 export const getDrivers = createClientSafeGetAllHandler<DriverDoc, DriverClientType>(DriverModel);
 export const getEvent = createClientSafeGetHandler<EventDoc, EventClientType>(EventModel);
@@ -227,7 +225,6 @@ export const getRacersWithDriversForPickCreation = async (gameId: string) => {
   return racerDrivers as RacerDriverClientType[];
 };
 
-
 export const getPlayerByUserId = async (userId: string): Promise<PlayerClientType> => {
   "use cache";
   cacheTag(CacheTags.PLAYERS);
@@ -311,7 +308,6 @@ export const getRacesByGameId = async (gameId: string): Promise<RaceClientType[]
   }
   return races;
 }
-
 
 export const getOpenGames = async (): Promise<GameClientType[]> => {
   const filter = { status: 'open' };
