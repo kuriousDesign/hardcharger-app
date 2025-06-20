@@ -17,6 +17,9 @@ export function SignOut() {
 	return (
 		<Button onClick={async () => {
 			await postSignOut();
+			['next-auth.session-token', 'next-auth.callback-url', 'next-auth.csrf-token'].forEach((cookie) => {
+          document.cookie = `${cookie}=; path=/; max-age=0; SameSite=Lax; Secure`;
+        });
 			
 		}} className="bg-secondary text-secondary-foreground">
 			Sign Out
