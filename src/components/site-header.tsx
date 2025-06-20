@@ -42,7 +42,7 @@ export function SiteHeader() {
     }
   }, [isSignedIn])
   
-
+console.log(player);
   return (
     <header className="bg-background sticky top-0 z-50 w-full">
       <div className="container-wrapper 3xl:fixed:px-0 px-6">
