@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-//import { MongoClient } from "mongodb";
 
 // Extend global to include mongoose cache
 declare global {
-  // eslint-disable-next-line no-var
+
   var mongoose: {
     conn: mongoose.Connection | null;
     promise: Promise<mongoose.Mongoose> | null;
@@ -58,29 +57,5 @@ async function connectToDb(): Promise<mongoose.Connection> {
     throw e;
   }
 }
-
-// export async function getMongoClient(): Promise<MongoClient> {
-//   const connection = await connectToDb();
-//   if (!connection.db) {
-//     throw new Error("Mongoose connection is not established");
-//   }
-
-//   // Extract MongoClient from Mongoose connection
-//   const mongoClient = (connection.getClient() as unknown) as MongoClient;
-//   if (!mongoClient) {
-//     throw new Error("Unable to extract MongoClient from Mongoose connection");
-//   }
-
-//   // Verify client is connected
-//   try {
-//     await mongoClient.db(DB_NAME).command({ ping: 1 });
-//     // console.log("MongoClient ping successful");
-//   } catch (error) {
-//     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-//     throw new Error(`MongoClient is not connected: ${errorMessage}`);
-//   }
-
-//   return mongoClient;
-// }
 
 export default connectToDb;
