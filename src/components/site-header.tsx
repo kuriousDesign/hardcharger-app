@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator"
 
 import { LinkButton } from "./LinkButton"
 import { useSession } from "next-auth/react"
-import { UserButton } from "./user-button"
+//import { UserButton } from "./user-button"
 import { getCurrentPlayer } from "@/actions/getActions"
 import { PlayerClientType } from "@/models/Player"
 import { useEffect, useState } from "react"
@@ -85,9 +85,7 @@ export function SiteHeader() {
             <ModeSwitcher />
             <Separator orientation="vertical" />
 
-            {isSignedIn && player &&
-              <UserButton player={player as PlayerClientType} />
-              }
+            
 
           </div>
         </div>
