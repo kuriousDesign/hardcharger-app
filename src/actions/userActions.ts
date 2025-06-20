@@ -7,6 +7,7 @@ import { Roles } from '@/types/enums';
 import { revalidateTag } from 'next/cache';
 import { CacheTags } from "@/lib/cache-tags";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 
 
@@ -48,7 +49,10 @@ export const postSignIn = async (provider: string): Promise<void> => {
 
 export const postSignOut = async (): Promise<void> => {
   await signOut();
+  const cookieStore = await cookies();
+  cookieStore.delete('authjs.session-token');
   const netlifySessionToken = '__Secure-authjs.session-token';
+  cookieStore.delete(netlifySessionToken);
   [netlifySessionToken, 'authjs.session-token', 'authjs.callback-url', 'authjs.csrf-token'].forEach((cookie) => {
     document.cookie = `${cookie}=; path=/; max-age=0; SameSite=Lax; Secure`;
   });
