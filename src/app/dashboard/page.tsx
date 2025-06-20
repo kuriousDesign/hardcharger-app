@@ -16,6 +16,7 @@ import { getIsAdmin } from "@/actions/userActions";
 
 import TabCardGames from "@/components/tab-cards/games";
 import { Suspense } from "react";
+import { SignOut } from "@/components/login";
 
 const title = "Pick your drivers. Win the pot."
 const description = "Find a game and create a pick. Look at your current picks too."
@@ -50,6 +51,7 @@ export default async function DashboardPage() {
                             Events
                         </LinkButton>
                     }
+                    <SignOut>{''}</SignOut>
            
                 </PageActions>
             </PageHeader>
