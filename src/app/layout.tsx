@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ClerkProvider } from '@clerk/nextjs';
 import { META_THEME_COLORS, siteConfig } from '@/lib/config';
 import { fontVariables } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
@@ -10,6 +9,7 @@ import '@/styles/globals.css';
 import Script from 'next/script';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
+import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
@@ -63,12 +63,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          <meta name="theme-color" content={META_THEME_COLORS.light} />
-          <Script id="theme-and-layout-handler" strategy="afterInteractive">
-            {`
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content={META_THEME_COLORS.light} />
+        <Script id="theme-and-layout-handler" strategy="afterInteractive">
+          {`
               try {
                 if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
@@ -78,31 +77,32 @@ export default function RootLayout({
                 }
               } catch (_) {}
             `}
-          </Script>
-        </head>
-        <body
-          className={cn(
-            'text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]',
-            fontVariables
-          )}
+        </Script>
+      </head>
+      <body
+        className={cn(
+          'text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]',
+          fontVariables
+        )}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ActiveThemeProvider>
-              <div className="bg-background relative z-10 flex min-h-svh flex-col">
-                <SiteHeader />
-                <main className="flex flex-1 flex-col">{children}</main>
-                <SiteFooter />
-              </div>
-              <Toaster position="top-center" />
-            </ActiveThemeProvider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          <SessionProvider>
+          <ActiveThemeProvider>
+            <div className="bg-background relative z-10 flex min-h-svh flex-col">
+              <SiteHeader />
+              <main className="flex flex-1 flex-col">{children}</main>
+              <SiteFooter />
+            </div>
+            <Toaster position="top-center" />
+          </ActiveThemeProvider>
+          </SessionProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

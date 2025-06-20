@@ -9,10 +9,7 @@ import { ModeSwitcher } from "@/components/mode-switcher"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 
-import {
-  SignedIn,
-  UserButton,
-} from '@clerk/nextjs'
+
 import { LinkButton } from "./LinkButton"
 
 
@@ -63,9 +60,9 @@ export function SiteHeader() {
             <ModeSwitcher />
             <Separator orientation="vertical" />
 
-            <SignedIn>
+            {/* <SignedIn>
               <UserButton />
-            </SignedIn>
+            </SignedIn> */}
 
           </div>
         </div>

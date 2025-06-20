@@ -1,6 +1,6 @@
 import FormPick from '@/components/forms/pick-form/pick-form';
 import { PlayerClientType } from '@/models/Player';
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/auth';
 import { getPlayersByUserId, getUserFullName} from '@/actions/getActions';
 export default async function CreatePickPage({
   params,
@@ -8,15 +8,16 @@ export default async function CreatePickPage({
   params: Promise<{ gameId: string; }>;
 }) {
   const { gameId } = await params;
-  const { userId } = await auth();
+  const session = await auth();
+  const user = session?.user;
   const userFullName = await getUserFullName();
-  if (!userId) {
+  if (!user || !user.id) {
     console.error('No userId found in auth context');
     return;
   }
-  const player = await getPlayersByUserId(userId ? userId : '') as PlayerClientType;
+  const player = await getPlayersByUserId(user.id) as PlayerClientType;
   if (!player || !player._id) {
-    console.error('No valid player found for userId:', userId);
+    console.error('No valid player found for userId:', user.id);
     return;
   }
 

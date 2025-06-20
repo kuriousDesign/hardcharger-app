@@ -3,9 +3,9 @@ import connectToDb from '@/lib/db';
 import { toClientObject } from '@/utils/mongooseHelpers';
 
 import { Roles } from '@/types/globals';
-import { getRole } from '../actions/userActions';
 import { revalidateTag, unstable_cacheTag as cacheTag } from 'next/cache';
 import { CacheTags } from '@/lib/cache-tags';
+import { getIsAdmin } from '@/actions/userActions';
 
 
 type HandlerOptions = {
@@ -21,7 +21,7 @@ export const adminRoleProtectedOptions = {
 function checkRoleProtected(options?: HandlerOptions) {
   return async () => {
     if (options?.isRoleProtected && options.role) {
-      const allowed = await getRole(options.role);
+      const allowed = await getIsAdmin();
       if (!allowed) {
         throw new Error('Unauthorized access');
       }

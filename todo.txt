@@ -1,4 +1,6 @@
 TODO:
+[ ] getUser doesn't work, might have to replace with session auth()
+[ ] Add user avatar to site header
 [!] Bug: don't allow user to select same driver in top finishers, probably need to check hard chargers too.
 [x] Feature: be able to create driver from starting lineup form --> tested and working
 [x] HardChargerTable Calculations

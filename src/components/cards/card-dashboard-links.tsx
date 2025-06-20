@@ -1,14 +1,14 @@
 import Link from 'next/link';
 //import { currentUser } from '@clerk/nextjs/server';
-import { getRole } from '@/actions/userActions';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { IoMdAddCircle } from 'react-icons/io';
 import { getLinks } from '@/lib/link-urls';
+import { getIsAdmin } from '@/actions/userActions';
 
 
 export default async function CardDashboardLinks() {
-    const isAdmin = await getRole('admin')
+    const isAdmin = await getIsAdmin();
     if (!isAdmin) {
         return null;
         return <p>This is the protected admin dashboard card that is restricted to users with the `admin` role.</p>

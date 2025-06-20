@@ -1,10 +1,17 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
-import { getIsAdmin } from './actions/userActions';
-import { getLinks } from './lib/link-urls';
+export { auth as default } from "./auth";
+
+
+export const config = {
+  matcher: [
+    // Apply to all routes except Next.js internals and specific static files
+    '/((?!_next/static|_next/image|.*\\.(?:jpg|jpeg|png|gif|svg|ico|webp|woff2?|ttf)).*)',
+    // Always run for API and TRPC routes
+    '/(api|trpc)(.*)',
+  ],
+};
 
 // Define public routes (accessible without authentication)
-const isPublicRoute = createRouteMatcher([
+export const isPublicRoute = [
   '/',                    // Home page
   '/test(.*)',
   '/sign-in(.*)',        // Sign-in routes
@@ -16,35 +23,27 @@ const isPublicRoute = createRouteMatcher([
   '/favicon.ico',        // Favicon
   '/favicon-16x16.png',  // Shortcut icon
   '/apple-touch-icon.png', // Apple touch icon
-]);
+];
 
 // Define admin routes (requires admin role)
-const isAdminRoute = createRouteMatcher([
+export const isAdminRoute = [
   '/admin(.*)',          // All /admin routes (e.g., /admin/drivers, /admin/events)
-]);
+];
 
 
 
-export default clerkMiddleware(async (auth, req) => {
+// export default oldMiddleware(async (auth) => {
 
-  // Protect non-public routes
-  if (!isPublicRoute(req)) await auth.protect();
+//   // Protect non-public routes
+//   if (!isPublicRoute(req)) await auth.protect();
 
-  // Protect admin routes with role check
-  if (isAdminRoute(req)) {
-    if (!getIsAdmin()){
-      // Redirect to dashboard if logged in, else to home
-      const redirectUrl = new URL(getLinks().getDashboardUrl(), req.url);
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
-});
+//   // Protect admin routes with role check
+//   if (isAdminRoute(req)) {
+//     if (!getIsAdmin()){
+//       // Redirect to dashboard if logged in, else to home
+//       const redirectUrl = new URL(getLinks().getDashboardUrl(), req.url);
+//       return NextResponse.redirect(redirectUrl);
+//     }
+//   }
+// });
 
-export const config = {
-  matcher: [
-    // Apply to all routes except Next.js internals and specific static files
-    '/((?!_next/static|_next/image|.*\\.(?:jpg|jpeg|png|gif|svg|ico|webp|woff2?|ttf)).*)',
-    // Always run for API and TRPC routes
-    '/(api|trpc)(.*)',
-  ],
-};

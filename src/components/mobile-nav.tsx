@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { useUser } from "@clerk/nextjs"
+import { getIsAdmin } from "@/actions/userActions"
 
 // Configure Permanent Marker for local use
 
@@ -28,17 +28,17 @@ export function MobileNav({
   className?: string
 }) {
   const [open, setOpen] = React.useState(false)
-  const { user, isLoaded } = useUser();
+
   const [isAdmin, setIsAdmin] = React.useState(false);
   React.useEffect(() => {
+    // async function to getIsAdmin
+    const fetchData = async () => {
+      const isAdminData = await getIsAdmin();
+      setIsAdmin(isAdminData);
+    };
+    fetchData();
+  }, []);
 
-
-
-    if (isLoaded) {
-      setIsAdmin(user?.publicMetadata?.role === 'admin');
-    }
-  }
-    , [isLoaded, user?.publicMetadata?.role]);
 
 
 

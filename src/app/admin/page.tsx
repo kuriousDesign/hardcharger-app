@@ -4,10 +4,9 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { getPlayersByUserId } from '@/actions/getActions';
+import { getUser, getPlayersByUserId } from '@/actions/getActions';
 
 import CardDashboardLinks from '../../components/cards/card-dashboard-links';
-import { auth } from '@clerk/nextjs/server'
 
 import { redirect } from 'next/navigation';
 import { Metadata } from "next";
@@ -21,17 +20,17 @@ export const metadata: Metadata = {
   description,
 }
 export default async function AdminPage() {
-    const { userId } = await auth();
-    if (!userId) {
+    const user = await getUser();
+    if (!user || !user.id) {
         // redirect to login if userId is not available
         redirect('/'); //unnecessary, but just in case
     }
     // const user = await currentUser();
     //console.log('Dashboard userId', userId);
-    const player = await getPlayersByUserId(userId);
+    const player = await getPlayersByUserId(user.id);
 
     if (!player) {
-        return <div className="p-6">loading</div>;
+        return <div className="p-6">waiting for player data</div>;
     }
 
     return (

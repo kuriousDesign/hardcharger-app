@@ -2,9 +2,11 @@ import { getGames } from "@/actions/getActions";
 import TabCard, { FilterOption } from "@/components/cards/tab-card";
 import GameDiv from "../cards/game-div";
 
+
 export default async function TabCardGames() {
 
     const games = await getGames();
+ 
 
     // Define filterable options for displaying games
     const filterableOptions = [

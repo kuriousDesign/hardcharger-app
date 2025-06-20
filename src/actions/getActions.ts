@@ -16,7 +16,7 @@ import { createClientSafeGetAllHandler, createClientSafeGetHandler, createDocume
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
 import { postNewPlayerByUserId as createPlayerByUserId } from './postActions';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@/auth';
 import { HardChargerTableModel, HardChargerTableClientType } from '@/models/HardChargerTable';
 import { unstable_cacheTag as cacheTag } from 'next/cache';
 import { CacheTags } from '@/lib/cache-tags';
@@ -245,9 +245,25 @@ export const getPlayersByUserId = async (userId: string): Promise<PlayerClientTy
   return player as PlayerClientType;
 };
 
+export const getUser = async () => {
+  const session = await auth();
+  if (!session || !session.user) {
+    console.warn('No user found in auth session');
+    return null; // Return null if no user is found
+  }
+  //console.log('currentUser', session.user);
+  // i want to add a field to the user object called id that is the same as the user_id
+  //return an object tha adds a field id to session.user object
+  const userObject = {
+    ...session.user,
+    id: session.user.email
+  };
+  return userObject; // Return the user object with the added id field
+};
+
 export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
-  const user = await currentUser();
-  if (!user) {
+  const user = await getUser();
+  if (!user || !user.id) {
     throw new Error(`No user found with user_id`);
   }
   const player = await getPlayersByUserId(user.id);
@@ -257,12 +273,11 @@ export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
   return player as PlayerClientType;
 };
 export const getUserFullName = async (): Promise<string> => {
-  const user = await currentUser();
+  const user = await getUser();
   if (!user) {
     throw new Error(`No user found with user_id`);
   }
-  const fullName = user.fullName || `${user.firstName} ${user.lastName}`;
-  return fullName;
+  return user.name || '';
 };
 
 export const getPicksByGameId = async (gameId: string): Promise<PickClientType[]> => {
@@ -282,16 +297,6 @@ export const getRacesByGameId = async (gameId: string): Promise<RaceClientType[]
     }
   }
   return races;
-}
-
-export const getIsUserAdmin = async (): Promise<boolean> => {
-  const user = await currentUser();
-  if (!user) {
-    return false;
-    //throw new Error(`No user found with user_id`);
-  }
-  // Check if the user has admin role in metadata
-  return (await auth()).sessionClaims?.metadata?.role !== 'admin';
 }
 
 

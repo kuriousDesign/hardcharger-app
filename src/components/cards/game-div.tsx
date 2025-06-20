@@ -14,16 +14,31 @@ import { LinkButton } from "@/components/LinkButton";
 
 import { Separator } from "../ui/separator"
 import { getLinks } from "@/lib/link-urls";
-import { useIsAdmin } from "@/hooks/use-is-admin";
+
 import { Button } from "../ui";
 import { postGame } from "@/actions/postActions";
 import GameDropdown from "./game-dropdown";
+
+
+import { useSession } from 'next-auth/react';
+import { checkIsAdmin } from "@/lib/utils";
 export default function GameDiv({
     data,
+    //isAdmin = false
 }: {
     data: GameClientType;
+    //isAdmin?: boolean;
 }) {
-    const isAdmin = useIsAdmin();
+    //const isAdmin = useIsAdmin();
+     const { data: session } = useSession();
+    const email = session?.user?.email;
+    let isAdmin = false;
+    if (email) {
+        isAdmin = checkIsAdmin(email);
+    }
+     //const isAdmin = useIsAdmin();
+
+
     return (
         <div >
             <div

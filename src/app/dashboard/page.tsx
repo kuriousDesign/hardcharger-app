@@ -6,8 +6,7 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { getPlayersByUserId as getPlayerByUserId } from '@/actions/getActions';
-import { auth } from '@clerk/nextjs/server'
+import { getPlayersByUserId as getPlayerByUserId, getUser } from '@/actions/getActions';
 
 import { Metadata } from "next";
 import { LinkButton } from "@/components/LinkButton";
@@ -27,13 +26,12 @@ export const metadata: Metadata = {
 }
 export default async function DashboardPage() {
     const isAdminPromise = getIsAdmin();
-    const { userId } = await auth();
-    if (!userId) {
+    const user = await getUser();
+    if (!user || !user.id) {
+        console.log('No user found, redirecting to sign in', user);
         return null;
     }
-    const playerPromise = getPlayerByUserId(userId); // this will create a player if it does not exist
-
-
+    const playerPromise = getPlayerByUserId(user.id); // this will create a player if it does not exist
 
     const [player, isAdmin] = await Promise.all([playerPromise, isAdminPromise]);
     if (!player) {

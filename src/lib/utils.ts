@@ -18,3 +18,10 @@ export function formatDate(input: string | number): string {
 export function absoluteUrl(path: string) {
   return `${process.env.NEXT_PUBLIC_APP_URL}${path}`
 }
+
+export function checkIsAdmin(userEmail:string) {
+  const listOfAdminEmails = [
+    'gardner.761@gmail.com'
+  ]
+  return listOfAdminEmails.includes(userEmail);
+}

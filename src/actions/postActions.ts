@@ -18,6 +18,7 @@ import { drivers as driversData } from '@/data/drivers';
 import { HardChargerTableClientType, HardChargerTableDoc, HardChargerTableModel } from '@/models/HardChargerTable';
 import { redirect } from 'next/navigation';
 import { getLinks } from '@/lib/link-urls';
+import { getUser } from './getActions';
 
 // admin role protected
 export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel, adminRoleProtectedOptions);
@@ -266,7 +267,10 @@ export const postPlayer = async (player: Partial<PlayerDoc | PlayerClientType> &
 
 export const postNewPlayerByUserId = async (userId: string) => {
   await connectToDb();
-
+  const user = await getUser();
+  if (!user || !userId) {
+    throw new Error('User not found or userId is invalid');
+  }
   // Check if player already exists
   const existingPlayer = await PlayerModel.findOne({ user_id: userId });
   if (existingPlayer) {
@@ -277,6 +281,7 @@ export const postNewPlayerByUserId = async (userId: string) => {
 
   const newPlayer = new PlayerModel({
     user_id: userId,
+    name: user?.name || user.email? user.email : 'Unknown Player', // Use email if name is not available
     phone_number: 0, // Default number, can be updated later
     private_games: [] // Initialize with an empty array
 
