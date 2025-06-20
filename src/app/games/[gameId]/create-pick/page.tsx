@@ -1,16 +1,15 @@
 import FormPick from '@/components/forms/pick-form/pick-form';
 import { PlayerClientType } from '@/models/Player';
-import { auth } from '@/auth';
-import { getPlayersByUserId, getUserFullName} from '@/actions/getActions';
+import { getPlayersByUserId} from '@/actions/getActions';
+import { getUser } from '@/actions/getActions';
 export default async function CreatePickPage({
   params,
 }: {
   params: Promise<{ gameId: string; }>;
 }) {
   const { gameId } = await params;
-  const session = await auth();
-  const user = session?.user;
-  const userFullName = await getUserFullName();
+  const user = await getUser();
+  const userFullName = user?.name;
   if (!user || !user.id) {
     console.error('No userId found in auth context');
     return;
