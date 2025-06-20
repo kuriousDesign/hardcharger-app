@@ -13,36 +13,13 @@ import { Separator } from "@/components/ui/separator"
 
 
 import { LinkButton } from "./LinkButton"
-import { useSession } from "next-auth/react"
-//import { UserButton } from "./user-button"
-import { getCurrentPlayer } from "@/actions/getActions"
-import { PlayerClientType } from "@/models/Player"
-import { useEffect, useState } from "react"
+
 
 
 
 export function SiteHeader() {
-  //const colors = getColors()
-  //const pageTree = source.pageTree
-  const {data: session }= useSession()
-  //const isAdmin = session.data?.user?.role === 'ADMIN' || false
-  const isSignedIn = session?.user ? true : false
-  const [player, setPlayer] = useState<PlayerClientType | null>(null)
-
-  useEffect(() => {
-    if (isSignedIn) {
-      getCurrentPlayer()
-        .then((playerData) => {
-          setPlayer(playerData)
-        })
-        .catch((error) => {
-          console.error("Error fetching player data:", error);
-          setPlayer(null)
-        })
-    }
-  }, [isSignedIn])
   
-console.log(player);
+  
   return (
     <header className="bg-background sticky top-0 z-50 w-full">
       <div className="container-wrapper 3xl:fixed:px-0 px-6">
