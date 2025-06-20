@@ -1,7 +1,6 @@
 'use client';
 
 //import { useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { PlayerClientType } from '@/models/Player';
 import { toast } from 'sonner';
 //import { getLinks } from '@/lib/link-urls';
 import { cn } from '@/lib/utils';
+import { postSignOut } from '@/actions/userActions';
 
 
 interface UserButtonProps {
@@ -31,7 +31,7 @@ export function UserButton({ player }: UserButtonProps) {
   // Handle sign out
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await postSignOut(); // Assuming postSignOut is defined in userActions
       //toast.success('Signed out successfully');
       // force reload to ensure session is cleared
       //router.refresh();

@@ -1,4 +1,5 @@
-import { signIn, signOut } from "@/auth";
+import { postSignIn, postSignOut } from "@/actions/userActions";
+
 import { Button } from '@/components/ui';
 
 
@@ -7,7 +8,7 @@ export function SignIn() {
 		<form
 			action={async () => {
 				"use server";
-				await signIn("google");
+				await postSignIn("google");
 			}}
 		>
 			<p>You are not logged in</p>
@@ -26,7 +27,7 @@ export function SignOut({ children }: { children: React.ReactNode }) {
 		<form
 			action={async () => {
 				"use server";
-				await signOut();
+				await postSignOut();
                 //redirect('/'); // Redirect to home page after sign out
 			}}
 			className="flex flex-col items-center justify-center space-y-4"
