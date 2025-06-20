@@ -30,6 +30,9 @@ export function UserButton({ player }: UserButtonProps) {
   const handleSignOut = async () => {
     try {
       await postSignOut(); // Assuming postSignOut is defined in userActions
+      ['next-auth.session-token', 'next-auth.callback-url', 'next-auth.csrf-token'].forEach((cookie) => {
+          document.cookie = `${cookie}=; path=/; max-age=0; SameSite=Lax; Secure`;
+        });
       //toast.success('Signed out successfully');
       // force reload to ensure session is cleared
       //router.refresh();
