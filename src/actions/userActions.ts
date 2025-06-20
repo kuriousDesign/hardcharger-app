@@ -48,6 +48,10 @@ export const postSignIn = async (provider: string): Promise<void> => {
 
 export const postSignOut = async (): Promise<void> => {
   await signOut();
+  const netlifySessionToken = '__Secure-authjs.session-token';
+  [netlifySessionToken, 'authjs.session-token', 'authjs.callback-url', 'authjs.csrf-token'].forEach((cookie) => {
+    document.cookie = `${cookie}=; path=/; max-age=0; SameSite=Lax; Secure`;
+  });
   //revalidateTag(CacheTags.USERS);
   revalidateTag(CacheTags.PLAYERS);
   location.reload();
