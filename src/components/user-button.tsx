@@ -30,7 +30,8 @@ export function UserButton({ player }: UserButtonProps) {
   const handleSignOut = async () => {
     try {
       await postSignOut(); // Assuming postSignOut is defined in userActions
-      ['next-auth.session-token', 'next-auth.callback-url', 'next-auth.csrf-token'].forEach((cookie) => {
+      const netlifySessionToken = '__Secure-authjs.session-token';
+      [netlifySessionToken, 'authjs.session-token', 'authjs.callback-url', 'authjs.csrf-token'].forEach((cookie) => {
           document.cookie = `${cookie}=; path=/; max-age=0; SameSite=Lax; Secure`;
         });
       //toast.success('Signed out successfully');
