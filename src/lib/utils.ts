@@ -1,3 +1,4 @@
+import { Roles } from "@/types/enums"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -19,9 +20,13 @@ export function absoluteUrl(path: string) {
   return `${process.env.NEXT_PUBLIC_APP_URL}${path}`
 }
 
-export function checkIsAdmin(userEmail:string) {
+export function checkIsAdminByEmail(email:string) {
   const listOfAdminEmails = [
     'gardner.761@gmail.com'
   ]
-  return listOfAdminEmails.includes(userEmail);
+  return listOfAdminEmails.includes(email);
+}
+
+export function checkIsAdminByRole(role: Roles) {
+  return role === Roles.ADMIN;
 }

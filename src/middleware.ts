@@ -33,7 +33,7 @@ export default auth(async (req) => {
   const session = req.auth; // Auth.js session
   const pathname = req.nextUrl.pathname;
 
-  console.log('Middleware:', { pathname, user: session?.user?.id });
+  //console.log('Middleware:', { pathname, user: session?.user?.id });
 
   // Redirect authenticated users from homepage to dashboard
   if (pathname === '/' && session?.user) {

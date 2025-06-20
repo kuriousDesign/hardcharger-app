@@ -19,8 +19,8 @@ import { HardChargerTableClientType, HardChargerTableDoc, HardChargerTableModel 
 import { redirect } from 'next/navigation';
 import { getLinks } from '@/lib/link-urls';
 import { getUser } from './getActions';
-import { getIsAdmin } from './userActions';
 import { Roles } from '@/types/enums';
+import { checkIsAdminByEmail } from '@/lib/utils';
 
 // admin role protected
 export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel, adminRoleProtectedOptions);
@@ -271,7 +271,7 @@ export const postNewPlayerByUserId = async (userId: string) => {
   await connectToDb();
   const user = await getUser();
   
-  if (!user || !userId) {
+  if (!user || !userId || !user.email) {
     throw new Error('User not found or userId is invalid');
   }
   // Check if player already exists
@@ -282,7 +282,7 @@ export const postNewPlayerByUserId = async (userId: string) => {
 
   // Create new player
 
-  const isAdmin = await getIsAdmin();
+  const isAdmin = checkIsAdminByEmail(user.email);
   const role = isAdmin ? Roles.ADMIN : Roles.USER;
 
   const newPlayer = new PlayerModel({

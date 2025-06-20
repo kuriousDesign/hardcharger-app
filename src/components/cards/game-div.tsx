@@ -21,7 +21,7 @@ import GameDropdown from "./game-dropdown";
 
 
 import { useSession } from 'next-auth/react';
-import { checkIsAdmin } from "@/lib/utils";
+import { checkIsAdminByEmail } from "@/lib/utils";
 export default function GameDiv({
     data,
     //isAdmin = false
@@ -34,7 +34,7 @@ export default function GameDiv({
     const email = session?.user?.email;
     let isAdmin = false;
     if (email) {
-        isAdmin = checkIsAdmin(email);
+        isAdmin = checkIsAdminByEmail(email);
     }
      //const isAdmin = useIsAdmin();
 
