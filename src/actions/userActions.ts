@@ -50,6 +50,7 @@ export const postSignOut = async (): Promise<void> => {
   await signOut();
   //revalidateTag(CacheTags.USERS);
   revalidateTag(CacheTags.PLAYERS);
+  location.reload();
   redirect('/'); // Redirect to home page after sign out
   console.log('User signed out');
 }
