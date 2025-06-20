@@ -38,7 +38,7 @@ export function UserButton({ player }: UserButtonProps) {
       console.error('Sign out error:', error);
       //router.refresh(); // Force reload to clear session
       // refresh the entire app
-      window.location.reload();
+      //window.location.reload();
       //toast.error('Failed to sign out');
     }
   };
