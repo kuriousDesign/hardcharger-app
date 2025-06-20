@@ -1,5 +1,4 @@
 import { getConnectToDb, getUser } from '@/actions/getActions';
-import VenmoLink from '@/components/VenmoLink';
 import { signIn, signOut } from "@/auth";
 
 import { Button } from '@/components/ui';
@@ -54,15 +53,6 @@ export default async function Home() {
 
 	const tagline = 'make some picks';
 
-	function getRandom24CharacterString() {
-		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		let result = '';
-		for (let i = 0; i < 24; i++) {
-			result += characters.charAt(Math.floor(Math.random() * characters.length));
-		}
-		return result;
-	}
-	const pickId = getRandom24CharacterString();
 
 	return (
 		<div className="p-6 space-y-4 flex flex-col items-center justify-center">
@@ -70,7 +60,7 @@ export default async function Home() {
 			<h2 className="text-2xl font-bold text-center">{tagline}</h2>
 
 			<div className="flex flex-col justify-center items-center">{user ? <SignOut>{''}</SignOut> : <SignIn />}</div>
-			<VenmoLink pickId={pickId} amount={0.01} />
+		
 		</div>
 	);
 }
