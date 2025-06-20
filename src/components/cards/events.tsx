@@ -62,7 +62,7 @@ export default async function CardEvents() {
                             {isAdmin &&
                                 <LinkButton
                                     size="sm"
-                                    href={getLinks().getEditEventUrl(event._id || '')}
+                                    href={getLinks().getEditEventUrl(event._id as string)}
                                     variant='ghost'
 
                                     className='rounded-l-full rounded-r-full z-100'
