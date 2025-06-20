@@ -4,7 +4,7 @@ import connectToDb from '@/lib/db';
 import { DriverModel, DriverClientType, DriverDoc } from '@/models/Driver'
 import { EventModel, EventClientType } from '@/models/Event';
 import { GameModel, GameClientType, GameDoc } from '@/models/Game';
-import { PaymentModel, PaymentDoc, PaymentClientType } from '@/models/Payment';
+import { PaymentClientType } from '@/models/Payment';
 import { PlayerModel, PlayerDoc, PlayerClientType } from '@/models/Player';
 import { RaceModel, RaceDoc, RaceClientType } from '@/models/Race';
 import { RacerModel, RacerClientType, RacerDoc } from '@/models/Racer';
@@ -54,51 +54,35 @@ export const postEvent = async (event: Partial<EventClientType> & { _id?: string
 
 export const postPayment = async (payment: Partial<PaymentClientType> & { _id?: string }) => {
   await connectToDb();
-  let paymentData: Partial<PaymentDoc> = {};
-
-  if (typeof payment.amount !== 'number') {
-    console.error('Invalid payment amount:', payment.amount);
-    return { success: false, error: 'Invalid payment amount' };
-  }
-  else if (!payment.pick_id || payment.pick_id === '') {
-    console.error('Empty pick_id:', payment.pick_id);
-    return { success: false, error: 'Empty pick_id' };
-  } else if (!Types.ObjectId.isValid(payment.pick_id)) {
-    console.error('Invalid pick_id:', payment.pick_id);
-    return { success: false, error: 'Invalid pick_id' };
-  } else {
-
-    paymentData = {
-      amount: typeof payment.amount === 'number' ? payment.amount : 0,
-      type: payment.type?.trim() || '',
-      name: payment.name?.trim() || '',
-      transaction_id: payment.transaction_id?.trim() || '',
-      pick_id: new Types.ObjectId(payment.pick_id),
-    };
-  }
-
+  const paymentData = {
+    name: payment.name?.trim() || '',
+    pick_id: payment.pick_id ? new Types.ObjectId(payment.pick_id) : undefined,
+    type: payment.type?.trim() || '',
+    transaction_id: payment.transaction_id?.trim() || '',
+    amount: payment.amount || 0,
+    log: payment.log || [],
+  };
+  console.log('Posting payment:', paymentData);
   try {
-    if (payment._id && payment._id !== '') {
-      if (Types.ObjectId.isValid(payment._id)) {
-        await PaymentModel.findByIdAndUpdate(payment._id, paymentData, { new: true });
-        console.log('Payment updated successfully');
-        return { message: 'Payment updated successfully' };
-      } else {
-        console.error('paymentId is not a valid mongodb objectId:', payment._id);
-        return { success: false, error: 'Invalid payment ID' };
-      }
-    } else {
-      console.log('creating a new payment');
+    const { PaymentModel } = await import('@/models/Payment');
+    if (payment._id) {
+      // dynamic import to avoid circular dependency
+      
+      // Update existing payment
+      await PaymentModel.findByIdAndUpdate(payment._id, paymentData, { new: true });
+      return { message: 'Payment updated successfully' };
+    } else {  
       const newPayment = new PaymentModel(paymentData);
       await newPayment.save();
-      console.log('Payment created successfully');
       return { message: 'Payment created successfully' };
     }
-  } catch (error: unknown) {
-    console.error('Payment save error:', (error as Error).message);
-    throw new Error(`Failed to save payment: ${(error as Error).message}`);
+  } catch (error) {
+    console.error('Payment save error:', error);
+    throw new Error('Failed to save payment');
   }
-};
+}
+
+
 
 export const postRace = async (race: Partial<RaceDoc | RaceClientType> & { _id?: string }) => {
   await connectToDb();

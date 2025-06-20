@@ -15,7 +15,7 @@ type HandlerOptions = {
 
 export const adminRoleProtectedOptions = {
   isRoleProtected: true,
-  role: 'admin' as Roles,
+  role: Roles.ADMIN,
 };
 
 function checkRoleProtected(options?: HandlerOptions) {

@@ -12,3 +12,5 @@ export interface Hometown {
   city: string;
   region: string;
 }
+
+export { Roles };

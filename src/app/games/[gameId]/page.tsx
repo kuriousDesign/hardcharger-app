@@ -60,7 +60,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 	// Define filterable options
 	const filterableOptionsPicks = [
 		{ key: "player_id", value: null, tabLabel: 'All' }, // "All" tab
-		{ key: "player_id", value: player._id, tabLabel: 'Yours' }, // "My Picks" tab
+		{ key: "player_id", value: player?._id, tabLabel: 'Yours' }, // "My Picks" tab
 	] as FilterOption[];
 
 	const title = "Game" + game.name

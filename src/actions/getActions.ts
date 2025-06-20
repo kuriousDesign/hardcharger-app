@@ -262,15 +262,16 @@ export const getUser = async () => {
   return userObject; // Return the user object with the added id field
 };
 
-export const getCurrentPlayer = async (): Promise<PlayerClientType | null> => {
+export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
   const user = await getUser();
   if (!user) {
     console.warn('No user found in session, waiting for middleware to redirect');
-    return null; // Return null if no user is found
+    // retur empty player object
+    return {} as PlayerClientType; // Return an empty player object if no user is found
   }
   if(!user.id) {
     console.warn('No user found or user ID is missing');
-    return null; // Return null if user ID is missing
+    return {} as PlayerClientType; // Return an empty player object if no user ID is found}
   }
   const player = await getPlayerByUserId(user.id); //this will create and return a player if it does not exist
   if (!player) {
