@@ -268,8 +268,7 @@ export const getUser = async () => {
 };
 
 export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
-"use cache";
-  cacheTag(CacheTags.PLAYERS);
+
   const user = await getUser();
   if (!user) {
     console.warn('No user found in session, waiting for middleware to redirect');
