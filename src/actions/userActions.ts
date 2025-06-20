@@ -6,6 +6,7 @@ import { getCurrentPlayer } from './getActions';
 import { Roles } from '@/types/enums';
 import { revalidateTag } from 'next/cache';
 import { CacheTags } from "@/lib/cache-tags";
+import { redirect } from "next/navigation";
 
 
 
@@ -49,4 +50,6 @@ export const postSignOut = async (): Promise<void> => {
   await signOut();
   //revalidateTag(CacheTags.USERS);
   revalidateTag(CacheTags.PLAYERS);
+  redirect('/'); // Redirect to home page after sign out
+  console.log('User signed out');
 }

@@ -35,6 +35,9 @@ export default auth(async (req) => {
 
   //console.log('Middleware:', { pathname, user: session?.user?.id });
 
+  // redirect unauthenticated users from dashboard to home page
+
+
   // Redirect authenticated users from homepage to dashboard
   if (pathname === '/' && session?.user) {
     const dashboardUrl = new URL('/dashboard', req.url);

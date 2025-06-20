@@ -5,18 +5,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { PlayerClientType } from '@/models/Player';
-import { toast } from 'sonner';
+//import { toast } from 'sonner';
 //import { getLinks } from '@/lib/link-urls';
 import { cn } from '@/lib/utils';
 import { postSignOut } from '@/actions/userActions';
-
 
 interface UserButtonProps {
   player: PlayerClientType;
 }
 
 export function UserButton({ player }: UserButtonProps) {
-  //const router = useRouter();
   const isAdmin = player.role === 'ADMIN';
 
   // Get initials for avatar fallback
@@ -37,7 +35,10 @@ export function UserButton({ player }: UserButtonProps) {
       //router.refresh();
     } catch (error) {
       console.error('Sign out error:', error);
-      toast.error('Failed to sign out');
+      //router.refresh(); // Force reload to clear session
+      // refresh the entire app
+      window.location.reload();
+      //toast.error('Failed to sign out');
     }
   };
 
