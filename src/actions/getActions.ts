@@ -248,7 +248,7 @@ export const getPlayersByUserId = async (userId: string): Promise<PlayerClientTy
 export const getUser = async () => {
   const session = await auth();
   if (!session || !session.user) {
-    console.warn('No user found in auth session');
+    console.log('No user found in auth session');
     return null; // Return null if no user is found
   }
   //console.log('currentUser', session.user);

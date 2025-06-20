@@ -1,58 +1,9 @@
 import { getConnectToDb, getUser } from '@/actions/getActions';
-import { signIn, signOut } from "@/auth";
-
-import { Button } from '@/components/ui';
-import { redirect } from 'next/navigation';
-
-
-function SignIn() {
-	return (
-		<form
-			action={async () => {
-				"use server";
-				await signIn("google");
-			}}
-		>
-			<p>You are not logged in</p>
-			{/* <button type="submit">Sign in with Google</button> */}
-			<Button type="submit" className="bg-primary">
-				Sign in with Google
-			</Button>
-
-
-		</form>
-	);
-}
-
-function SignOut({ children }: { children: React.ReactNode }) {
-	return (
-		<form
-			action={async () => {
-				"use server";
-				await signOut();
-			}}
-			className="flex flex-col items-center justify-center space-y-4"
-		>
-			<p>{children}</p>
-
-			<Button type="submit" className="bg-secondary text-secondary-foreground">
-				Sign Out
-			</Button>
-		</form>
-	);
-}
+import { SignIn, SignOut } from '@/components/login';
 export default async function Home() {
 	await getConnectToDb();
-
 	const user = await getUser();
-
-	// If the user is signed in, redirect to the dashboard
-	if (user) {
-		redirect('/dashboard');
-	}
-
 	const tagline = 'make some picks';
-
 
 	return (
 		<div className="p-6 space-y-4 flex flex-col items-center justify-center">

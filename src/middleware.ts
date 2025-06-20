@@ -1,17 +1,9 @@
-export { auth as default } from "./auth";
-
-
-export const config = {
-  matcher: [
-    // Apply to all routes except Next.js internals and specific static files
-    '/((?!_next/static|_next/image|.*\\.(?:jpg|jpeg|png|gif|svg|ico|webp|woff2?|ttf)).*)',
-    // Always run for API and TRPC routes
-    '/(api|trpc)(.*)',
-  ],
-};
+import { NextResponse } from 'next/server';
+import { auth } from './auth';
+import { NextAuthRequest } from 'next-auth';
 
 // Define public routes (accessible without authentication)
-export const isPublicRoute = [
+const publicRoutes = [
   '/',                    // Home page
   '/test(.*)',
   '/sign-in(.*)',        // Sign-in routes
@@ -26,24 +18,64 @@ export const isPublicRoute = [
 ];
 
 // Define admin routes (requires admin role)
-export const isAdminRoute = [
-  '/admin(.*)',          // All /admin routes (e.g., /admin/drivers, /admin/events)
+const adminRoutes = [
+  '/admin(.*)',          // All /admin routes
 ];
 
+// Helper to check if a route matches a pattern
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function matchesRoute(req: NextAuthRequest, patterns: any[]) {
+  const pathname = req.nextUrl.pathname;
+  return patterns.some(pattern => new RegExp(`^${pattern}$`).test(pathname));
+}
 
+export default auth(async (req) => {
+  const session = req.auth; // Auth.js session
+  const pathname = req.nextUrl.pathname;
 
-// export default oldMiddleware(async (auth) => {
+  console.log('Middleware:', { pathname, user: session?.user?.id });
 
-//   // Protect non-public routes
-//   if (!isPublicRoute(req)) await auth.protect();
+  // Redirect authenticated users from homepage to dashboard
+  if (pathname === '/' && session?.user) {
+    const dashboardUrl = new URL('/dashboard', req.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
 
-//   // Protect admin routes with role check
-//   if (isAdminRoute(req)) {
-//     if (!getIsAdmin()){
-//       // Redirect to dashboard if logged in, else to home
-//       const redirectUrl = new URL(getLinks().getDashboardUrl(), req.url);
-//       return NextResponse.redirect(redirectUrl);
-//     }
-//   }
-// });
+  // Allow public routes without authentication
+  if (matchesRoute(req, publicRoutes)) {
+    return NextResponse.next();
+  }
 
+  // Protect non-public routes
+  if (!session?.user) {
+    const signInUrl = new URL('/', req.url);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // Protect admin routes
+  if (matchesRoute(req, adminRoutes)) {
+    try {
+      const response = await fetch(`${req.nextUrl.origin}/api/is-admin`, {
+        headers: { Cookie: req.headers.get('cookie') || '' },
+      });
+      const { isAdmin } = await response.json();
+      if (!isAdmin) {
+        const dashboardUrl = new URL('/dashboard', req.url);
+        return NextResponse.redirect(dashboardUrl);
+      }
+    } catch (err) {
+      console.error('Admin check error:', err);
+      const signInUrl = new URL('/', req.url);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
+  return NextResponse.next();
+});
+
+export const config = {
+  matcher: [
+    '/((?!_next/static|_next/image|.*\\.(?:jpg|jpeg|png|gif|svg|ico|webp|woff2?|ttf)).*)',
+    '/(api|trpc)(.*)',
+  ],
+};
