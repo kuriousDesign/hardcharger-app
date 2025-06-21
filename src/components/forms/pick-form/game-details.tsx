@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/accordion"
 import { GameClientType } from "@/models/Game"
 import { RaceClientType } from "@/models/Race"
-import { GameTypes, gameTypesToString } from "@/types/enums";
+import { GameTypes } from "@/types/enums";
 
 export function GameDetails({ game, races }: { game: GameClientType, races: RaceClientType[] }) {
 
