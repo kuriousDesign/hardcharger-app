@@ -15,7 +15,7 @@ import { RacerModel, RacerDoc, RacerClientType, RacerDriverClientType } from '@/
 import { createClientSafeGetAllHandler, createClientSafeGetHandler, createDocumentGetHandler } from '@/utils/actionHelpers';
 import { Types } from 'mongoose';
 import { toClientObject } from '@/utils/mongooseHelpers';
-import { postNewPlayerByUserId } from './postActions';
+
 import { auth } from '@/auth';
 import { HardChargerTableModel, HardChargerTableClientType } from '@/models/HardChargerTable';
 import { unstable_cacheTag as cacheTag } from 'next/cache';
@@ -70,7 +70,6 @@ export const getGamesByEventId = async (eventId: string): Promise<GameClientType
   const docs = await GameModel.find({ event_id: new Types.ObjectId(eventId) });
   return docs.map((doc) => toClientObject<GameClientType>(doc));
 }
-
 
 
 export const getGamePicksByPlayerId = async (playerId: string): Promise<GamePicksClientType[]> => {
@@ -227,24 +226,21 @@ export const getRacersWithDriversForPickCreation = async (gameId: string) => {
 };
 
 
-export const getPlayerByUserId = async (userId: string): Promise<PlayerClientType> => {
-  const filter = { user_id: userId }; //in this case userId is saved as a string in the database
-  let players = await getPlayers(filter);
-  if (players.length === 0) {
-    console.log(`No player found with user_id: ${userId}, creating a new player`);
-    // If no player is found, create a new player
-    await postNewPlayerByUserId(userId);
-    players = await getPlayers(filter);
-    if (players.length === 0) {
-      throw new Error(`Failed to create player with user_id: ${userId}`);
-    }
-  } else if (players.length > 1) {
-    console.warn(`Multiple players found with user_id: ${userId}, returning the first one`);
-  }
-  // Assuming user_id is unique, we take the first player
-  const player = players[0]; // Assuming user_id is unique, we take the first player
-  return player as PlayerClientType;
-};
+// export const getPlayerByUserId = async (userId: string): Promise<PlayerClientType> => {
+//   const filter = { user_id: userId }; //in this case userId is saved as a string in the database
+//   const players = await getPlayers(filter);
+//   if (players.length === 0) {
+//     console.log(`No player found with user_id: ${userId}, creating a new player`);
+//     throw new Error(`No player found with user_id: ${userId}`);
+//     // If no player is found, create a new player
+
+//   } else if (players.length > 1) {
+//     console.warn(`Multiple players found with user_id: ${userId}, returning the first one`);
+//   }
+//   // Assuming user_id is unique, we take the first player
+//   const player = players[0]; // Assuming user_id is unique, we take the first player
+//   return player as PlayerClientType;
+// };
 
 export const getUser = async () => {
   const session = await auth();
@@ -273,12 +269,17 @@ export const getCurrentPlayer = async (): Promise<PlayerClientType> => {
     console.warn('No user found or user ID is missing');
     return {} as PlayerClientType; // Return an empty player object if no user ID is found}
   }
-  const player = await getPlayerByUserId(user.id); //this will create and return a player if it does not exist
-  if (!player) {
-    throw new Error(`No player found with user_id: ${user.id}`);
+  // search players documents for user_id = user.id
+  const filter = { user_id: user.id }; // in this case userId is saved as a string in the database
+  const players = await getPlayers(filter);
+  if (!players || !players[0]) {
+    //throw new Error(`getCurrentPlayer() No player found with user_id: ${user.id}`);
+    console.warn(`getCurrentPlayer() No player found with user_id: ${user.id}`);
+    return {} as PlayerClientType; // Return an empty player object if no user ID is found}
   }
-  return player as PlayerClientType;
+  return players[0] as PlayerClientType;
 };
+
 export const getUserFullName = async (): Promise<string> => {
   const user = await getUser();
   if (!user) {

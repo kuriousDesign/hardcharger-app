@@ -18,9 +18,13 @@ import { drivers as driversData } from '@/data/drivers';
 import { HardChargerTableClientType, HardChargerTableDoc, HardChargerTableModel } from '@/models/HardChargerTable';
 import { redirect } from 'next/navigation';
 import { getLinks } from '@/lib/link-urls';
-import { getUser } from './getActions';
+
 import { Roles } from '@/types/enums';
 import { checkIsAdminByEmail } from '@/lib/utils';
+
+import type { DefaultUser } from '@auth/core/types';
+
+
 
 // admin role protected
 export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel, adminRoleProtectedOptions);
@@ -251,15 +255,15 @@ export const postPlayer = async (player: Partial<PlayerDoc | PlayerClientType> &
   }
 }
 
-export const postNewPlayerByUserId = async (userId: string) => {
+export const postNewPlayerWithUser = async (user:DefaultUser) => {
   await connectToDb();
-  const user = await getUser();
+  //const user = await getUser();
   
-  if (!user || !userId || !user.email) {
+  if (!user || !user.email || !user.id) {
     throw new Error('User not found or userId is invalid');
   }
   // Check if player already exists
-  const existingPlayer = await PlayerModel.findOne({ user_id: userId });
+  const existingPlayer = await PlayerModel.findOne({ user_id: user.id });
   if (existingPlayer) {
     return { message: 'Player already exists', player: existingPlayer };
   }
@@ -279,7 +283,7 @@ export const postNewPlayerByUserId = async (userId: string) => {
     private_games: [] // Initialize with an empty array
   });
   await newPlayer.save();
-  console.log('Creating new player for user_id:', userId, newPlayer);
+  console.log('Creating new player for user_id:', user.id, newPlayer);
 
   return { message: 'New player created successfully', player: newPlayer };
 }

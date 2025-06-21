@@ -6,7 +6,7 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { getPlayerByUserId as getPlayerByUserId, getUser } from '@/actions/getActions';
+import { getCurrentPlayer, getUser } from '@/actions/getActions';
 
 import { Metadata } from "next";
 import { LinkButton } from "@/components/LinkButton";
@@ -16,6 +16,8 @@ import { getIsAdmin } from "@/actions/userActions";
 
 import TabCardGames from "@/components/tab-cards/games";
 import { Suspense } from "react";
+import { postNewPlayerWithUser } from "@/actions/postActions";
+import { DefaultUser } from "@auth/core/types";
 
 const title = "Pick your drivers. Win the pot."
 const description = "Find a game and create a pick. Look at your current picks too."
@@ -25,18 +27,21 @@ export const metadata: Metadata = {
     description,
 }
 export default async function DashboardPage() {
-    const isAdminPromise = getIsAdmin();
+    
     const user = await getUser();
     if (!user || !user.id) {
         console.log('No user found, redirecting to sign in', user);
         return null;
     }
-    const playerPromise = getPlayerByUserId(user.id); // this will create a player if it does not exist
+    let player = await getCurrentPlayer();
 
-    const [player, isAdmin] = await Promise.all([playerPromise, isAdminPromise]);
-    if (!player) {
-        return null;
+    if (!player || !player._id) {
+        console.log('No player found, creating a new player for user', user);
+        //create a new player using user
+        await postNewPlayerWithUser(user as DefaultUser);
+        player = await getCurrentPlayer();
     }
+    const isAdmin = await getIsAdmin();
 
     return (
         <div>
