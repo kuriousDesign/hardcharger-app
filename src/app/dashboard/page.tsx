@@ -19,7 +19,7 @@ import { Suspense } from "react";
 import { postNewPlayerWithUser } from "@/actions/postActions";
 import { DefaultUser } from "@auth/core/types";
 
-const title = "Pick your drivers. Win the pot."
+const title = "Happy Birthday Uncle Joe!"
 const description = "Find a game and create a pick. Look at your current picks too."
 
 export const metadata: Metadata = {

@@ -65,7 +65,7 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
                     </p>
                 </AccordionContent>
             </AccordionItem>
-            {(true || game.type === gameTypesToString(GameTypes.HYBRID) || game.type === gameTypesToString(GameTypes.TOP_FINISHER)) &&
+            {(game.type === GameTypes.HYBRID || game.type === GameTypes.TOP_FINISHER) &&
                 <AccordionItem value="item-3">
                     <AccordionTrigger className='text-xl'>Top Finishers Scoring</AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-4 text-balance">
@@ -83,7 +83,7 @@ export function GameDetails({ game, races }: { game: GameClientType, races: Race
                     </AccordionContent>
                 </AccordionItem>
             }
-            {(true || game.type === GameTypes.HYBRID || game.type === GameTypes.HARD_CHARGER) &&
+            {(game.type === GameTypes.HYBRID || game.type === GameTypes.HARD_CHARGER) &&
                 <AccordionItem value="item-4">
                     <AccordionTrigger className='text-xl'>Hard Charger Scoring</AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-4 text-balance">
