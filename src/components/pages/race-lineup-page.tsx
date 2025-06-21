@@ -8,7 +8,7 @@ import CreateRacersRaceStartingLineupForm from '@/components/forms/create-racers
 import DriverForm from '@/components/forms/driver-form';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
-import { Plus } from 'lucide-react';
+
 
 interface RaceLineupPageProps {
   race: RaceClientType;
@@ -42,16 +42,25 @@ export default function RaceLineupPage({
         redirectUrl={redirectUrl}
       />
 
-      {/* Floating Button */}
+      {/* Float Create Driver Btn */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
+          <div className="fixed bottom-4 right-4 flex flex-col items-center justify-center">
+
           <Button
-            className="fixed bottom-4 right-4 rounded-full w-12 h-12 shadow-lg flex items-center justify-center"
+          variant='secondary'
+            className="rounded-full size-20 shadow-xl flex flex-col items-center justify-center gap-1 "
             size="icon"
             onClick={() => setIsDrawerOpen(true)}
           >
-            <Plus className="h-6 w-6" />
+            <div className='flex flex-col items-center justify-center text-secondary-foreground'>
+           <div className='text-sm  h-5 '>Create</div>
+          <div className='text-sm h-5'>Driver</div>
+          </div>
+            
           </Button>
+
+          </div>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
