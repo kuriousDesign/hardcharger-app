@@ -20,6 +20,7 @@ import { postNewPlayerWithUser } from "@/actions/postActions";
 import { DefaultUser } from "@auth/core/types";
 
 import DivShimmer from "@/components/div-shimmer";
+import OrientationInfo from "@/components/OrientationInfo";
 
 const title = "Happy Birthday Uncle Joe!"
 const description = "Find a game and create a pick. Look at your current picks too."
@@ -76,6 +77,7 @@ const brightColor = { h: 38, s: 0.60, v: 1.0 }; // Bright color HSV
                         brightHsv: brightColor,
                         sensitivity: 'medium',
                     }} />
+                    <OrientationInfo />
                 </div>
             </div>
         </div>
