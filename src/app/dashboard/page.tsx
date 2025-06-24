@@ -74,7 +74,7 @@ const brightColor = { h: 38, s: 0.45, v: 1.0 }; // Bright color HSV
                         type: 'twoHsvColors',
                         dullHsv: dullColor,
                         brightHsv: brightColor,
-                        sensitivity: 'medium',
+                        sensitivity: 'high',
                     }} />
                 </div>
             </div>
