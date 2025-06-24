@@ -18,6 +18,7 @@ import TabCardGames from "@/components/tab-cards/games";
 import { Suspense } from "react";
 import { postNewPlayerWithUser } from "@/actions/postActions";
 import { DefaultUser } from "@auth/core/types";
+import OrientationInfo from "@/components/OrientationInfo";
 
 const title = "Happy Birthday Uncle Joe!"
 const description = "Find a game and create a pick. Look at your current picks too."
@@ -63,6 +64,7 @@ export default async function DashboardPage() {
                     <Suspense fallback={<TabCardSkeleton />}>
                         <TabCardGames />
                     </Suspense>
+                    <OrientationInfo />
                 </div>
             </div>
         </div>
