@@ -45,6 +45,11 @@ export default async function DashboardPage() {
     }
     const isAdmin = await getIsAdmin();
 
+    //brightColor hsv: 38, 45, 100
+//dullColor hsv: 38, 100, 63
+const dullColor = { h: 38, s: 100, v: 63 }; // Dull color HSV
+const brightColor = { h: 38, s: 45, v: 100}; // Bright color HSV
+
     return (
         <div>
             <PageHeader>
@@ -67,8 +72,8 @@ export default async function DashboardPage() {
                     </Suspense>
                     <DivShimmer className='text-2xl font-bold text-center' title="Welcome to the Dashboard!" options={{
                         type: 'twoHsvColors',
-                        dullHsv: { h: 27, s: 0.61, v: 0.72 }, // #B77848
-                        brightHsv: { h: 60, s: 1.0, v: 0.95 }, // #FFE1AF
+                        dullHsv: dullColor,
+                        brightHsv: brightColor,
                         sensitivity: 'medium',
                     }} />
                 </div>
