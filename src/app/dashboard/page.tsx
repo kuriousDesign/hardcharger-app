@@ -47,7 +47,7 @@ export default async function DashboardPage() {
 
     //brightColor hsv: 38, 45, 100
 //dullColor hsv: 38, 100, 63
-const dullColor = { h: 38, s: 1.0, v: 0.63 }; // Dull color HSV
+const dullColor = { h: 38, s: 1.0, v: 0.40 }; // Dull color HSV
 const brightColor = { h: 38, s: 0.45, v: 1.0 }; // Bright color HSV
 
     return (
