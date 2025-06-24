@@ -19,7 +19,7 @@ export type GammaSensitivityProps = {
   maxAngle: number,
 };  
 
-function interpolateColorFromGammaHSVtoRGB(
+function interpolateHsvMinMax(
   gamma: number | null,
   colorOptions: HsvMinMaxProps = { h: 120, s: 1, vMax: 1, vMin: 0.2 },
   sensitivityOptions: GammaSensitivityProps = { deadBand: 2.5, maxAngle: 20 }
@@ -46,9 +46,9 @@ function interpolateBetweenTwoHsvColors(
   const absGamma = Math.max(sensitivityOptions.deadBand, Math.min(Math.abs(gamma), sensitivityOptions.maxAngle));
   const ratio = (absGamma - sensitivityOptions.deadBand) / (sensitivityOptions.maxAngle - sensitivityOptions.deadBand);
 
-  const h = dullColor.h + ratio * (brightColor.h - dullColor.h);
-  const s = dullColor.s + ratio * (brightColor.s - dullColor.s);
-  const v = dullColor.v + ratio * (brightColor.v - dullColor.v);
+  const h = brightColor.h - ratio * (brightColor.h - dullColor.h);
+  const s = brightColor.s - ratio * (brightColor.s - dullColor.s);
+  const v = brightColor.v - ratio * (brightColor.v - dullColor.v);
 
   const [r, g, b] = hsvToRgb(h, s, v);
   return `rgb(${r}, ${g}, ${b})`;
@@ -103,7 +103,7 @@ export default function useGammaColor(
       break;
     case 'hsvWithValueMinMax':
       if (options.hsvMinMax) {
-        color = interpolateColorFromGammaHSVtoRGB(
+        color = interpolateHsvMinMax(
           gamma,
           options.hsvMinMax,
           sensitivities[options.sensitivity || 'medium']
@@ -112,7 +112,7 @@ export default function useGammaColor(
       break;
     default:
       // Default behavior if no options are provided
-      color = interpolateColorFromGammaHSVtoRGB(
+      color = interpolateHsvMinMax(
         gamma,
         { h: 120, s: 1, vMax: 1, vMin: 0.2 }, // Default HSV values
         sensitivities[options?.sensitivity || 'medium']
