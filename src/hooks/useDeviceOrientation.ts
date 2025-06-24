@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface DeviceOrientationState {
   alpha: number | null;
@@ -14,34 +14,41 @@ interface DeviceOrientationEventExtended extends DeviceOrientationEvent {
   requestPermission?: () => Promise<"granted" | "denied">;
 }
 
-const startingOrientation: DeviceOrientationState = {
-  alpha: null,
-  beta: null,
-  gamma: null,
-  absolute: false,  
-};
-
 function useDeviceOrientation() {
-  const [orientation, setOrientation] = useState<DeviceOrientationState>(startingOrientation);
-
+  const [orientation, setOrientation] = useState<DeviceOrientationState>({
+    alpha: null,
+    beta: null,
+    gamma: null,
+    absolute: false,
+  });
   const [isSupported, setIsSupported] = useState(false);
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-
+  // Use useRef to store the starting orientation once
+  const startingOrientationRef = useRef<DeviceOrientationState | null>(null);
 
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
-    if (startingOrientation.alpha === null && event.alpha !== null) {
-      // Initialize with starting values if not set
-      startingOrientation.alpha = event.alpha;
-      startingOrientation.beta = event.beta;
-      startingOrientation.gamma = event.gamma;
-      startingOrientation.absolute = event.absolute ?? false;
-    } 
+    // Skip if event data is incomplete
+    if (event.alpha === null || event.beta === null || event.gamma === null) {
+      return;
+    }
+
+    // Set starting orientation only once when first valid event is received
+    if (startingOrientationRef.current === null) {
+      startingOrientationRef.current = {
+        alpha: event.alpha,
+        beta: event.beta,
+        gamma: event.gamma,
+        absolute: event.absolute ?? false,
+      };
+    }
+
+    // Update orientation state relative to starting orientation
     setOrientation({
-      alpha: (event.alpha ?? 0) - (startingOrientation.alpha ?? 0),
-      beta: (event.beta ?? 0) - (startingOrientation.beta ?? 0),
-      gamma: (event.gamma ?? 0) - (startingOrientation.gamma ?? 0),
+      alpha: event.alpha - (startingOrientationRef.current.alpha ?? 0),
+      beta: event.beta - (startingOrientationRef.current.beta ?? 0),
+      gamma: event.gamma - (startingOrientationRef.current.gamma ?? 0),
       absolute: event.absolute ?? false,
     });
   }, []);
