@@ -80,7 +80,7 @@ export default function useGammaColor(
     error,
   } = useDeviceOrientation();
 
-  const gamma = isPermissionGranted && isSupported ? deviceOrientation.gamma : null;
+  const gamma = isPermissionGranted && isSupported ? deviceOrientation.alpha : null;
   let color = 'rgb(0, 0, 0)'; // Default color
 
   const sensitivities = {
