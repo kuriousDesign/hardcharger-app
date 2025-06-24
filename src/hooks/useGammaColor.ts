@@ -85,7 +85,7 @@ export default function useGammaColor(
 
   const sensitivities = {
     low: { deadBand: 5, maxAngle: 30 },
-    medium: { deadBand: 2.5, maxAngle: 20 },  
+    medium: { deadBand: 2.5, maxAngle: 25 },  
     high: { deadBand: 1, maxAngle: 10 },
   };
 
