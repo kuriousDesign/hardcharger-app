@@ -18,7 +18,8 @@ import TabCardGames from "@/components/tab-cards/games";
 import { Suspense } from "react";
 import { postNewPlayerWithUser } from "@/actions/postActions";
 import { DefaultUser } from "@auth/core/types";
-import OrientationInfo from "@/components/OrientationInfo";
+
+import DivShimmer from "@/components/div-shimmer";
 
 const title = "Happy Birthday Uncle Joe!"
 const description = "Find a game and create a pick. Look at your current picks too."
@@ -64,7 +65,12 @@ export default async function DashboardPage() {
                     <Suspense fallback={<TabCardSkeleton />}>
                         <TabCardGames />
                     </Suspense>
-                    <OrientationInfo />
+                    <DivShimmer className='text-2xl font-bold text-center' title="Welcome to the Dashboard!" options={{
+                        type: 'twoHsvColors',
+                        dullHsv: { h: 27, s: 0.61, v: 0.72 }, // #B77848
+                        brightHsv: { h: 60, s: 1.0, v: 0.95 }, // #FFE1AF
+                        sensitivity: 'medium',
+                    }} />
                 </div>
             </div>
         </div>
