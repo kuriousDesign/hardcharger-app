@@ -14,23 +14,31 @@ interface DeviceOrientationEventExtended extends DeviceOrientationEvent {
   requestPermission?: () => Promise<"granted" | "denied">;
 }
 
+const startingOrientation: DeviceOrientationState = {
+  alpha: null,
+  beta: null,
+  gamma: null,
+  absolute: false,  
+};
+
 function useDeviceOrientation() {
-  const [orientation, setOrientation] = useState<DeviceOrientationState>({
-    alpha: null,
-    beta: null,
-    gamma: null,
-    absolute: false,
-  });
+  const [orientation, setOrientation] = useState<DeviceOrientationState>(startingOrientation);
 
   const [isSupported, setIsSupported] = useState(false);
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+
+
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
+    if (startingOrientation.alpha === null) {
+      // Initialize with starting values if not set
+      setOrientation(startingOrientation);
+    } 
     setOrientation({
-      alpha: event.alpha,
-      beta: event.beta,
-      gamma: event.gamma,
+      alpha: (event.alpha ?? 0) - (startingOrientation.alpha ?? 0),
+      beta: (event.beta ?? 0) - (startingOrientation.beta ?? 0),
+      gamma: (event.gamma ?? 0) - (startingOrientation.gamma ?? 0),
       absolute: event.absolute,
     });
   }, []);
