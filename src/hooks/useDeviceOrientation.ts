@@ -31,15 +31,18 @@ function useDeviceOrientation() {
 
 
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
-    if (startingOrientation.alpha === null) {
+    if (startingOrientation.alpha === null && event.alpha !== null) {
       // Initialize with starting values if not set
-      setOrientation(startingOrientation);
+      startingOrientation.alpha = event.alpha;
+      startingOrientation.beta = event.beta;
+      startingOrientation.gamma = event.gamma;
+      startingOrientation.absolute = event.absolute ?? false;
     } 
     setOrientation({
       alpha: (event.alpha ?? 0) - (startingOrientation.alpha ?? 0),
       beta: (event.beta ?? 0) - (startingOrientation.beta ?? 0),
       gamma: (event.gamma ?? 0) - (startingOrientation.gamma ?? 0),
-      absolute: event.absolute,
+      absolute: event.absolute ?? false,
     });
   }, []);
 
