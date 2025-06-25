@@ -45,12 +45,22 @@ function useDeviceOrientation() {
     }
 
     // Update orientation state relative to starting orientation
+    // setOrientation({
+    //   alpha: event.alpha - (startingOrientationRef.current.alpha ?? 0),
+    //   beta: event.beta - (startingOrientationRef.current.beta ?? 0),
+    //   gamma: event.gamma - (startingOrientationRef.current.gamma ?? 0),
+    //   absolute: event.absolute ?? false,
+    // });
+
+    //update orientation start with absolute value
     setOrientation({
-      alpha: event.alpha - (startingOrientationRef.current.alpha ?? 0),
-      beta: event.beta - (startingOrientationRef.current.beta ?? 0),
-      gamma: event.gamma - (startingOrientationRef.current.gamma ?? 0),
+      alpha: event.alpha,
+      beta: event.beta,
+      gamma: event.gamma,
       absolute: event.absolute ?? false,
     });
+
+
   }, []);
 
   useEffect(() => {
