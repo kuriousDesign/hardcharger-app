@@ -11,7 +11,7 @@ export default function OrientationInfo() {
     isPermissionGranted,
     isSupported,
     error,
-    ratio,
+
   } = useGammaColor(); // optionally pass { h: 120 } etc. for hue overrides
 
   return (
@@ -37,7 +37,7 @@ export default function OrientationInfo() {
 
       {isSupported && isPermissionGranted && (
         <ul className="mt-4 space-y-2">
-          <li>Ratio: {ratio}</li>
+  
           <li>Alpha (Z-axis): {deviceOrientation.alpha ?? "N/A"}</li>
           <li>Beta (X-axis): {deviceOrientation.beta ?? "N/A"}</li>
           <li style={{ color }} className="font-semibold transition-colors duration-0">

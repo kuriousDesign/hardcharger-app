@@ -23,7 +23,7 @@ function interpolateHsvMinMax(
   gamma: number | null,
   colorOptions: HsvMinMaxProps = { h: 120, s: 1, vMax: 1, vMin: 0.2 },
   sensitivityOptions: GammaSensitivityProps = { deadBand: 2.5, maxAngle: 20 }
-): { color: string, ratio: number } {
+): string {
   if (gamma === null) gamma = 0;
 
   const absGamma = Math.max(sensitivityOptions.deadBand, Math.min(Math.abs(gamma), sensitivityOptions.maxAngle));
@@ -31,7 +31,7 @@ function interpolateHsvMinMax(
 
   const v = colorOptions.vMax - ratio * (colorOptions.vMax - colorOptions.vMin);
   const [r, g, b] = hsvToRgb(colorOptions.h, colorOptions.s, v);
-  return { color: `rgb(${r}, ${g}, ${b})`, ratio };
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 //returns rgb value using gamma and HSV color options
@@ -40,7 +40,7 @@ function interpolateBetweenTwoHsvColors(
   dullColor: { h: number, s: number, v: number },
   brightColor: { h: number, s: number, v: number },
   sensitivityOptions: GammaSensitivityProps = { deadBand: 2.5, maxAngle: 20 }
-): { color: string, ratio: number } {
+): string {
   if (gamma === null) gamma = 0;
 
   const absGamma = Math.max(sensitivityOptions.deadBand, Math.min(Math.abs(gamma), sensitivityOptions.maxAngle));
@@ -51,7 +51,7 @@ function interpolateBetweenTwoHsvColors(
   const v = brightColor.v - ratio * (brightColor.v - dullColor.v);
 
   const [r, g, b] = hsvToRgb(h, s, v);
-  return { color: `rgb(${r}, ${g}, ${b})`, ratio };
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 
@@ -80,9 +80,8 @@ export default function useGammaColor(
     error,
   } = useDeviceOrientation();
 
-  const gamma = isPermissionGranted && isSupported ? deviceOrientation.alpha : null;
+  const gamma = isPermissionGranted && isSupported ? deviceOrientation.gamma : null;
   let color = 'rgb(0, 0, 0)'; // Default color
-  let ratio = 0; // Default ratio
 
   const sensitivities = {
     low: { deadBand: 5, maxAngle: 30 },
@@ -94,30 +93,30 @@ export default function useGammaColor(
   switch (options?.type) {
     case 'twoHsvColors':
       if (options.dullHsv && options.brightHsv) {
-        ({color, ratio} = interpolateBetweenTwoHsvColors(
+        color = interpolateBetweenTwoHsvColors(
           gamma,
           options.dullHsv,
           options.brightHsv,
           sensitivities[options.sensitivity || 'medium']
-        ));
+        );
       }
       break;
     case 'hsvWithValueMinMax':
       if (options.hsvMinMax) {
-        ({color, ratio} = interpolateHsvMinMax(
+        color = interpolateHsvMinMax(
           gamma,
           options.hsvMinMax,
           sensitivities[options.sensitivity || 'medium']
-        ));
+        );
       }
       break;
     default:
       // Default behavior if no options are provided
-      ({color, ratio} = interpolateHsvMinMax(
+      color = interpolateHsvMinMax(
         gamma,
         { h: 120, s: 1, vMax: 1, vMin: 0.2 }, // Default HSV values
         sensitivities[options?.sensitivity || 'medium']
-      ));
+      );      
   }
 
   return {
@@ -128,6 +127,5 @@ export default function useGammaColor(
     isPermissionGranted,
     isSupported,
     error,
-    ratio,
   };
 }

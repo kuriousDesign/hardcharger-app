@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface DeviceOrientationState {
   alpha: number | null;
@@ -21,46 +21,18 @@ function useDeviceOrientation() {
     gamma: null,
     absolute: false,
   });
+
   const [isSupported, setIsSupported] = useState(false);
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Use useRef to store the starting orientation once
-  const startingOrientationRef = useRef<DeviceOrientationState | null>(null);
-
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
-    // Skip if event data is incomplete
-    if (event.alpha === null || event.beta === null || event.gamma === null) {
-      return;
-    }
-
-    // Set starting orientation only once when first valid event is received
-    if (startingOrientationRef.current === null) {
-      startingOrientationRef.current = {
-        alpha: event.alpha,
-        beta: event.beta,
-        gamma: event.gamma,
-        absolute: event.absolute ?? false,
-      };
-    }
-
-    // Update orientation state relative to starting orientation
-    // setOrientation({
-    //   alpha: event.alpha - (startingOrientationRef.current.alpha ?? 0),
-    //   beta: event.beta - (startingOrientationRef.current.beta ?? 0),
-    //   gamma: event.gamma - (startingOrientationRef.current.gamma ?? 0),
-    //   absolute: event.absolute ?? false,
-    // });
-
-    //update orientation start with absolute value
     setOrientation({
       alpha: event.alpha,
       beta: event.beta,
       gamma: event.gamma,
-      absolute: event.absolute ?? false,
+      absolute: event.absolute,
     });
-
-
   }, []);
 
   useEffect(() => {
