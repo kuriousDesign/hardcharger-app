@@ -45,15 +45,15 @@ export function SiteHeader() {
               <LinkButton
                 href="/dashboard"
                 variant="link"
-                className={`flex h-8 items-center text-lg text-black font-bold leading-none ${fontOrbitron.className}`}
+                className={`flex h-8 items-center text-lg text-secondary-foreground font-bold leading-none ${fontOrbitron.className}`}
               >
                 hardCharger
               </LinkButton>
               <TiltedBox width="4" />
-              <div className="w-[7px] h-10 bg-transparent">{" "}  </div>
+              <div className="w-[8px] h-10 bg-transparent">{" "}  </div>
               <TiltedBox width="2" />
-              <div className="w-3 h-10 bg-transparent">{" "}  </div>
-              <TiltedBox width="[5px]" />
+              <div className="w-[8px] h-10 bg-transparent">{" "}  </div>
+              <TiltedBox width="1" />
             </div>
             <Separator orientation="vertical" className="ml-2 hidden lg:block" />
             <Separator orientation="vertical" className="3xl:flex hidden" />
