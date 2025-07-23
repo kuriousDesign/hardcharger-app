@@ -7,8 +7,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import '@/styles/globals.css';
 import Script from 'next/script';
-import { SiteFooter } from '@/components/site-footer';
-import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/footer/site-footer';
+import { SiteHeader } from '@/components/header/site-header';
 import { SessionProvider } from 'next-auth/react';
 
 export const metadata: Metadata = {

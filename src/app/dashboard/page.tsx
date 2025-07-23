@@ -20,7 +20,8 @@ import { postNewPlayerWithUser } from "@/actions/postActions";
 import { DefaultUser } from "@auth/core/types";
 
 import DivShimmer from "@/components/div-shimmer";
-import OrientationInfo from "@/components/OrientationInfo";
+import { shimmerBrightColor, shimmerDullColor, shimmerSensitivity } from "@/lib/shimmer-colors";
+
 
 const title = "Happy Birthday Uncle Joe!"
 const description = "Find a game and create a pick. Look at your current picks too."
@@ -48,8 +49,7 @@ export default async function DashboardPage() {
 
     //brightColor hsv: 38, 45, 100
 //dullColor hsv: 38, 100, 63
-const dullColor = { h: 38, s: 1.0, v: 0.70 }; // Dull color HSV
-const brightColor = { h: 38, s: 0.60, v: 1.0 }; // Bright color HSV
+
 
     return (
         <div>
@@ -73,11 +73,11 @@ const brightColor = { h: 38, s: 0.60, v: 1.0 }; // Bright color HSV
                     </Suspense>
                     <DivShimmer className='text-2xl font-bold text-center' title="Welcome to the Dashboard!" options={{
                         type: 'twoHsvColors',
-                        dullHsv: dullColor,
-                        brightHsv: brightColor,
-                        sensitivity: 'medium',
+                        dullHsv: shimmerDullColor,
+                        brightHsv: shimmerBrightColor,
+                        sensitivity: shimmerSensitivity,
                     }} />
-                    <OrientationInfo />
+                  
                 </div>
             </div>
         </div>

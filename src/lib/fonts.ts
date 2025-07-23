@@ -1,7 +1,9 @@
 import {
   Geist_Mono as FontMono,
   Geist as FontSans,
+  Goldman,
   Inter,
+  Orbitron,
   Permanent_Marker,
 } from "next/font/google"
 
@@ -30,10 +32,23 @@ export const fontPermanentMarker = Permanent_Marker({
   variable: '--font-permanent-marker',
 });
 
-// Combine font variables for global use
+export const fontGoldman = Goldman({
+  subsets: ['latin'],
+  weight: '400', // Goldman only supports 400
+  variable: '--font-goldman',
+}); 
+
+export const fontOrbitron = Orbitron({
+  subsets: ['latin'],
+  weight: '700', 
+  variable: '--font-orbitron',
+});
+
 export const fontVariables = cn(
   fontSans.variable,
   fontMono.variable,
   fontInter.variable,
-  fontPermanentMarker.variable
+  fontPermanentMarker.variable,
+  fontGoldman.variable,
+  fontOrbitron.variable
 );

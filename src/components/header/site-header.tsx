@@ -2,19 +2,15 @@
 
 import Link from "next/link"
 import { siteConfig } from "@/lib/config"
-
-import { fontPermanentMarker } from "@/lib/fonts"
+import { fontOrbitron } from "@/lib/fonts"
 import { Icons } from "@/components/icons"
-import { MainNav } from "@/components/main-nav"
-import { MobileNav } from "@/components/mobile-nav"
-import { ModeSwitcher } from "@/components/mode-switcher"
+import { MainNav } from "@/components/header/main-nav"
+import { MobileNav } from "@/components/header/mobile-nav"
+import { ModeSwitcher } from "@/components/header/mode-switcher"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-
-
-import { LinkButton } from "./LinkButton"
-
-
+import { LinkButton } from "../LinkButton"
+import TiltedBox from "./tilted-box"
 
 export function SiteHeader() {
 
@@ -40,28 +36,30 @@ export function SiteHeader() {
             </Link>
           </Button>
           <MainNav items={siteConfig.navItems} className="hidden lg:flex" />
-          <div className="ml-auto flex items-center gap-2 md:flex-1 md:justify-end ">
-            <LinkButton href='/dashboard' variant='link'
-              className={`absolute left-1/2 -translate-x-1/2 flex h-8 items-center text-lg leading-none ${fontPermanentMarker.className}`}>
-              HardCharger
+          <div className="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center gap-0 h-10">
+              <TiltedBox width="4" />
+              <div className="w-2 h-10 bg-transparent">{" "}  </div>
 
-            </LinkButton>
-            <div className="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
-
+              <TiltedBox width="2" />
+              <LinkButton
+                href="/dashboard"
+                variant="link"
+                className={`flex h-8 items-center text-lg text-black font-bold leading-none ${fontOrbitron.className}`}
+              >
+                hardCharger
+              </LinkButton>
+              <TiltedBox width="4" />
+              <div className="w-[7px] h-10 bg-transparent">{" "}  </div>
+              <TiltedBox width="2" />
+              <div className="w-3 h-10 bg-transparent">{" "}  </div>
+              <TiltedBox width="[5px]" />
             </div>
-            <Separator
-              orientation="vertical"
-              className="ml-2 hidden lg:block"
-            />
-
+            <Separator orientation="vertical" className="ml-2 hidden lg:block" />
             <Separator orientation="vertical" className="3xl:flex hidden" />
-
             <Separator orientation="vertical" />
             <ModeSwitcher />
             <Separator orientation="vertical" />
-
-
-
           </div>
         </div>
       </div>

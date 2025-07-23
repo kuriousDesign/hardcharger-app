@@ -11,8 +11,6 @@ import useGammaColor, { GammaColorProps } from "@/hooks/useGammaColor";
 //dullColor hsv: 38, 100, 63
 
 export default function DivShimmer({ title, options, className }: { title: string, options?: GammaColorProps, className?: string }) {
-
-
     const {
         color,
         isPermissionGranted,
