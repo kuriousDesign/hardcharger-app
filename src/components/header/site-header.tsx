@@ -59,7 +59,7 @@ export function SiteHeader() {
             <Separator orientation="vertical" className="3xl:flex hidden" />
             <Separator orientation="vertical" />
             <ModeSwitcher />
-            <Separator orientation="vertical" />
+            {/* <Separator orientation="vertical" /> */}
           </div>
         </div>
       </div>
