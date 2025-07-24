@@ -3,7 +3,7 @@ import { SignIn, SignOut } from '@/components/login';
 export default async function Home() {
 	await getConnectToDb();
 	const user = await getUser();
-	const tagline = 'make some picks';
+	const tagline = 'login then make some picks';
 
 	return (
 		<div className="p-6 space-y-4 flex flex-col items-center justify-center">

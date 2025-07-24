@@ -57,7 +57,7 @@ export function SiteHeader() {
             </div>
             <Separator orientation="vertical" className="ml-2 hidden lg:block" />
             <Separator orientation="vertical" className="3xl:flex hidden" />
-            <Separator orientation="vertical" />
+
             <ModeSwitcher />
             {/* <Separator orientation="vertical" /> */}
           </div>

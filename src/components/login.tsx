@@ -1,23 +1,37 @@
 import { signIn, signOut } from "@/auth";
 import { Button } from '@/components/ui';
+import { FaGoogle, FaFacebook } from "react-icons/fa6";
+
+
 
 
 export function SignIn() {
 	return (
-		<form
-			action={async () => {
-				"use server";
-				await signIn("google");
-			}}
-		>
-			<p>You are not logged in</p>
-			{/* <button type="submit">Sign in with Google</button> */}
-			<Button type="submit" className="bg-primary">
-				Sign in with Google
-			</Button>
-
-
-		</form>
+		<div className="flex flex-col space-y-4">
+			<form
+				action={async () => {
+					"use server";
+					await signIn("google");
+				}}
+			>
+				<Button type="submit" className="bg-primary">
+					<FaGoogle />
+					Sign in using Google
+				</Button>
+			</form>
+			
+			<form
+				action={async () => {
+					"use server";
+					await signIn("facebook");
+				}}
+			>
+				<Button type="submit" className="bg-blue-600 text-white">
+					<FaFacebook />
+					Sign in using Facebook
+				</Button>
+			</form>
+		</div>
 	);
 }
 
