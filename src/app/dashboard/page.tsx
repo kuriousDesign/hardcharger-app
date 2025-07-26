@@ -23,7 +23,7 @@ import DivShimmer from "@/components/div-shimmer";
 import { shimmerBrightColor, shimmerDullColor, shimmerSensitivity } from "@/lib/shimmer-colors";
 
 
-const title = "Happy Birthday Uncle Joe!"
+const title = "Dashboard";
 const description = "Find a game and create a pick. Look at your current picks too."
 
 export const metadata: Metadata = {
@@ -54,7 +54,9 @@ export default async function DashboardPage() {
     return (
         <div>
             <PageHeader>
-                <PageHeaderHeading>{title}</PageHeaderHeading>
+                <PageHeaderHeading>
+                    {title}
+                </PageHeaderHeading>
                 <PageHeaderDescription>{description}</PageHeaderDescription>
                 <PageActions>
                     {isAdmin &&

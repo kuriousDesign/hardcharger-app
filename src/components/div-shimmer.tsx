@@ -1,6 +1,7 @@
 "use client";
 
 import useGammaColor, { GammaColorProps } from "@/hooks/useGammaColor";
+import { defaultShimmerOptions } from "@/lib/shimmer-colors";
 
 //#7C3A20
 // HSV: 27°, 61%, 72% (#B77848)
@@ -10,7 +11,8 @@ import useGammaColor, { GammaColorProps } from "@/hooks/useGammaColor";
 //brightColor hsv: 38, 45, 100
 //dullColor hsv: 38, 100, 63
 
-export default function DivShimmer({ title, options, className }: { title: string, options?: GammaColorProps, className?: string }) {
+export default function DivShimmer({ title, options = defaultShimmerOptions, className }: { title: string, options?: GammaColorProps, className?: string }) {
+
     const {
         color,
         isPermissionGranted,
@@ -21,7 +23,7 @@ export default function DivShimmer({ title, options, className }: { title: strin
 
     if (!isSupported || !isPermissionGranted) {
         return (
-            <p className="text-red-500">{`Device Orientation API not supported. ${error?.message}`}</p>
+            <p className="text-red-500">{`Device Orientation API not supported. ${error}`}</p>
         )
     }
 

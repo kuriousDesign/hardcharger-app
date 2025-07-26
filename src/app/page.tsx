@@ -9,9 +9,9 @@ export default async function Home() {
 		<div className="p-6 space-y-4 flex flex-col items-center justify-center">
 			<h1 className="text-3xl font-bold text-center">Hard Charger App</h1>
 			<h2 className="text-2xl font-bold text-center">{tagline}</h2>
-
-			<div className="flex flex-col justify-center items-center">{user ? <SignOut>{''}</SignOut> : <SignIn />}</div>
-		
+			<div className="flex flex-col justify-center items-center">
+				{user ? <SignOut>{''}</SignOut> : <SignIn />}
+			</div>
 		</div>
 	);
 }

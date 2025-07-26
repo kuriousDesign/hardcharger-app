@@ -9,7 +9,6 @@ interface DeviceOrientationState {
   absolute: boolean;
 }
 
-// Extended interface for iOS 13+ permission
 interface DeviceOrientationEventExtended extends DeviceOrientationEvent {
   requestPermission?: () => Promise<"granted" | "denied">;
 }
@@ -24,7 +23,7 @@ function useDeviceOrientation() {
 
   const [isSupported, setIsSupported] = useState(false);
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
     setOrientation({
@@ -36,21 +35,22 @@ function useDeviceOrientation() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && typeof window.DeviceOrientationEvent !== "undefined") {
-      setIsSupported(true);
-
-      const deviceOrientationEvent = DeviceOrientationEvent as unknown as DeviceOrientationEventExtended;
-
-      // If no permission required, automatically start listening
-      if (typeof deviceOrientationEvent.requestPermission !== "function") {
-        setIsPermissionGranted(true);
-        window.addEventListener("deviceorientation", handleOrientation);
-      }
-
-      return () => {
-        window.removeEventListener("deviceorientation", handleOrientation);
-      };
+    if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
+      setError("Device Orientation API is not supported in this browser.");
+      return;
     }
+
+    setIsSupported(true);
+
+    // No permission needed (non-iOS or older browsers)
+    if (!("requestPermission" in DeviceOrientationEvent)) {
+      window.addEventListener("deviceorientation", handleOrientation);
+      setIsPermissionGranted(true);
+    }
+
+    return () => {
+      window.removeEventListener("deviceorientation", handleOrientation);
+    };
   }, [handleOrientation]);
 
   const requestAccess = useCallback(async () => {
@@ -58,18 +58,20 @@ function useDeviceOrientation() {
 
     const deviceOrientationEvent = DeviceOrientationEvent as unknown as DeviceOrientationEventExtended;
 
-    if (typeof deviceOrientationEvent.requestPermission === "function") {
+    if (deviceOrientationEvent.requestPermission) {
       try {
-        const permissionState = await deviceOrientationEvent.requestPermission();
-        if (permissionState === "granted") {
+        const permission = await deviceOrientationEvent.requestPermission();
+        if (permission === "granted") {
           setIsPermissionGranted(true);
           window.addEventListener("deviceorientation", handleOrientation);
         } else {
-          setError(new Error("Permission to access device orientation was denied"));
+          setError("Permission to access device orientation was denied by the user.");
         }
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error during permission request"));
+        setError("Failed to request permission: " + (err instanceof Error ? err.message : "Unknown error"));
       }
+    } else {
+      setError("Permission request not supported on this device.");
     }
   }, [handleOrientation]);
 
