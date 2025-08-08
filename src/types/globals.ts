@@ -14,3 +14,8 @@ export interface Hometown {
 }
 
 export { Roles };
+
+export type HandlerOptions = {
+  isRoleProtected?: boolean;
+  role?: Roles;
+};

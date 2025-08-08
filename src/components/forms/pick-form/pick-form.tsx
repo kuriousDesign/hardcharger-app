@@ -143,7 +143,11 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
 
 
   return (
-    <Carousel className="w-full h-[92vh]">
+    <Carousel className="w-full h-[100vh]">
+      <div className="flex flex-col items-center justify-center">
+        <h1 className="pt-2 text-2xl font-bold text-primary-foreground ">{game.name}</h1>
+      <h2 className="text-md font-bold text-secondary ">Build Your Pick</h2>
+      </div>
       <CarouselContent className=' '>
 
         {steps.map((step, index) => (

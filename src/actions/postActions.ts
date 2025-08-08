@@ -10,7 +10,7 @@ import { RaceModel, RaceDoc, RaceClientType } from '@/models/Race';
 import { RacerModel, RacerClientType, RacerDoc } from '@/models/Racer';
 
 import { Types } from 'mongoose';
-import { adminRoleProtectedOptions, createDeleteHandler, createClientSafePostHandler } from '@/utils/actionHelpers';
+import { createDeleteHandler, createClientSafePostHandler } from '@/utils/actionHelpers';
 import { PickClientType, PickDoc, PickModel } from '@/models/Pick';
 import parseDriverData from '@/data/parseDriverData';
 
@@ -27,9 +27,9 @@ import type { DefaultUser } from '@auth/core/types';
 
 
 // admin role protected
-export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel, adminRoleProtectedOptions);
-export const deleteDriver = createDeleteHandler<DriverDoc>(DriverModel, adminRoleProtectedOptions);
-export const deleteGame = createDeleteHandler<GameDoc>(GameModel, adminRoleProtectedOptions);
+export const postDriver = createClientSafePostHandler<DriverClientType>(DriverModel);
+export const deleteDriver = createDeleteHandler<DriverDoc>(DriverModel);
+export const deleteGame = createDeleteHandler<GameDoc>(GameModel);
 
 
 export const postEvent = async (event: Partial<EventClientType> & { _id?: string }) => {

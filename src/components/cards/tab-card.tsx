@@ -46,10 +46,10 @@ export default function TabCard({
 }: TabCardProps) {
   const tabLabels = filterableOptions.map(opt => opt.tabLabel || opt.key);
   const tabValues = tabLabels.map((label: string) => label.toLowerCase());
-    const findFirstTabWithItems = () => {
+  const findFirstTabWithItems = () => {
     for (let i = 0; i < tabValues.length; i++) {
       const filterOption = filterableOptions[i];
-      const hasItems = items.some(item => 
+      const hasItems = items.some(item =>
         filterOption.value === null || item[filterOption.key] === filterOption.value
       );
       if (hasItems) {
@@ -62,7 +62,7 @@ export default function TabCard({
 
   const initialTab = findFirstTabWithItems();
   const [activeTab, setActiveTab] = useState(initialTab || "all");
- 
+
 
   // Filter picks for the active tab
   const filteredPicks = items.filter((pick) => {
@@ -100,17 +100,17 @@ export default function TabCard({
           </CardHeader>
           <CardContent className="grid gap-4 mt-0 pt-0">
             {filteredPicks.length ? (
-              filteredPicks.map((data,index:number) => (
-                
-                            <div key={index} className="flex flex-col justify-between">
-                              <ComponentDiv data={data} />
-                              {hasSeparators && index !== data.length - 1 &&
-                                <Separator orientation="horizontal" className='bg-muted' />
-                              }
-                            </div>
+              filteredPicks.map((data, index: number) => (
+
+                <div key={index} className="flex flex-col justify-between">
+                  <ComponentDiv data={data} />
+                  {hasSeparators && index !== data.length - 1 &&
+                    <Separator orientation="horizontal" className='bg-muted' />
+                  }
+                </div>
               ))
             ) : (
-              <p className="text-sm text-muted-foreground">No picks available.</p>
+              <p className="text-sm text-muted-foreground">None available.</p>
             )}
           </CardContent>
           {/* <CardFooter className="flex justify-end">
@@ -124,7 +124,7 @@ export default function TabCard({
 
 export function TabCardSkeleton() {
   // create 
-  return(
+  return (
     <div className="animate-pulse flex flex-col gap-4 w-full">
       <Card className="w-full">
         <CardHeader className="mb-0 pb-0">

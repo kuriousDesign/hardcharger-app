@@ -17,6 +17,15 @@ interface EventFormProps {
 export default function FormEvent({ onSuccess, redirectUrl, initialData }: EventFormProps) {
   const router = useRouter();
 
+  // Helper function to convert date to DD/MM/YYYY
+  const formatDateToDDMMYYYY = (date: string | Date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   // Initialize form with react-hook-form
   const { register, handleSubmit, formState: { errors }, reset } = useForm<EventClientType>({
     defaultValues: {
@@ -45,7 +54,7 @@ export default function FormEvent({ onSuccess, redirectUrl, initialData }: Event
       const eventData: EventClientType = {
         ...data,
         _id: initialData?._id,
-        date: data.date ? new Date(data.date).toISOString() : '',
+        date: data.date ? formatDateToDDMMYYYY(data.date) : '',
       };
 
       if (initialData?._id) {

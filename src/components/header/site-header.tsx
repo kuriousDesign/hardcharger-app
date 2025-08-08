@@ -11,8 +11,11 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { LinkButton } from "../LinkButton"
 import TiltedBox from "./tilted-box"
+import { Avatar, AvatarFallback } from "../ui/avatar"
+import { useGetUser } from "@/hooks/use-get-user"
 
 export function SiteHeader() {
+  const { user, isLoggedIn } = useGetUser();
 
   return (
     <header className="bg-background sticky top-0 z-50 w-full">
@@ -59,7 +62,15 @@ export function SiteHeader() {
             <Separator orientation="vertical" className="3xl:flex hidden" />
 
             <ModeSwitcher />
-            {/* <Separator orientation="vertical" /> */}
+            {isLoggedIn && <Separator orientation="vertical" /> }
+            {isLoggedIn && 
+              <Avatar className="h-8 w-8">
+         
+              <AvatarFallback>
+                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </AvatarFallback>
+              </Avatar>
+            }
           </div>
         </div>
       </div>

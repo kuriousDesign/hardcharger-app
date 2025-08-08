@@ -24,7 +24,7 @@ export default function OrientationInfo() {
         <p className="text-red-500">Device Orientation API not supported.</p>
       )}
 
-      {error && <p className="text-red-400">Error: {error.message}</p>}
+      {error && <p className="text-red-400">Error: {error}</p>}
 
       {isSupported && !isPermissionGranted && (
         <button

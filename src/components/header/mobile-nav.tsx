@@ -13,6 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { getIsAdmin } from "@/actions/userActions"
+import { useGetUser } from "@/hooks/use-get-user"
 
 // Configure Permanent Marker for local use
 
@@ -38,6 +39,9 @@ export function MobileNav({
     };
     fetchData();
   }, []);
+
+  // useGetUser to check loggedIn Status
+  const { isLoggedIn } = useGetUser();
 
 
 
@@ -95,6 +99,10 @@ export function MobileNav({
                   {item.label}
                 </MobileLink>
               ))}
+              {isLoggedIn && <MobileLink href="/logout" onOpenChange={setOpen}>
+                Log Out
+              </MobileLink>}
+     
             </div>
             {isAdmin && adminItems && adminItems.length > 0 && (
               <>

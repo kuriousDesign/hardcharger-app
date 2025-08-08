@@ -4,10 +4,8 @@ import GameDiv from "../cards/game-div";
 
 
 export default async function TabCardGames() {
-
     const games = await getGames();
  
-
     // Define filterable options for displaying games
     const filterableOptions = [
         { key: "status", value: "open", tabLabel: 'Open' }, // "

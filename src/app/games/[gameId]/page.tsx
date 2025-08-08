@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 
 import { getCurrentPlayer, getEvent, getGame, getHardChargerTable, getPicksByGameId, getRace } from '@/actions/getActions';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
+import { GameDetails } from '@/components/forms/pick-form/game-details';
 
 import {
 	PageActions,
@@ -40,6 +41,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 	if (!game) {
 		return <div>Game not found</div>;
 	}
+	//const races = await getRacesByGameId(gameId);
 	const raceIds = game?.races || [];
 	const racesPromise = Promise.all(
 		raceIds.map(async (raceId: string) => {
@@ -92,6 +94,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 				</PageHeaderHeading>
 				<PageHeaderDescription>{description}</PageHeaderDescription>
 				{gameStatesToString(game.status as GameStates)}
+				 <GameDetails game={game} races={races} />
 				<PageActions>
 					<div className="flex flex-wrap items-center gap-2">
 						{game.status === GameStates.OPEN &&

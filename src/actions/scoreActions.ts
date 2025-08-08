@@ -157,7 +157,6 @@ export async function calculateHardChargerScoreForDriver(carsPassed: number, pre
     }
 }
 
-
 export async function calculateTopFinishersScoreForDriverComplex(finishPosition: number, prediction: number, game: GameClientType): Promise<number> {
     const invertedPrediction = game.num_top_finishers - prediction + 1;
     const baselinePoints = invertedPrediction * game.top_finisher_prediction_penalty;
@@ -180,21 +179,20 @@ export async function calculateTopFinishersScoreForDriverComplex(finishPosition:
 export async function calculateTopFinishersScoreForDriver(finishPosition: number, prediction: number, game: GameClientType): Promise<number> {
 
     if (finishPosition === prediction) {
-        return game.top_finisher_baseline_points + (game.num_top_finishers - prediction + 1)  //game.top_finisher_prediction_bonus;
+        return game.top_finisher_baseline_points + (game.num_top_finishers - prediction + 1)* 1.0; //game.top_finisher_prediction_penalty; //game.top_finisher_prediction_bonus;
     } else if (finishPosition <= 0) {
         return 0;
-    } else if (finishPosition > prediction) {
-        // penalize
+    } else if (finishPosition > prediction) { //penalize for worse finish than predicted
         const diff = Math.abs(finishPosition - prediction);
-        const penalty = game.top_finisher_prediction_penalty * diff;
+        const penalty = diff*1.0;// game.top_finisher_prediction_penalty * diff;
         return Math.max(0, game.top_finisher_baseline_points - penalty);
-    } else {
-        // award small bonus for outperforming
+    } else { // award small bonus for outperforming prediction
         const diff = Math.abs(finishPosition - prediction);
-        const outperformBonus = game.top_finisher_prediction_penalty / 2.0 * diff;
+        const outperformBonus = 0.5* diff; //game.top_finisher_prediction_penalty / 2.0 * diff;
         return game.top_finisher_baseline_points + outperformBonus;
     }
 }
+
 
 // Calculate top finishers scores for picks
 export async function calculateTopFinishersScoreForPicks(picks: PickClientType[], raceAmainRacers: RacerClientType[], game: GameClientType): Promise<void> {
