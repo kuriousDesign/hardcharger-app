@@ -160,10 +160,10 @@ export default function FormPick({ gameId, playerId, defaultName }: { gameId: st
 
       </CarouselContent>
       <div className="absolute top-full left-1/2 -translate-x-[12vh] -translate-y-1/2 flex items-center justify-center">
-        <CarouselPrevious className={`${buttonSize} relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} />
+        <CarouselPrevious className={`${buttonSize} bg-blue-500 relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} />
       </div>
       <div className="absolute top-full right-1/2 translate-x-[12vh] -translate-y-1/2 flex items-center justify-center w-fit">
-        <CarouselNext className={`${buttonSize} relative right-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} size='lg' />
+        <CarouselNext className={`${buttonSize} relative bg-blue-500 right-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90`} size='lg' />
       </div>
     </Carousel>
   );
