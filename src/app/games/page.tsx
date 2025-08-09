@@ -43,6 +43,7 @@ export default async function GamesPage() {
               Events
             </LinkButton>
           }
+        
         </PageActions>
       </PageHeader>
       <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">

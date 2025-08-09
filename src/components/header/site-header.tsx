@@ -6,9 +6,9 @@ import { fontOrbitron } from "@/lib/fonts"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/header/main-nav"
 import { MobileNav } from "@/components/header/mobile-nav"
-import { ModeSwitcher } from "@/components/header/mode-switcher"
+//import { ModeSwitcher } from "@/components/header/mode-switcher"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+//import { Separator } from "@/components/ui/separator"
 import { LinkButton } from "../LinkButton"
 import TiltedBox from "./tilted-box"
 import { Avatar, AvatarFallback } from "../ui/avatar"
@@ -58,11 +58,11 @@ export function SiteHeader() {
               <div className="w-[8px] h-10 bg-transparent">{" "}  </div>
               <TiltedBox width="1" />
             </div>
-            <Separator orientation="vertical" className="ml-2 hidden lg:block" />
+            {/* <Separator orientation="vertical" className="ml-2 hidden lg:block" />
             <Separator orientation="vertical" className="3xl:flex hidden" />
 
-            <ModeSwitcher />
-            {isLoggedIn && <Separator orientation="vertical" /> }
+            <ModeSwitcher /> */}
+            {/* {isLoggedIn && <Separator orientation="vertical" /> } */}
             {isLoggedIn && 
               <Avatar className="h-8 w-8">
          

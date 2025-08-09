@@ -17,7 +17,7 @@ export default function StepSubmit({
 }) {
     return (
       <div className="text-center">
-        <h2 className="text-xl font-bold mb-4">Review & Submit</h2>
+        <h2 className="text-xl font-bold mb-4">Submit</h2>
         <Button
           className="mt-4 px-6 py-2 bg-secondary text-secondary-foreground"
           onClick={async () => {
@@ -34,9 +34,13 @@ export default function StepSubmit({
         >
           Submit Pick
         </Button>
-        <pre className="p-4 rounded text-left text-xs overflow-auto">
+        
+        <p className='mt-8'>
+          After submitting, then you will pay
+        </p>
+        {/* <pre className="p-4 rounded text-left text-xs overflow-auto">
           {JSON.stringify(pickForm, null, 2)}
-        </pre>
+        </pre> */}
 
       </div>
     );

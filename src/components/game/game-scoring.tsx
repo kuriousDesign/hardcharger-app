@@ -202,15 +202,7 @@ export function TopFinisherScoring({ game }: { game: GameClientType }) {
           <span>
             <strong>Baseline Points</strong> - Each driver selection starts with a baseline of {game.top_finisher_baseline_points} points, and then a bonus or penalty will be added based on prediction.
             <br />
-            <br />
-            You will be awarded a bonus if driver finished exactly or better than you predicted:
-            <br />
-            <code> Driver Score = {game.top_finisher_baseline_points} points + Bonus </code>
-            <br />
-            <br />
-            You will receive a penalty if they finished worse:
-            <br />
-            <code> Driver Score = {game.top_finisher_baseline_points} points - Penalty </code>
+
 
           </span>
         </li>
@@ -262,7 +254,7 @@ export function TopFinisherScoring({ game }: { game: GameClientType }) {
               <br />
               Example: You guessed 1st but they finished 3rd, which makes a position difference of 2.
               <br />
-              ExampleScore = {game.top_finisher_baseline_points} - 1.0 X 2 = {game.top_finisher_baseline_points - 1} points
+              ExampleScore = {game.top_finisher_baseline_points} - 1.0 X 2 = {game.top_finisher_baseline_points - 1 * 2} points
             </p>
           </span>
         </li>
@@ -271,16 +263,12 @@ export function TopFinisherScoring({ game }: { game: GameClientType }) {
 
       <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-2">Key Features</h3>
       <ul className="list-disc list-inside space-y-2 text-gray-600">
-        <li>Baseline points ensure everyone gets something for participating</li>
+
         <li>Position-based bonuses reward accurate predictions of top positions more heavily</li>
         <li>Asymmetric penalties - underperforming hurts more than outperforming helps</li>
-        <li>Conservative prediction rewards encourage realistic expectations</li>
+
       </ul>
 
-      <h3 className="text-xl font-semibold text-gray-700 mt-6 mb-2">Potential Issues</h3>
-      <p className="text-gray-600">
-        There&apos;s a commented-out variable (<code>game.top_finisher_prediction_bonus</code>) that might indicate incomplete implementation or refactoring in progress.
-      </p>
     </div>
   );
 }

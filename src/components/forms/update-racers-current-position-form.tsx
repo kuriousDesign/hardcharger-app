@@ -149,7 +149,10 @@ export default function UpdateRacersCurrentPositionForm({
 
   return (
     <div className="flex flex-col gap-4 max-w-lg">
-      <h2 className="text-xl font-bold">Update Racer Positions for {race._id}</h2>
+      <h2 className="text-xl font-bold">Update Race Standings for {race.letter} {race.type}</h2>
+      <p className="text-sm text-muted-foreground">
+        Adjust the current positions of racers after the race has started
+        </p>
 
       {/* Dynamic Position Dropdowns */}
       {positions.map((pos) => {

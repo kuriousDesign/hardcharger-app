@@ -28,6 +28,7 @@ import { RaceClientType } from '@/models/Race';
 import TablePickLeaderboard, { PickLeaderboardSkeleton } from '@/components/tables/pick-leaderboard';
 import { updatePicksScoresByGame } from '@/actions/scoreActions';
 
+import VenmoLink from '@/components/VenmoLink';
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
 	const playerPromise = getCurrentPlayer();
@@ -65,17 +66,20 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 		{ key: "player_id", value: player?._id, tabLabel: 'Yours' }, // "My Picks" tab
 	] as FilterOption[];
 
-	const title = "Game" + game.name
+	const title = game.name
 	const description = event.name
 
 	// i need a switch case statement to handle showing the picks leaderboard vs picks card, based on game.status
 	let showLeaderboard = false;
+	let showVenmoLink = false;
 	switch (game.status) {
 		case GameStates.OPEN:
 			showLeaderboard = false;
+			showVenmoLink = true;
 			break;
 		case GameStates.IN_PLAY:
 			showLeaderboard = true;
+			showVenmoLink = true;
 			break;
 		case GameStates.FINISHED:
 			showLeaderboard = true;
@@ -115,6 +119,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 								Adjust {race.letter} {race.type} Standings
 							</LinkButton>
 						))}
+						{showVenmoLink && <VenmoLink amount={game.entry_fee} pickId="replaceWithYourPickId" />}
 					</div>
 				</PageActions>
 			</PageHeader>

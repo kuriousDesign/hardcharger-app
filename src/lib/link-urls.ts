@@ -47,6 +47,7 @@ export function getLinks() {
     const getGameUrl = (gameId?: string) => {
         return `${getGamesUrl()}/${gameId || '_'}`;
     };
+    
 
     const getCreateEventUrl = () => {
         return `${getEventsUrl()}/create`;

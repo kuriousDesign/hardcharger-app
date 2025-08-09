@@ -85,7 +85,7 @@ export default function StepRacerPredictions({
   );
 
   return (
-    <Card className='w-full h-full '>
+    <Card className='w-full h-full overflow-y-auto'>
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
         <CardDescription>{cardDescription}</CardDescription>
