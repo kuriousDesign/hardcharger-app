@@ -19,6 +19,7 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { getDriverFullName } from '@/types/helpers';
 import { CardPrediction } from './prediction';
+import { numberToOrdinal } from '@/utils/helpers';
 
 export interface RacerPredictionDisplayProps {
   name: string;
@@ -28,14 +29,7 @@ export interface RacerPredictionDisplayProps {
   number: number;
 }
 
-export function convertNumberToStNdRdTh(num: number): string {
-  const mod10 = num % 10;
-  const mod100 = num % 100;
-  if (mod10 === 1 && mod100 !== 11) return '1st';
-  if (mod10 === 2 && mod100 !== 12) return '2nd';
-  if (mod10 === 3 && mod100 !== 13) return '3rd';
-  return `${num}th`;
-}
+
 
 export function getRaceNameWithRaceId(raceId: string, races: RaceClientType[]): string {
   const race = races.find((race: RaceClientType) => race._id === raceId);
@@ -185,7 +179,7 @@ export default function RacerPredictionSelectionDiv({
                           <div className="flex flex-col">
                             <p className="text-sm font-medium">{getDriverFullName(racerDriver.driver)}</p>
                             <p className="text-muted-foreground text-xs">
-                              Starting {convertNumberToStNdRdTh(racerDriver.racer.starting_position)}{' '}
+                              Starting {numberToOrdinal(racerDriver.racer.starting_position)}{' '}
                               {getRaceNameWithRaceId(racerDriver.racer.race_id, races)}
                             </p>
                           </div>

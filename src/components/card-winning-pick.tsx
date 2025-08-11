@@ -1,5 +1,5 @@
 
-import { getPick, getGame, getDriver } from "@/actions/getActions";
+import { getPick, getGame, getDriver, getRacersByRaceId } from "@/actions/getActions";
 import {
     Card,
     CardContent,
@@ -8,6 +8,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { DriverClientType } from "@/models/Driver";
+import { numberToOrdinal } from "@/utils/helpers";
 
 
 export default async function CardWinningPick({ pickId }: { pickId: string }) {
@@ -15,6 +16,7 @@ export default async function CardWinningPick({ pickId }: { pickId: string }) {
     const pick = await getPick(pickId);
     //const player = await getPlayer(pick.player_id);
     const game = await getGame(pick.game_id);
+    const AmainRacers = await getRacersByRaceId(game.races[0]); //
     //const hardChargerDriverNames = pick.hard_chargers.map((hc:DriverPredictionClientType) => hc.driver_id).join(", ");
     // i want to be able print the driverprediction in a list down below with the driver name and the prediction for hard chargers
     const hardChargerDrivers : DriverClientType[] = [];
@@ -27,8 +29,13 @@ export default async function CardWinningPick({ pickId }: { pickId: string }) {
     }
 
     const topDriverDrivers : DriverClientType[] = [];
+    const topDriverPositions: number[] = [];
+    // i want to be able print the driverprediction in a list down below with the driver
     for (const tf of pick.top_finishers) {
         const driver = await getDriver(tf.driver_id);
+        // find driver id in the AmainRacers
+        const racer = AmainRacers.find(r => r.driver_id === tf.driver_id);
+        topDriverPositions.push(racer?.current_position || 0); // get the position of the
         if (driver) {
             topDriverDrivers.push(driver);
         }
@@ -62,7 +69,7 @@ export default async function CardWinningPick({ pickId }: { pickId: string }) {
                         <ul className="list-decimal pl-5">
                             {pick.top_finishers.map((tf, index) => (
                                 <li key={index} className="text-sm text-secondary-foreground">
-                                    {topDriverDrivers[index].first_name} {topDriverDrivers[index].last_name} - {tf.score}pts
+                                    {topDriverDrivers[index].first_name} {topDriverDrivers[index].last_name} - actual position: {numberToOrdinal(topDriverPositions[index])} - {tf.score}pts
                                 </li>
                             ))}
                         </ul>
