@@ -11,8 +11,7 @@ const gameSchema = new mongoose.Schema({
   status: { type: String, required: true, default: 'created' }, // e.g., 'created', 'open', 'regisration_over', 'active', 'just_finished' 'completed', 'cancelled'
   entry_fee: { type: Number, required: true },
   house_cut: { type: Number, required: true },
-  purse_amount: { type: Number, required: true },
-  num_picks: { type: Number, required: true }, //update whenver a new pick is made and verified
+
   type: { type: String, required: true }, // e.g., GameTypes enum
   num_hard_chargers: { type: Number, required: true, default: 0 }, // number of hard chargers
   num_hard_chargers_predictions: { type: Number, required: true, default: 0 }, // number of hard chargers predictions
@@ -26,7 +25,10 @@ const gameSchema = new mongoose.Schema({
   top_finisher_prediction_bonus: { type: Number, required: true }, // max penalty for not wrong prediction, point per car
   tie_breaker: { type: Object, required: false }, // tie breaker object, e.g., { type: 'fastest_lap', value: 0 }
   is_private: { type: Boolean, required: true, default: false }, // whether the game is private or not
-  password: { type: String, required: false, default: '' } // password to access the game,
+  password: { type: String, required: false, default: '' }, // password to access the game,
+
+  purse_amount: { type: Number, required: true },
+  num_picks: { type: Number, required: true } //update whenver a new pick is made and verified
 }, {
   collection: 'games',
   versionKey: false

@@ -50,7 +50,7 @@ export default function TableHardChargerLeaderboard({ table }: { table?: HardCha
     ];
     // Dynamically add table headers based on the array of cars passed
     entries[0].cars_passed_by_race.forEach((_, index: number) => {
-        tableHeads.push({ label: `${convertIndexToLetter(index)}`, className: "w-2 text-center text-secondary-foreground font-light" });
+        tableHeads.push({ label: `${convertIndexToLetter(index)} Main`, className: "w-2 text-center text-secondary-foreground font-light" });
     });
 
     return (

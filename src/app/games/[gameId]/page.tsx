@@ -26,15 +26,18 @@ import { GameClientType } from '@/models/Game';
 import BtnChangeGameState from '../../../components/button-change-game-state';
 import { RaceClientType } from '@/models/Race';
 import TablePickLeaderboard, { PickLeaderboardSkeleton } from '@/components/tables/pick-leaderboard';
-import { updatePicksScoresByGame } from '@/actions/scoreActions';
+import { updateGamePot, updatePicksScoresByGame } from '@/actions/scoreActions';
 
 import VenmoLink from '@/components/VenmoLink';
+import CardWinningPick from '@/components/card-winning-pick';
+import { PickClientType } from '@/models/Pick';
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
 	const playerPromise = getCurrentPlayer();
 	const isAdminPromise = getIsAdmin();
 	const { gameId } = await params;
 	updatePicksScoresByGame(gameId, true); // This function is assumed to update the scores of picks for the game
+	updateGamePot(gameId); // This function is assumed to update the game pot
 	const picksPromise = getPicksByGameId(gameId);
 	const hardChargerTablePromise = getHardChargerTable(gameId);
 
@@ -60,6 +63,10 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 		picksPromise,
 	]);
 
+	let winningPicks: PickClientType[] = [];
+
+
+
 	// Define filterable options
 	const filterableOptionsPicks = [
 		{ key: "player_id", value: null, tabLabel: 'All' }, // "All" tab
@@ -83,6 +90,20 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 			break;
 		case GameStates.FINISHED:
 			showLeaderboard = true;
+			//find winning picks, looking for ties amongs the sorted picks
+			winningPicks.push(picks[0]); // first pick is the winner
+			for (let i = 1; i < picks.length; i++) {
+				if (picks[i].score_total === picks[0].score_total) {
+					winningPicks.push(picks[i]); // add to winning picks if score is the same
+				}
+				else if (picks[i].score_total > picks[0].score_total) {
+					// trigger toast error if somehow the picks are out of order
+					console.error('Picks are not sorted by score_total in descending order');
+					winningPicks = []; // reset winning picks if scores are not in order
+					break; // stop if the score is different
+				}
+			}
+
 			break;
 		default:
 			showLeaderboard = false;
@@ -97,8 +118,15 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 					{title}
 				</PageHeaderHeading>
 				<PageHeaderDescription>{description}</PageHeaderDescription>
-				{gameStatesToString(game.status as GameStates)}
-				 <GameDetails game={game} races={races} />
+				Entry Fee: ${game.entry_fee.toFixed(2)} &nbsp;
+				<br />
+				Game Status: {gameStatesToString(game.status as GameStates)}
+				<br />
+				<span className="text-med text-primary">Total Purse ${game.purse_amount.toFixed(2)} </span>
+				{game.status === GameStates.FINISHED && winningPicks.length > 0 && winningPicks.map((pick, index) => (
+					pick._id && <CardWinningPick key={index} pickId={pick._id} />
+				))}
+				<GameDetails game={game} races={races} />
 				<PageActions>
 					<div className="flex flex-wrap items-center gap-2">
 						{game.status === GameStates.OPEN &&
@@ -125,6 +153,8 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 			</PageHeader>
 			<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
 				<div className="theme-container container flex flex-1 flex-col gap-10">
+
+
 					{!showLeaderboard &&
 						<TabCard
 							cardTitle="Picks"
@@ -151,13 +181,16 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 							</CardContent>
 						</Card>
 					}
+					{/* Hard Chargers Leaderboard */}
 					{showLeaderboard &&
 						<Card>
 							<CardHeader >
 								Hard Chargers
 							</CardHeader>
 							<CardDescription >
-								These are the players who have made the most picks in this game.
+
+								These are the drivers who passed the most cars for this game.
+
 							</CardDescription>
 							<CardContent>
 								{hardChargerTable &&

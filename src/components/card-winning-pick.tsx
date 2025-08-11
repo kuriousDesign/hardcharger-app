@@ -1,0 +1,74 @@
+
+import { getPick, getGame, getDriver } from "@/actions/getActions";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { DriverClientType } from "@/models/Driver";
+
+
+export default async function CardWinningPick({ pickId }: { pickId: string }) {
+
+    const pick = await getPick(pickId);
+    //const player = await getPlayer(pick.player_id);
+    const game = await getGame(pick.game_id);
+    //const hardChargerDriverNames = pick.hard_chargers.map((hc:DriverPredictionClientType) => hc.driver_id).join(", ");
+    // i want to be able print the driverprediction in a list down below with the driver name and the prediction for hard chargers
+    const hardChargerDrivers : DriverClientType[] = [];
+    
+    for (const hc of pick.hard_chargers) {
+        const driver = await getDriver(hc.driver_id);
+        if (driver) {
+            hardChargerDrivers.push(driver);
+        }
+    }
+
+    const topDriverDrivers : DriverClientType[] = [];
+    for (const tf of pick.top_finishers) {
+        const driver = await getDriver(tf.driver_id);
+        if (driver) {
+            topDriverDrivers.push(driver);
+        }
+    }
+
+    return (
+        <Card className="shadow-primary/50 border-2 border-primary">
+            <CardHeader>
+                <CardTitle>Winning Pick</CardTitle>
+                <CardDescription className="font-semibold text-primary-foreground">
+                    Congrats to {pick.name} for winning the ${game.purse_amount} pot!
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-2">
+                {pick.hard_chargers.length > 0 &&
+                    <>
+                        <h2 className="text-med font-semibold">Hard Chargers</h2>
+
+                        <ul className="list-disc pl-5">
+                            {pick.hard_chargers.map((hc, index) => (
+                                <li key={index} className="text-sm text-secondary-foreground">
+                                    {hardChargerDrivers[index].first_name} {hardChargerDrivers[index].last_name} - {hc.prediction} cars predicted - {hc.score}pts
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                }
+                {pick.top_finishers.length > 0 &&
+                    <>
+                        <h2 className="text-med font-semibold">Top Finishers</h2>
+                        <ul className="list-decimal pl-5">
+                            {pick.top_finishers.map((tf, index) => (
+                                <li key={index} className="text-sm text-secondary-foreground">
+                                    {topDriverDrivers[index].first_name} {topDriverDrivers[index].last_name} - {tf.score}pts
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                }
+            </CardContent>
+        </Card>
+    );
+};

@@ -262,3 +262,27 @@ export async function updatePicksScoresByGame(gameId: string, skipRevalidate?: b
         console.error("Error calculating scores for picks:", error);
     }
 }
+
+export async function updateGamePot(gameId: string) {
+    try {
+        const game = await getGame(gameId);
+        if (!game) {
+            console.error(`Game with ID ${gameId} not found`);
+            return;
+        }
+
+        // Calculate the total pot from all picks
+        const picks = await getPicksByGameId(gameId);
+        // calculate total purse as number of picks * entry fee * ( 1 - game.house_cut)
+        const totalPurse = picks.length * game.entry_fee * (1 - game.house_cut);
+
+        // Update the game pot
+        game.purse_amount = totalPurse;
+        game.num_picks = picks.length;
+        await postGame(game);
+
+        console.log(`Updated pot for game ${gameId}: $${totalPurse}`);
+    } catch (error) {
+        console.error("Error updating game pot:", error);
+    }
+}

@@ -128,6 +128,8 @@ export const getDriversNotInRace = async (raceId: string): Promise<DriverClientT
   return availableDrivers as DriverClientType[];
 };
 
+
+
 export const getRacersWithDriversByRaceId = async (raceId: string): Promise<RacerDriverClientType[]>  => {
 
   const racers = await getRacersByRaceId(raceId);
@@ -288,9 +290,12 @@ export const getUserFullName = async (): Promise<string> => {
   return user.name || '';
 };
 
+// this will get picks by gameId and sort them by score_total in descending order (winner's first)
 export const getPicksByGameId = async (gameId: string): Promise<PickClientType[]> => {
   const filter = { game_id: new Types.ObjectId(gameId) };
   const picks = await getPicks(filter);
+  // arrange picks by score_total in descending order
+  picks.sort((a, b) => b.score_total - a.score_total);
   return picks as PickClientType[];
 }
 
