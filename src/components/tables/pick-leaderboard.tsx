@@ -12,13 +12,17 @@ import { GameClientType } from "@/models/Game";
 
 import { PickClientType } from "@/models/Pick";
 import { Separator } from "../ui/separator";
+import { PopoverPickDetails } from "../popover-pick-details";
+import { RacerClientType } from "@/models/Racer";
+import { HardChargerTableClientType } from "@/models/HardChargerTable";
+import { DriverClientType } from "@/models/Driver";
 
 export function convertIndexToLetter(index: number): string {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     return letters[index % letters.length];
 }
 
-export default async function TablePickLeaderboard({ game, picks }: { game: GameClientType; picks: PickClientType[] }) {
+export default async function TablePickLeaderboard({ game, picks, aMainRacers, hardChargerTable, aMainDrivers }: { game: GameClientType; picks: PickClientType[], aMainRacers: RacerClientType[], hardChargerTable: HardChargerTableClientType, aMainDrivers?: DriverClientType[] }) {
     if (!picks || picks.length === 0) {
         return <div className="text-center text-gray-500">No picks available.</div>;
     }
@@ -28,9 +32,10 @@ export default async function TablePickLeaderboard({ game, picks }: { game: Game
 
     // Create an array of table headers
     const tableHeads = [
+        { label: "", className: "text-center" },
         { label: "Rank", className: "text-center" },
-        { label: "Nickname", className: "text-left" },
-        { label: "Owner", className: "text-center font-bold" },
+        
+        { label: "Name", className: "text-center font-bold" },
         { label: "Score", className: "text-center" },
     ];
     // Dynamically add table headers based on game type
@@ -38,6 +43,7 @@ export default async function TablePickLeaderboard({ game, picks }: { game: Game
         tableHeads.push({ label: 'HardCh', className: "text-center text-secondary-foreground font-light" });
         tableHeads.push({ label: 'TopFin', className: "text-center text-secondary-foreground font-light" });
     }
+    tableHeads.push({ label: "Pick Nickname", className: "text-left" });
 
     return (
         <Table>
@@ -54,8 +60,11 @@ export default async function TablePickLeaderboard({ game, picks }: { game: Game
             <TableBody>
                 {picks.map((pick: PickClientType, index: number) => (
                     <TableRow key={index}>
+                        <TableCell className="text-center">
+                            <PopoverPickDetails pick={pick} game={game} aMainRacers={aMainRacers} hardChargerTable={hardChargerTable} aMainDrivers={aMainDrivers || []}/>
+                        </TableCell>
                         <TableCell className="text-center">{pick.rank}</TableCell>
-                        <TableCell className="text-left">{pick.nickname}</TableCell>
+                        
                         <TableCell className="text-center font-bold">{pick.name}</TableCell>
                         <TableCell className="text-center text-primary font-bold">{Number(pick.score_total.toFixed(3)).toString()}</TableCell>
                         {game.type === 'hybrid' &&
@@ -68,6 +77,7 @@ export default async function TablePickLeaderboard({ game, picks }: { game: Game
                                 {Number(pick.score_top_finishers.toFixed(2)).toString()}
                             </TableCell>
                         }
+                        <TableCell className="text-left">{pick.nickname}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>

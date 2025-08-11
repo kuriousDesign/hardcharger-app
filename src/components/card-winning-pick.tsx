@@ -45,7 +45,7 @@ export default async function CardWinningPick({ pickId }: { pickId: string }) {
         <Card className="shadow-primary/50 border-2 border-primary">
             <CardHeader>
                 <CardTitle>Winning Pick</CardTitle>
-                <CardDescription className="font-semibold text-primary-foreground">
+                <CardDescription className="font-semibold text-primary">
                     Congrats to {pick.name} for winning the ${game.purse_amount} pot!
                 </CardDescription>
             </CardHeader>

@@ -2,7 +2,7 @@ export const experimental_ppr = true;
 
 import { Suspense } from 'react';
 
-import { getCurrentPlayer, getEvent, getGame, getHardChargerTable, getPicksByGameId, getRace } from '@/actions/getActions';
+import { getCurrentPlayer, getDriver, getEvent, getGame, getHardChargerTable, getPicksByGameId, getRace, getRacersByRaceId } from '@/actions/getActions';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { GameDetails } from '@/components/forms/pick-form/game-details';
 
@@ -31,6 +31,8 @@ import { updateGamePot, updatePicksScoresByGame } from '@/actions/scoreActions';
 import VenmoLink from '@/components/VenmoLink';
 import CardWinningPick from '@/components/card-winning-pick';
 import { PickClientType } from '@/models/Pick';
+import { RacerClientType } from '@/models/Racer';
+import { DriverClientType } from '@/models/Driver';
 
 export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
 	const playerPromise = getCurrentPlayer();
@@ -64,6 +66,24 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 	]);
 
 	let winningPicks: PickClientType[] = [];
+	//get all racers for a main race using for loop search for race.letter === 'A'
+	let aMainRacers: RacerClientType[] = [];
+	const aMainDrivers: DriverClientType[] = [];
+
+	for (const race of races) {
+		if (race.letter === 'A') {
+			aMainRacers = await getRacersByRaceId(race._id as string);
+			// Assuming aMainRacers has driver_id, we can fetch drivers
+			for (const racer of aMainRacers) {
+				const driver:DriverClientType = await getDriver(racer.driver_id);
+				if (driver) {
+					aMainDrivers.push(driver);
+				}
+			}
+			break;
+		}
+	}
+
 
 
 
@@ -122,7 +142,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 				<br />
 				Game Status: {gameStatesToString(game.status as GameStates)}
 				<br />
-				<span className="text-med text-primary">Total Purse ${game.purse_amount.toFixed(2)} </span>
+				<span className="text-med text-primary">Current Pot ${game.purse_amount.toFixed(2)} </span>
 				{game.status === GameStates.FINISHED && winningPicks.length > 0 && winningPicks.map((pick, index) => (
 					pick._id && <CardWinningPick key={index} pickId={pick._id} />
 				))}
@@ -173,9 +193,9 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 								See how each pick is doing in this game.
 							</CardDescription>
 							<CardContent>
-								{picks &&
+								{picks && hardChargerTable &&
 									<Suspense fallback={<PickLeaderboardSkeleton />}>
-										<TablePickLeaderboard game={game as GameClientType} picks={picks} />
+										<TablePickLeaderboard game={game as GameClientType} picks={picks} aMainRacers={aMainRacers} hardChargerTable={hardChargerTable} aMainDrivers={aMainDrivers} />
 									</Suspense>
 								}
 							</CardContent>
