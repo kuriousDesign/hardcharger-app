@@ -1,4 +1,13 @@
 TODO:
+[ ] fix ... action buttons on GameDiv and others
+[ ] hide create event and create games from non-admins
+[ ] add option to cancel creating pick while starting
+[ ] BUG: toast said pick was submitted despite it not being actually submitted (change the order of when the toast is shown)
+[ ] add option to edit pick once entered
+[ ] have payment submission be the first step, have it create a raw pick that you can edit and submit, status -> requested --> paid --> submitted 
+    [ ] allow admin to mark requested picks as paid (see above)
+[ ] fix shimmer on iOS
+
 [ ] getUser doesn't work, might have to replace with session auth()
 [ ] Add user avatar to site header
 [!] Bug: don't allow user to select same driver in top finishers, probably need to check hard chargers too.

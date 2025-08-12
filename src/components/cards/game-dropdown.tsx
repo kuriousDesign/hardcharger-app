@@ -17,8 +17,9 @@ import { useRouter } from 'next/navigation';
 import { getLinks } from '@/lib/link-urls';
 import { getRace } from '@/actions/getActions';
 import { useEffect, useState } from 'react';
+import { GameStates } from '@/types/enums';
 
-export default function GameDropdown({ game }: { game: GameClientType }) {
+export default function GameDropdown({ game, isAdmin }: { game: GameClientType, isAdmin: boolean }) {
   const router = useRouter();
   const [races, setRaces] = useState<RaceClientType[]>([]);
 
@@ -46,24 +47,46 @@ export default function GameDropdown({ game }: { game: GameClientType }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Update Race Standings</DropdownMenuLabel>
-        {races.length > 0 ? (
-          races.map((race) => (
-            <DropdownMenuItem
-              key={race._id}
-              onClick={() =>
-                router.push(getLinks().getUpdateRaceStandingsUrl(game._id as string, race._id as string))
-              }
-            >
-              {race.letter} {race.type}
-            </DropdownMenuItem>
-          ))
-        ) : (
-          <DropdownMenuItem disabled>No races available</DropdownMenuItem>
-        )}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>View customer</DropdownMenuItem>
-        <DropdownMenuItem>View payment details</DropdownMenuItem>
+        {game.status === GameStates.OPEN &&
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(getLinks().getCreatePickUrl(game._id as string))
+            }
+          >
+            Make Pick
+          </DropdownMenuItem>
+        }
+   
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(getLinks().getGameUrl(game._id as string))
+            }
+          >
+            Go to Game
+          </DropdownMenuItem>
+        
+        {isAdmin &&
+          <>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuLabel className='text-muted-foregound font-thin'>Update Race Standings</DropdownMenuLabel>
+            {races.length > 0 ? (
+              races.map((race) => (
+                <DropdownMenuItem
+                  key={race._id}
+                  onClick={() =>
+                    router.push(getLinks().getUpdateRaceStandingsUrl(game._id as string, race._id as string))
+                  }
+                >
+                  {race.letter} {race.type}
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <DropdownMenuItem disabled>No races available</DropdownMenuItem>
+            )}
+          </>
+        }
+
       </DropdownMenuContent>
     </DropdownMenu>
   );

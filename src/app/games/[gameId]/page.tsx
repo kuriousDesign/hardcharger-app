@@ -75,7 +75,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 			aMainRacers = await getRacersByRaceId(race._id as string);
 			// Assuming aMainRacers has driver_id, we can fetch drivers
 			for (const racer of aMainRacers) {
-				const driver:DriverClientType = await getDriver(racer.driver_id);
+				const driver: DriverClientType = await getDriver(racer.driver_id);
 				if (driver) {
 					aMainDrivers.push(driver);
 				}
@@ -133,16 +133,28 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 
 	return (
 		<div>
-			<PageHeader>
+			<PageHeader >
 				<PageHeaderHeading >
 					{title}
 				</PageHeaderHeading>
 				<PageHeaderDescription>{description}</PageHeaderDescription>
-				Entry Fee: ${game.entry_fee.toFixed(2)} &nbsp;
+				<p className="text-med font-semibold text-accent-foreground">
+					${game.entry_fee.toFixed(2)} Entry
+				</p>
+				{game.num_hard_chargers > 0 &&
+					<p className="text-med font-light text-accent-foreground">
+						Choose {game.num_hard_chargers} Hard Chargers
+					</p>
+				}
+				{game.num_top_finishers > 0 &&
+					<p className="text-med font-light text-accent-foreground">
+						Choose {game.num_top_finishers} Top Finishers	
+					</p>
+				}
 				<br />
 				Game Status: {gameStatesToString(game.status as GameStates)}
 				<br />
-				<span className="text-med text-primary">Current Pot ${game.purse_amount.toFixed(2)} </span>
+				<span className="text-med text-primary">Current Pot: ${game.purse_amount.toFixed(2)} </span>
 				{game.status === GameStates.FINISHED && winningPicks.length > 0 && winningPicks.map((pick, index) => (
 					pick._id && <CardWinningPick key={index} pickId={pick._id} />
 				))}
@@ -171,7 +183,7 @@ export default async function GamePage({ params }: { params: Promise<{ gameId: s
 					</div>
 				</PageActions>
 			</PageHeader>
-			<div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
+			<div className="flex flex-1 flex-col pb-6">
 				<div className="theme-container container flex flex-1 flex-col gap-10">
 
 

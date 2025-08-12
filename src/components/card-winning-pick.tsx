@@ -42,7 +42,7 @@ export default async function CardWinningPick({ pickId }: { pickId: string }) {
     }
 
     return (
-        <Card className="shadow-primary/50 border-2 border-primary">
+        <Card className="shadow-primary/50 border-1 border-primary">
             <CardHeader>
                 <CardTitle>Winning Pick</CardTitle>
                 <CardDescription className="font-semibold text-primary">

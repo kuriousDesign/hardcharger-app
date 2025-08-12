@@ -68,7 +68,7 @@ export default async function DashboardPage() {
            
                 </PageActions>
             </PageHeader>
-            <div className="container-wrapper section-soft flex flex-1 flex-col pb-6">
+            <div className="flex flex-1 flex-col pb-6">
                 <div className="theme-container container flex flex-1 flex-col gap-4">
                     <Suspense fallback={<TabCardSkeleton />}>
                         <TabCardGames />

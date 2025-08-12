@@ -86,7 +86,9 @@ export default function GameDiv({
                         Pick
                     </LinkButton>
                 }
-                <GameDropdown game={data} />
+                
+                <GameDropdown game={data} isAdmin={isAdmin} />
+
             </div>
         </div>
     );
